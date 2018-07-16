@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class DimensionLayerController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+}
+
+public enum Dimension
+{
+    Normal,
+    Other
 }
