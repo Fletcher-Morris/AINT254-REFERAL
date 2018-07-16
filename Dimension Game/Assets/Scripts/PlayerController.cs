@@ -72,6 +72,11 @@ public class PlayerController : MonoBehaviour {
             velocityChange.z = Mathf.Clamp(velocityChange.z, -10f, 10f);
             velocityChange.y = 0;
             m_body.AddForce(velocityChange, ForceMode.VelocityChange);
+
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                m_body.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
+            }
         }
         else
         {

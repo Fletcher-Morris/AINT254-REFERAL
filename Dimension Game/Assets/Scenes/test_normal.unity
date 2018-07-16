@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_runSpeed: 5
-  m_jumpForce: 2
+  m_jumpForce: 3
   m_groundDist: 0.05
   m_groundMask:
     serializedVersion: 2
