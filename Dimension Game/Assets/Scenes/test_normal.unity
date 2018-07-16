@@ -228,7 +228,7 @@ MonoBehaviour:
   m_groundMask:
     serializedVersion: 2
     m_Bits: 1
-  m_lookSensitivity: 1
+  m_lookSensitivity: 50
   m_isGrounded: 0
 --- !u!54 &684785292
 Rigidbody:

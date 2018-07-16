@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private LayerMask m_groundMask;
     [SerializeField]
-    private float m_lookSensitivity = 1f;
+    private float m_lookSensitivity = 50f;
 
     //  Input variables
     private Vector2 inputRaw, inputNorm;
@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour {
         m_groundCheck = m_transform.Find("GroundCheck");
 
         m_body.freezeRotation = true;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void GetInput()
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour {
     {
         if(m_isGrounded)
         {
+            //  MOVEMENT
             Vector3 targetVelocity = new Vector3(inputRaw.x, 0, inputRaw.y);
             targetVelocity = transform.TransformDirection(targetVelocity);
             targetVelocity *= m_runSpeed;
@@ -90,20 +92,34 @@ public class PlayerController : MonoBehaviour {
 
             if(Input.GetKey(KeyCode.Space) && m_canJump)
             {
+                //  JUMP
                 m_body.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
             }
         }
         else
         {
-
+            //  AIR CONTROL
         }
     }
 
+    private void CamMovement()
+    {
+        Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
+        m_body.MoveRotation(Quaternion.Euler(newY));
+
+        Vector3 newX = m_camTransform.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
+
+        if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
+        if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
+
+        m_camTransform.localEulerAngles = newX;
+    }
 
     private void Update()
     {
         GetInput();
         GroundCheck();
+        CamMovement();
     }
 
     private void FixedUpdate()
