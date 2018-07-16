@@ -24,6 +24,15 @@ public class DimensionLayerHelper : EditorWindow {
         {
             GatherObjects();
         }
+        if (GUILayout.Button("Convert Layers"))
+        {
+            ConvertLayers();
+        }
+        if (GUILayout.Button("Reset Layers"))
+        {
+            m_sceneDimension = Dimension.Normal;
+            ConvertLayers();
+        }
     }
 
     private void GatherObjects()
@@ -52,8 +61,23 @@ public class DimensionLayerHelper : EditorWindow {
         Debug.Log(lightObjects.Count + " Lights gathered.");
     }
 
-    private void ConvertLayers(Dimension dim)
+    private void ConvertLayers()
     {
+        foreach(GameObject obj in normalObjects)
+        {
+            string currentLayer = LayerMask.LayerToName(obj.layer);
 
+            if(m_sceneDimension == Dimension.Normal)
+            {
+                currentLayer = currentLayer.Split('_')[0];
+            }
+            else
+            {
+                currentLayer += "_" + m_sceneDimension.ToString();
+            }
+            obj.layer = LayerMask.NameToLayer(currentLayer);
+
+            Debug.Log(currentLayer);
+        }
     }
 }
