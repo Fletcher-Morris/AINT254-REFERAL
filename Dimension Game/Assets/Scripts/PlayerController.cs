@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private Transform m_transform;
+    private Camera m_cam;
+    private Transform m_camTransform;
+    private Rigidbody m_body;
+
+
+
+    private void Start()
+    {
+        PlayerInit();
+    }
+
+    public void PlayerInit()
+    {
+        m_transform = GetComponent<Transform>();
+        if (!m_cam) m_cam = GetComponentInChildren<Camera>();
+        m_camTransform = m_cam.transform;
+        m_body = GetComponent<Rigidbody>();
+    }
 }
