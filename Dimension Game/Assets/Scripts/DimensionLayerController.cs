@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DimensionLayerController : MonoBehaviour {
     
-    public DimensionDef[] dimensionDefinitions;
+    public DimensionDef[] dimensionDefs;
 }
 
 public enum Dimension
