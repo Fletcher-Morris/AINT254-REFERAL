@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour {
     private Vector2 inputRaw, inputNorm;
     [SerializeField]
     private bool m_isGrounded;
+    private bool m_prevGrounded;
+    private bool m_jumping;
+    private bool m_canJump;
 
     private void Start()
     {
@@ -56,6 +59,18 @@ public class PlayerController : MonoBehaviour {
     private void GroundCheck()
     {
         m_isGrounded = Physics.CheckSphere(m_groundCheck.position, m_groundDist, m_groundMask, QueryTriggerInteraction.Ignore);
+        if (m_isGrounded && !m_prevGrounded) OnGrounded();
+        else if (!m_isGrounded && m_prevGrounded) OnUngrounded();
+        m_prevGrounded = m_isGrounded;
+    }
+
+    private void OnGrounded()
+    {
+        m_canJump = true;
+    }
+    private void OnUngrounded()
+    {
+        m_canJump = false;
     }
 
     private void Movement()
@@ -73,7 +88,7 @@ public class PlayerController : MonoBehaviour {
             velocityChange.y = 0;
             m_body.AddForce(velocityChange, ForceMode.VelocityChange);
 
-            if(Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetKey(KeyCode.Space) && m_canJump)
             {
                 m_body.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
             }
