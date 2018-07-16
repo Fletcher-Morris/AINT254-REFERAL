@@ -10,4 +10,11 @@ public class DimensionLayerHelper : EditorWindow {
     {
         GetWindow<DimensionLayerHelper>("Layer Helper");
     }
+
+    Dimension m_sceneDimension;
+
+    private void OnGUI()
+    {
+        m_sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene's Dimension", m_sceneDimension);
+    }
 }
