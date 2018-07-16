@@ -19,10 +19,15 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_jumpForce = 2f;
     [SerializeField]
+    private float m_groundDist = 0.05f;
+    [SerializeField]
+    private LayerMask m_groundMask;
+    [SerializeField]
     private float m_lookSensitivity = 1f;
 
     //  Input variables
     private Vector2 inputRaw, inputNorm;
+    [SerializeField]
     private bool m_isGrounded;
 
     private void Start()
@@ -37,6 +42,7 @@ public class PlayerController : MonoBehaviour {
         m_camTransform = m_cam.transform;
         m_body = GetComponent<Rigidbody>();
         m_col = GetComponent<CapsuleCollider>();
+        m_groundCheck = m_transform.Find("GroundCheck");
 
         m_body.freezeRotation = true;
     }
@@ -45,5 +51,17 @@ public class PlayerController : MonoBehaviour {
     {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         inputNorm = inputRaw.normalized;
+    }
+
+    private void GroundCheck()
+    {
+        m_isGrounded = Physics.CheckSphere(m_groundCheck.position, m_groundDist, m_groundMask, QueryTriggerInteraction.Ignore);
+    }
+
+
+    private void Update()
+    {
+        GetInput();
+        GroundCheck();
     }
 }
