@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_lookSensitivity = 1f;
 
+    //  Input variables
+    private Vector2 inputRaw, inputNorm;
+    private bool m_isGrounded;
 
     private void Start()
     {
@@ -36,5 +39,11 @@ public class PlayerController : MonoBehaviour {
         m_col = GetComponent<CapsuleCollider>();
 
         m_body.freezeRotation = true;
+    }
+
+    private void GetInput()
+    {
+        inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        inputNorm = inputRaw.normalized;
     }
 }
