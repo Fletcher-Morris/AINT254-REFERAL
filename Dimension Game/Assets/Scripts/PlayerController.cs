@@ -58,10 +58,36 @@ public class PlayerController : MonoBehaviour {
         m_isGrounded = Physics.CheckSphere(m_groundCheck.position, m_groundDist, m_groundMask, QueryTriggerInteraction.Ignore);
     }
 
+    private void Movement()
+    {
+        if(m_isGrounded)
+        {
+            Vector3 targetVelocity = new Vector3(inputRaw.x, 0, inputRaw.y);
+            targetVelocity = transform.TransformDirection(targetVelocity);
+            targetVelocity *= m_runSpeed;
+
+            Vector3 velocity = m_body.velocity;
+            Vector3 velocityChange = (targetVelocity - velocity);
+            velocityChange.x = Mathf.Clamp(velocityChange.x, -10f, 10f);
+            velocityChange.z = Mathf.Clamp(velocityChange.z, -10f, 10f);
+            velocityChange.y = 0;
+            m_body.AddForce(velocityChange, ForceMode.VelocityChange);
+        }
+        else
+        {
+
+        }
+    }
+
 
     private void Update()
     {
         GetInput();
         GroundCheck();
+    }
+
+    private void FixedUpdate()
+    {
+        Movement();
     }
 }
