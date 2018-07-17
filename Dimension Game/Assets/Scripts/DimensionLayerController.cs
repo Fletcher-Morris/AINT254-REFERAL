@@ -18,4 +18,5 @@ public class DimensionDef
 {
     public string name = "Dimension";
     public LayerMask visibleLayers;
+    public LayerMask lightingLayers;
 }

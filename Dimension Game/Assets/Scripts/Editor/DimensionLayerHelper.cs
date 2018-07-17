@@ -12,7 +12,8 @@ public class DimensionLayerHelper : EditorWindow {
     }
 
     //  Settings
-    Dimension sceneDimension;
+    Dimension newDimension;
+    Dimension currentDimension;
     string excludeTagsString;
     string[] excludeTagsArray;
     string includeLayers = "Default";
@@ -25,7 +26,7 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
-        sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", sceneDimension);
+        newDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", newDimension);
         excludeTagsString = EditorGUILayout.TextField("Exclude Tags", excludeTagsString);
         EditorGUILayout.HelpBox("Separate tags with commas.", MessageType.None);
         EditorGUILayout.BeginHorizontal();
@@ -33,13 +34,13 @@ public class DimensionLayerHelper : EditorWindow {
         {
             GetExcludeTags();
             PlayerPrefs.SetString("ExcludeTags", excludeTagsString);
-            Debug.Log("Loaded exclude tags.");
+            Debug.Log("Saving exclude tags.");
         }
         if (GUILayout.Button("Load Tags"))
         {
             excludeTagsString = PlayerPrefs.GetString("ExcludeTags");
             GetExcludeTags();
-            Debug.Log("Saving exclude tags.");
+            Debug.Log("Loaded exclude tags.");
         }
         EditorGUILayout.EndHorizontal();
         setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
@@ -61,7 +62,7 @@ public class DimensionLayerHelper : EditorWindow {
         if (GUILayout.Button("Reset Layers"))
         {
             GetExcludeTags();
-            sceneDimension = Dimension.Normal;
+            newDimension = Dimension.Normal;
             ConvertLayers();
         }
     }
@@ -127,22 +128,57 @@ public class DimensionLayerHelper : EditorWindow {
             string currentLayer = LayerMask.LayerToName(obj.layer);
             currentLayer = currentLayer.Split('_')[0];
 
-            if (sceneDimension != Dimension.Normal)
+            if (newDimension != Dimension.Normal)
             {
-                currentLayer += "_" + sceneDimension.ToString();
+                currentLayer += "_" + newDimension.ToString();
             }
             obj.layer = LayerMask.NameToLayer(currentLayer);
             convertedObjects++;
         }
-        Debug.Log("Converted " + convertedObjects + " objects to " + sceneDimension.ToString() + " dimension.");
+        Debug.Log("Converted " + convertedObjects + " GameObjects to " + newDimension.ToString() + " dimension.");
 
-        convertedObjects = 0;
-        foreach(Camera cam in cameraObjects)
+        if(setCameraCullingMasks)
         {
-            LayerMask currentMask = cam.cullingMask;
-            LayerMask newMask;
+            convertedObjects = 0;
+            foreach (Camera cam in cameraObjects)
+            {
+                LayerMask newCullingMask = cam.cullingMask;
+                ConvertCullingMask(ref newCullingMask);
+                cam.cullingMask = newCullingMask;
+                convertedObjects++;
+            }
+        }
+        Debug.Log("Converted " + convertedObjects + " Cameras to " + newDimension.ToString() + " dimension.");
 
-            Debug.Log(currentMask);
+        currentDimension = newDimension;
+    }
+    private void ConvertCullingMask(ref LayerMask mask)
+    {
+        if (newDimension != Dimension.Normal)
+        {
+            if (IncludesLayer(mask, "Default"))
+            {
+                RemoveFromMask(ref mask, "Default");
+                AddToMask(ref mask, ("Default_" + newDimension.ToString()));
+            }
+            if (IncludesLayer(mask, "PlayerSelf"))
+            {
+                RemoveFromMask(ref mask, "PlayerSelf");
+                AddToMask(ref mask, ("PlayerSelf_" + newDimension.ToString()));
+            }
+        }
+        else
+        {
+            if (IncludesLayer(mask, ("Default_" + currentDimension.ToString())))
+            {
+                RemoveFromMask(ref mask, ("Default_" + currentDimension.ToString()));
+                AddToMask(ref mask, "Default");
+            }
+            if (IncludesLayer(mask, ("PlayerSelf_" + currentDimension.ToString())))
+            {
+                RemoveFromMask(ref mask, ("PlayerSelf_" + currentDimension.ToString()));
+                AddToMask(ref mask, "PlayerSelf");
+            }
         }
     }
 
@@ -157,5 +193,21 @@ public class DimensionLayerHelper : EditorWindow {
             return true;
         }
         return false;
+    }
+    private void AddToMask(ref LayerMask mask, string layerName)
+    {
+        mask |= (1 << LayerMask.NameToLayer(layerName));
+    }
+    private void AddToMask(ref LayerMask mask, int layer)
+    {
+        mask |= (1 << layer);
+    }
+    private void RemoveFromMask(ref LayerMask mask, string layerName)
+    {
+        mask ^= (1 << LayerMask.NameToLayer(layerName));
+    }
+    private void RemoveFromMask(ref LayerMask mask, int layer)
+    {
+        mask ^= (1 << layer);
     }
 }
