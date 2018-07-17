@@ -15,7 +15,7 @@ public class DimensionSceneLoader : MonoBehaviour {
             if (SceneManager.GetActiveScene().name != sceneString)
             {
                 Debug.Log("Loading scene '" + sceneString + "'.");
-                //SceneManager.LoadScene(sceneString, LoadSceneMode.Additive);
+                SceneManager.LoadScene(sceneString, LoadSceneMode.Additive);
             }
         }
     }
