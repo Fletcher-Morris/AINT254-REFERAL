@@ -21,8 +21,8 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
-
         excludeTagsString = EditorGUILayout.TextField("Exclude Tags", excludeTagsString);
+        EditorGUILayout.HelpBox("Separate tags with commas.", MessageType.None);
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Save Tags"))
         {
