@@ -19,7 +19,7 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
-        m_sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene's Dimension", m_sceneDimension);
+        m_sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", m_sceneDimension);
         if(GUILayout.Button("Gather Objects"))
         {
             GatherObjects();
