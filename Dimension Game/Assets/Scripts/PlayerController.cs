@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_jumpForce = 2f;
     [SerializeField]
-    private float m_groundDist = 0.05f;
+    private float m_groundDist = 0.5f;
     [SerializeField]
     private LayerMask m_groundMask;
     [SerializeField]
@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour {
     private bool m_prevGrounded;
     private bool m_jumping;
     private bool m_canJump;
+    [SerializeField]
+    private bool m_trySwapDimension;
 
     private void Start()
     {
@@ -55,6 +57,7 @@ public class PlayerController : MonoBehaviour {
     {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         inputNorm = inputRaw.normalized;
+        m_trySwapDimension = Input.GetKey(KeyCode.E);
     }
 
     private void GroundCheck()
