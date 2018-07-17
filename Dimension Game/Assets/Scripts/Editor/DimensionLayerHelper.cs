@@ -11,7 +11,7 @@ public class DimensionLayerHelper : EditorWindow {
         GetWindow<DimensionLayerHelper>("Layer Helper");
     }
 
-    Dimension m_sceneDimension;
+    Dimension sceneDimension;
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
@@ -19,7 +19,7 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
-        m_sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", m_sceneDimension);
+        sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", sceneDimension);
         if(GUILayout.Button("Gather Objects"))
         {
             GatherObjects();
@@ -30,7 +30,7 @@ public class DimensionLayerHelper : EditorWindow {
         }
         if (GUILayout.Button("Reset Layers"))
         {
-            m_sceneDimension = Dimension.Normal;
+            sceneDimension = Dimension.Normal;
             ConvertLayers();
         }
     }
@@ -56,28 +56,24 @@ public class DimensionLayerHelper : EditorWindow {
             normalObjects.Add(go);
         }
 
-        Debug.Log(normalObjects.Count + " GameObjects gathered.");
-        Debug.Log(cameraObjects.Count + " Cameras gathered.");
-        Debug.Log(lightObjects.Count + " Lights gathered.");
+        Debug.Log(normalObjects.Count + " GameObjects, " + cameraObjects.Count + " Cameras, " + lightObjects.Count + " Lights gathered.");
     }
 
     private void ConvertLayers()
     {
-        foreach(GameObject obj in normalObjects)
+        int convertedObjects = 0;
+        foreach (GameObject obj in normalObjects)
         {
             string currentLayer = LayerMask.LayerToName(obj.layer);
+            currentLayer = currentLayer.Split('_')[0];
 
-            if(m_sceneDimension == Dimension.Normal)
+            if (sceneDimension != Dimension.Normal)
             {
-                currentLayer = currentLayer.Split('_')[0];
-            }
-            else
-            {
-                currentLayer += "_" + m_sceneDimension.ToString();
+                currentLayer += "_" + sceneDimension.ToString();
             }
             obj.layer = LayerMask.NameToLayer(currentLayer);
-
-            Debug.Log(currentLayer);
+            convertedObjects++;
         }
+        Debug.Log("Converted " + convertedObjects + " objects to " + sceneDimension.ToString() + " dimension.");
     }
 }
