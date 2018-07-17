@@ -71,11 +71,14 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void GetExcludeTags()
     {
-        string[] tempTags;
-        tempTags = excludeTagsString.Split(',');
-        if(tempTags[0] != "")
+        if(excludeTagsString != "")
         {
-            excludeTagsArray = tempTags;
+            string[] tempTags;
+            tempTags = excludeTagsString.Split(',');
+            if (tempTags[0] != "")
+            {
+                excludeTagsArray = tempTags;
+            }
         }
     }
 
