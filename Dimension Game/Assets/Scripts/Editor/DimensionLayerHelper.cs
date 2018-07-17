@@ -49,8 +49,8 @@ public class DimensionLayerHelper : EditorWindow {
 
         EditorGUILayout.Separator();
 
-
-        if(GUILayout.Button("Gather Objects"))
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Gather Objects"))
         {
             GetExcludeTags();
             GatherObjects();
@@ -60,6 +60,7 @@ public class DimensionLayerHelper : EditorWindow {
             GetExcludeTags();
             ConvertLayers();
         }
+        EditorGUILayout.EndHorizontal();
         if (GUILayout.Button("Reset Layers"))
         {
             GetExcludeTags();
