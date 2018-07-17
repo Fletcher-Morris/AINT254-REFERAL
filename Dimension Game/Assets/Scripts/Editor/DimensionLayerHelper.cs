@@ -16,9 +16,9 @@ public class DimensionLayerHelper : EditorWindow {
     Dimension currentDimension;
     string excludeTagsString;
     string[] excludeTagsArray;
-    string includeLayers = "Default";
+    string includeLayers = "Default,PlayerSelf";
     bool setCameraCullingMasks = true;
-    bool setLightCullingMask;
+    bool setLightCullingMask = true;
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
@@ -44,6 +44,7 @@ public class DimensionLayerHelper : EditorWindow {
         }
         EditorGUILayout.EndHorizontal();
         setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
+        setLightCullingMask = EditorGUILayout.Toggle("Set Light Culling", setLightCullingMask);
 
 
         EditorGUILayout.Separator();
@@ -147,8 +148,21 @@ public class DimensionLayerHelper : EditorWindow {
                 cam.cullingMask = newCullingMask;
                 convertedObjects++;
             }
+            Debug.Log("Converted " + convertedObjects + " Cameras to " + newDimension.ToString() + " dimension.");
         }
-        Debug.Log("Converted " + convertedObjects + " Cameras to " + newDimension.ToString() + " dimension.");
+
+        if (setLightCullingMask)
+        {
+            convertedObjects = 0;
+            foreach (Light light in lightObjects)
+            {
+                LayerMask newCullingMask = light.cullingMask;
+                ConvertCullingMask(ref newCullingMask);
+                light.cullingMask = newCullingMask;
+                convertedObjects++;
+            }
+            Debug.Log("Converted " + convertedObjects + " Lights to " + newDimension.ToString() + " dimension.");
+        }
 
         currentDimension = newDimension;
     }
