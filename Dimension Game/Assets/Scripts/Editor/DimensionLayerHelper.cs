@@ -12,6 +12,8 @@ public class DimensionLayerHelper : EditorWindow {
     }
 
     Dimension sceneDimension;
+    string excludeTagsString;
+    string[] excludeTagsArray;
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
@@ -19,19 +21,50 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
+
+        excludeTagsString = EditorGUILayout.TextField("Exclude Tags", excludeTagsString);
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save Tags"))
+        {
+            GetExcludeTags();
+            PlayerPrefs.SetString("ExcludeTags", excludeTagsString);
+            Debug.Log("Loaded exclude tags.");
+        }
+        if (GUILayout.Button("Load Tags"))
+        {
+            excludeTagsString = PlayerPrefs.GetString("ExcludeTags");
+            GetExcludeTags();
+            Debug.Log("Saving exclude tags.");
+        }
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Separator();
+
         sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", sceneDimension);
         if(GUILayout.Button("Gather Objects"))
         {
+            GetExcludeTags();
             GatherObjects();
         }
         if (GUILayout.Button("Convert Layers"))
         {
+            GetExcludeTags();
             ConvertLayers();
         }
         if (GUILayout.Button("Reset Layers"))
         {
+            GetExcludeTags();
             sceneDimension = Dimension.Normal;
             ConvertLayers();
+        }
+    }
+
+    private void GetExcludeTags()
+    {
+        string[] tempTags;
+        tempTags = excludeTagsString.Split(',');
+        if(tempTags[0] != "")
+        {
+            excludeTagsArray = tempTags;
         }
     }
 
@@ -43,17 +76,36 @@ public class DimensionLayerHelper : EditorWindow {
 
         foreach(GameObject go in UnityEngine.Object.FindObjectsOfType<GameObject>())
         {
-            if(go.GetComponent<Camera>())
+            bool exclude = false;
+            if(excludeTagsArray.Length >= 1)
             {
-                cameraObjects.Add(go.GetComponent<Camera>());
+                foreach (string tag in excludeTagsArray)
+                {
+                    if(tag != "")
+                    {
+                        if (go.tag == tag)
+                        {
+                            exclude = true;
+                            break;
+                        }
+                    }
+                }
             }
 
-            if(go.GetComponent<Light>())
+            if(!exclude)
             {
-                lightObjects.Add(go.GetComponent<Light>());
-            }
+                if (go.GetComponent<Camera>())
+                {
+                    cameraObjects.Add(go.GetComponent<Camera>());
+                }
 
-            normalObjects.Add(go);
+                if (go.GetComponent<Light>())
+                {
+                    lightObjects.Add(go.GetComponent<Light>());
+                }
+
+                normalObjects.Add(go);
+            }
         }
 
         Debug.Log(normalObjects.Count + " GameObjects, " + cameraObjects.Count + " Cameras, " + lightObjects.Count + " Lights gathered.");
