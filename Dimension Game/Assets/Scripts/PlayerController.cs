@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
     private Rigidbody m_body;
     private CapsuleCollider m_col;
     private Transform m_groundCheck;
+    private DimensionSceneLoader m_sceneLoader;
 
     //  Movement settings
     [SerializeField]
@@ -48,6 +49,7 @@ public class PlayerController : MonoBehaviour {
         m_body = GetComponent<Rigidbody>();
         m_col = GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
+        m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
 
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -58,6 +60,10 @@ public class PlayerController : MonoBehaviour {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         inputNorm = inputRaw.normalized;
         m_trySwapDimension = Input.GetKey(KeyCode.E);
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            m_sceneLoader.LoadMultiScene("test");
+        }
     }
 
     private void GroundCheck()

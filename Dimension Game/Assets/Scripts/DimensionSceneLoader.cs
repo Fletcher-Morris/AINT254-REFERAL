@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DimensionSceneLoader : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public void LoadMultiScene(string sceneName)
+    {
+        int numberOfScenes = Dimension.GetNames(typeof(Dimension)).Length;
+        
+        for(int i = 0; i < numberOfScenes; i++)
+        {
+            string sceneString = sceneName + "_" + ((Dimension)i).ToString();
+            Debug.Log("Loading scene '" + sceneString + "'.");
+            //SceneManager.LoadScene()
+        }
+    }
 }
