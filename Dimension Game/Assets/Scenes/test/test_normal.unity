@@ -127,7 +127,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!108 &169595553
 Light:
@@ -280,7 +280,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!114 &1141463579
 MonoBehaviour:
@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47a4978e2f5c50d49890b7c68f9cc94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_loadOnAwake: 1
 --- !u!1 &1166428133
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +613,17 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114129592487749360, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
+        type: 2}
+      propertyPath: m_groundMask.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 136432746976662744, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
+        type: 2}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: e0504cd1cf576ff4b9f7bbc49e4ae09c,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
   m_IsPrefabParent: 0

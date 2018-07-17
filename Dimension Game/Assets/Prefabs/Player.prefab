@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 54639363838725974}
   m_Layer: 9
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -253,6 +253,7 @@ MonoBehaviour:
     m_Bits: 1
   m_lookSensitivity: 50
   m_isGrounded: 0
+  m_trySwapDimension: 0
 --- !u!124 &124002370961519600
 Behaviour:
   m_ObjectHideFlags: 1

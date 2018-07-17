@@ -5,7 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class DimensionSceneLoader : MonoBehaviour {
 
-	public void LoadMultiScene(string sceneName)
+    [SerializeField]
+    private bool m_loadOnAwake = true;
+
+    private void Awake()
+    {
+        if (m_loadOnAwake) { LoadMultiScene(SceneManager.GetActiveScene().name.Split('_')[0]); }
+    }
+
+    public void LoadMultiScene(string sceneName)
     {
         int numberOfScenes = Dimension.GetNames(typeof(Dimension)).Length;
         

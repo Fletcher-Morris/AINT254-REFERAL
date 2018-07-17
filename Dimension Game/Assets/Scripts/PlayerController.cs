@@ -60,10 +60,6 @@ public class PlayerController : MonoBehaviour {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         inputNorm = inputRaw.normalized;
         m_trySwapDimension = Input.GetKey(KeyCode.E);
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            m_sceneLoader.LoadMultiScene("test");
-        }
     }
 
     private void GroundCheck()
@@ -134,5 +130,10 @@ public class PlayerController : MonoBehaviour {
     private void FixedUpdate()
     {
         Movement();
+    }
+
+    public void SwapDimension(Dimension newDimension)
+    {
+
     }
 }
