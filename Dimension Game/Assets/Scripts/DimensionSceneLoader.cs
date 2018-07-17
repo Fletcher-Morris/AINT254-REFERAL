@@ -11,9 +11,12 @@ public class DimensionSceneLoader : MonoBehaviour {
         
         for(int i = 0; i < numberOfScenes; i++)
         {
-            string sceneString = sceneName + "_" + ((Dimension)i).ToString();
-            Debug.Log("Loading scene '" + sceneString + "'.");
-            //SceneManager.LoadScene()
+            string sceneString = (sceneName + "_" + ((Dimension)i).ToString()).ToLower();
+            if (SceneManager.GetActiveScene().name != sceneString)
+            {
+                Debug.Log("Loading scene '" + sceneString + "'.");
+                //SceneManager.LoadScene(sceneString, LoadSceneMode.Additive);
+            }
         }
     }
 }
