@@ -11,9 +11,13 @@ public class DimensionLayerHelper : EditorWindow {
         GetWindow<DimensionLayerHelper>("Layer Helper");
     }
 
+    //  Settings
     Dimension sceneDimension;
     string excludeTagsString;
     string[] excludeTagsArray;
+    string includeLayers = "Default";
+    bool setCameraCullingMasks = true;
+    bool setLightCullingMask;
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
@@ -21,6 +25,7 @@ public class DimensionLayerHelper : EditorWindow {
 
     private void OnGUI()
     {
+        sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", sceneDimension);
         excludeTagsString = EditorGUILayout.TextField("Exclude Tags", excludeTagsString);
         EditorGUILayout.HelpBox("Separate tags with commas.", MessageType.None);
         EditorGUILayout.BeginHorizontal();
@@ -37,9 +42,12 @@ public class DimensionLayerHelper : EditorWindow {
             Debug.Log("Saving exclude tags.");
         }
         EditorGUILayout.EndHorizontal();
+        setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
+
+
         EditorGUILayout.Separator();
 
-        sceneDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", sceneDimension);
+
         if(GUILayout.Button("Gather Objects"))
         {
             GetExcludeTags();
@@ -127,5 +135,27 @@ public class DimensionLayerHelper : EditorWindow {
             convertedObjects++;
         }
         Debug.Log("Converted " + convertedObjects + " objects to " + sceneDimension.ToString() + " dimension.");
+
+        convertedObjects = 0;
+        foreach(Camera cam in cameraObjects)
+        {
+            LayerMask currentMask = cam.cullingMask;
+            LayerMask newMask;
+
+            Debug.Log(currentMask);
+        }
+    }
+
+    private bool IncludesLayer(LayerMask mask, string layerName)
+    {
+        return IncludesLayer(mask, LayerMask.NameToLayer(layerName));
+    }
+    private bool IncludesLayer(LayerMask mask, int layer)
+    {
+        if (mask == (mask | (1 << layer)))
+        {
+            return true;
+        }
+        return false;
     }
 }
