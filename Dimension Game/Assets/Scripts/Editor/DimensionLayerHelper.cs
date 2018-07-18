@@ -174,58 +174,29 @@ public class DimensionLayerHelper : EditorWindow {
     {
         if (newDimension != Dimension.Normal)
         {
-            if (IncludesLayer(mask, "Default"))
+            if (LayerMaskTools.IncludesLayer(mask, "Default"))
             {
-                RemoveFromMask(ref mask, "Default");
-                AddToMask(ref mask, ("Default_" + newDimension.ToString()));
+                LayerMaskTools.RemoveFromMask(ref mask, "Default");
+                LayerMaskTools.AddToMask(ref mask, ("Default_" + newDimension.ToString()));
             }
-            if (IncludesLayer(mask, "PlayerSelf"))
+            if (LayerMaskTools.IncludesLayer(mask, "PlayerSelf"))
             {
-                RemoveFromMask(ref mask, "PlayerSelf");
-                AddToMask(ref mask, ("PlayerSelf_" + newDimension.ToString()));
+                LayerMaskTools.RemoveFromMask(ref mask, "PlayerSelf");
+                LayerMaskTools.AddToMask(ref mask, ("PlayerSelf_" + newDimension.ToString()));
             }
         }
         else
         {
-            if (IncludesLayer(mask, ("Default_" + currentDimension.ToString())))
+            if (LayerMaskTools.IncludesLayer(mask, ("Default_" + currentDimension.ToString())))
             {
-                RemoveFromMask(ref mask, ("Default_" + currentDimension.ToString()));
-                AddToMask(ref mask, "Default");
+                LayerMaskTools.RemoveFromMask(ref mask, ("Default_" + currentDimension.ToString()));
+                LayerMaskTools.AddToMask(ref mask, "Default");
             }
-            if (IncludesLayer(mask, ("PlayerSelf_" + currentDimension.ToString())))
+            if (LayerMaskTools.IncludesLayer(mask, ("PlayerSelf_" + currentDimension.ToString())))
             {
-                RemoveFromMask(ref mask, ("PlayerSelf_" + currentDimension.ToString()));
-                AddToMask(ref mask, "PlayerSelf");
+                LayerMaskTools.RemoveFromMask(ref mask, ("PlayerSelf_" + currentDimension.ToString()));
+                LayerMaskTools.AddToMask(ref mask, "PlayerSelf");
             }
         }
-    }
-
-    private bool IncludesLayer(LayerMask mask, string layerName)
-    {
-        return IncludesLayer(mask, LayerMask.NameToLayer(layerName));
-    }
-    private bool IncludesLayer(LayerMask mask, int layer)
-    {
-        if (mask == (mask | (1 << layer)))
-        {
-            return true;
-        }
-        return false;
-    }
-    private void AddToMask(ref LayerMask mask, string layerName)
-    {
-        mask |= (1 << LayerMask.NameToLayer(layerName));
-    }
-    private void AddToMask(ref LayerMask mask, int layer)
-    {
-        mask |= (1 << layer);
-    }
-    private void RemoveFromMask(ref LayerMask mask, string layerName)
-    {
-        mask ^= (1 << LayerMask.NameToLayer(layerName));
-    }
-    private void RemoveFromMask(ref LayerMask mask, int layer)
-    {
-        mask ^= (1 << layer);
     }
 }

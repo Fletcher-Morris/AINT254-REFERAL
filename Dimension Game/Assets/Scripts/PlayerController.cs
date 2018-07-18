@@ -138,12 +138,12 @@ public class PlayerController : MonoBehaviour {
         Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
         m_body.MoveRotation(Quaternion.Euler(newY));
 
-        Vector3 newX = m_camTransform.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
+        Vector3 newX = m_cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
 
         if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
         if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
 
-        m_camTransform.localEulerAngles = newX;
+        m_cameraAnchor.localEulerAngles = newX;
     }
 
     private void Update()
@@ -152,8 +152,8 @@ public class PlayerController : MonoBehaviour {
         GroundCheck();
         CamMovement();
 
-        Debug.DrawLine((m_camTransform.position + (m_camTransform.right * -0.2f)), m_camTransform.forward * 5f, Color.blue);
-        Debug.DrawLine((m_camTransform.position + (m_camTransform.right * 0.2f)), m_camTransform.forward * 5f, Color.blue);
+        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * -0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
+        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * 0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()
