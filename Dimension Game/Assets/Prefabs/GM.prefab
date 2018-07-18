@@ -76,4 +76,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53071902f67d2644ab7fa796e09f0daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dimensionDefs: []
+  dimensionDefs:
+  - name: Normal
+    visibleLayers:
+      serializedVersion: 2
+      m_Bits: 4294942719
+    lightingLayers:
+      serializedVersion: 2
+      m_Bits: 4294942719
+  - name: Other
+    visibleLayers:
+      serializedVersion: 2
+      m_Bits: 4294966782
+    lightingLayers:
+      serializedVersion: 2
+      m_Bits: 4294966782

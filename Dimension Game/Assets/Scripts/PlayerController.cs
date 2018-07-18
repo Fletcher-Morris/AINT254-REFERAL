@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
+    private bool isInitialized = false;
+
     //  References to various instances
     private Transform m_transform;
     private Transform m_cameraAnchor;
@@ -49,8 +51,6 @@ public class PlayerController : MonoBehaviour {
     public void PlayerInit()
     {
         m_transform = GetComponent<Transform>();
-        //if (!m_cameras) m_cameras = GetComponentInChildren<Camera>();
-        //m_camTransform = m_cameras.transform;
         m_cameraAnchor = m_transform.Find("CameraAnchor");
         CreatePlayerCameras();
         m_body = GetComponent<Rigidbody>();
@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour {
 
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
+
+        isInitialized = true;
     }
     private void CreatePlayerCameras()
     {
@@ -72,7 +74,9 @@ public class PlayerController : MonoBehaviour {
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
 
-            LayerMask newMask = newCam.cullingMask;
+            newCam.cullingMask = Singletons.layerController.dimensionDefs[i].visibleLayers;
+
+            m_cameras.Add(newCam);
         }
     }
 
@@ -148,6 +152,8 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
+        if (!isInitialized) return;
+
         GetInput();
         GroundCheck();
         CamMovement();
@@ -158,6 +164,8 @@ public class PlayerController : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        if (!isInitialized) return;
+
         Movement();
     }
 
