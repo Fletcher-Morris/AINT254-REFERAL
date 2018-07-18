@@ -144,8 +144,17 @@ public class PlayerController : MonoBehaviour {
         Movement();
     }
 
-    public void SwapDimension(Dimension newDimension)
+    public void SwitchDimension(Dimension newDimension)
     {
+        if(!m_switchingDimensions)
+        {
+            StartCoroutine(SwitchDimensionCoroutine(newDimension));
+        }
+    }
+    private IEnumerator SwitchDimensionCoroutine(Dimension newDimension)
+    {
+        m_switchingDimensions = true;
 
+        yield return null;
     }
 }
