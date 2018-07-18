@@ -36,6 +36,10 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool m_trySwapDimension;
 
+    private Dimension m_currentDimension;
+    private Dimension m_switchingToDimension;
+    private bool m_switchingDimensions;
+
     private void Start()
     {
         PlayerInit();
