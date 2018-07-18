@@ -19,8 +19,3 @@ public class GameManagerSingleton : MonoBehaviour {
         }
     }
 }
-
-public static class Singletons
-{
-    public static GameManagerSingleton gameManager;
-}
