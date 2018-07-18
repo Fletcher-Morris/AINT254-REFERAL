@@ -125,6 +125,9 @@ public class PlayerController : MonoBehaviour {
         GetInput();
         GroundCheck();
         CamMovement();
+
+        Debug.DrawLine((m_camTransform.position + (m_camTransform.right * -0.2f)), m_camTransform.forward * 5f, Color.blue);
+        Debug.DrawLine((m_camTransform.position + (m_camTransform.right * 0.2f)), m_camTransform.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()

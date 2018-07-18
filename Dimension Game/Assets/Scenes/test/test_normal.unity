@@ -624,6 +624,11 @@ Prefab:
       value: 
       objectReference: {fileID: 13400000, guid: e0504cd1cf576ff4b9f7bbc49e4ae09c,
         type: 2}
+    - target: {fileID: 54639363838725974, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
+        type: 2}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
   m_IsPrefabParent: 0
