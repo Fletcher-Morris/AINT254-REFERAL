@@ -7,7 +7,8 @@ public class PlayerController : MonoBehaviour {
 
     //  References to various instances
     private Transform m_transform;
-    private Camera m_cam;
+    private Transform m_cameraAnchor;
+    private List<Camera> m_cameras;
     private Transform m_camTransform;
     private Rigidbody m_body;
     private CapsuleCollider m_col;
@@ -48,8 +49,10 @@ public class PlayerController : MonoBehaviour {
     public void PlayerInit()
     {
         m_transform = GetComponent<Transform>();
-        if (!m_cam) m_cam = GetComponentInChildren<Camera>();
-        m_camTransform = m_cam.transform;
+        //if (!m_cameras) m_cameras = GetComponentInChildren<Camera>();
+        //m_camTransform = m_cameras.transform;
+        m_cameraAnchor = m_transform.Find("CameraAnchor");
+        CreatePlayerCameras();
         m_body = GetComponent<Rigidbody>();
         m_col = GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
@@ -57,6 +60,20 @@ public class PlayerController : MonoBehaviour {
 
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    private void CreatePlayerCameras()
+    {
+        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        for (int i = 0; i < numberOfDimensions; i++)
+        {
+            string camName = (((Dimension)i).ToString() + "_Camera");
+            Camera newCam = new GameObject(camName).AddComponent<Camera>();
+            newCam.transform.SetParent(m_cameraAnchor);
+            newCam.transform.localPosition = Vector3.zero;
+            newCam.transform.localEulerAngles = Vector3.zero;
+
+            LayerMask newMask = newCam.cullingMask;
+        }
     }
 
     private void GetInput()
@@ -155,6 +172,9 @@ public class PlayerController : MonoBehaviour {
     {
         m_switchingDimensions = true;
 
+        
+
+        m_switchingDimensions = false;
         yield return null;
     }
 }
