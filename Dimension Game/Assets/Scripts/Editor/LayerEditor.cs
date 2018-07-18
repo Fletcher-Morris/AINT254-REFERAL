@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class DimensionLayerHelper : EditorWindow {
+public class LayerEditor : EditorWindow {
 
 	[MenuItem("Dimensions/Dimension Layer Helper")]
     public static void ShowWindow()
     {
-        GetWindow<DimensionLayerHelper>("Layer Helper");
+        GetWindow<LayerEditor>("Layer Helper");
     }
 
     //  Settings
