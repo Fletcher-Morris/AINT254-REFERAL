@@ -65,18 +65,33 @@ public class PlayerController : MonoBehaviour {
     }
     private void CreatePlayerCameras()
     {
+        m_cameras = new List<Camera>();
         int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        Debug.Log("Length is " + numberOfDimensions);
         for (int i = 0; i < numberOfDimensions; i++)
         {
-            string camName = (((Dimension)i).ToString() + "_Camera");
+            string camName = ("Camera_" + ((Dimension)i).ToString());
             Camera newCam = new GameObject(camName).AddComponent<Camera>();
             newCam.transform.SetParent(m_cameraAnchor);
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
 
-            newCam.cullingMask = Singletons.layerController.dimensionDefs[i].visibleLayers;
+            LayerMask newMask = newCam.cullingMask;
+            if(((Dimension)i) == Dimension.Normal)
+            {
+                LayerMaskTools.RemoveFromMask(ref newMask, "Default");
+                LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
+            }
+            else
+            {
+                LayerMaskTools.RemoveFromMask(ref newMask, ("Default_" + ((Dimension)i).ToString()));
+                LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)i).ToString()));
+            }
+            newCam.cullingMask = newMask;
 
             m_cameras.Add(newCam);
+
+            Debug.Log("Added camera " + i);
         }
     }
 

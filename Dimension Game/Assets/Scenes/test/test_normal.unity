@@ -120,11 +120,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4281761386957184, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -156,40 +151,6 @@ Prefab:
     - target: {fileID: 4281761386957184, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
       propertyPath: m_RootOrder
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1019474054561326, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[0].name
-      value: Normal
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[0].visibleLayers.m_Bits
-      value: 4294942719
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[0].lightingLayers.m_Bits
-      value: 4294942719
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[1].name
-      value: Other
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[1].visibleLayers.m_Bits
-      value: 4294950910
-      objectReference: {fileID: 0}
-    - target: {fileID: 114282782172127082, guid: 3687f21faff43e348960d073ce03e8fc,
-        type: 2}
-      propertyPath: dimensionDefs.Array.data[1].lightingLayers.m_Bits
-      value: 4294958591
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
@@ -297,6 +258,14 @@ Prefab:
     - target: {fileID: 4781457321918526, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4087163944709996, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4693989860343454, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
