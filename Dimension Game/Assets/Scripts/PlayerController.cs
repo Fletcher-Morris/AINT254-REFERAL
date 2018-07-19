@@ -28,6 +28,8 @@ public class PlayerController : MonoBehaviour {
     private LayerMask m_groundMask;
     [SerializeField]
     private float m_lookSensitivity = 50f;
+    [SerializeField]
+    private bool m_flyMode = false;
 
     //  Input variables
     private Vector2 inputRaw, inputNorm;
@@ -130,6 +132,8 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+        if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
+        if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
     }
 
     private void GroundCheck()
@@ -149,31 +153,60 @@ public class PlayerController : MonoBehaviour {
         m_canJump = false;
     }
 
-    private void Movement()
+    private void ToggleFlyMode()
     {
-        if(m_isGrounded)
+        m_flyMode = !m_flyMode;
+
+        if(m_flyMode)
         {
-            //  MOVEMENT
-            Vector3 targetVelocity = new Vector3(inputRaw.x, 0, inputRaw.y);
-            targetVelocity = transform.TransformDirection(targetVelocity);
-            targetVelocity *= m_runSpeed;
-
-            Vector3 velocity = m_body.velocity;
-            Vector3 velocityChange = (targetVelocity - velocity);
-            velocityChange.x = Mathf.Clamp(velocityChange.x, -10f, 10f);
-            velocityChange.z = Mathf.Clamp(velocityChange.z, -10f, 10f);
-            velocityChange.y = 0;
-            m_body.AddForce(velocityChange, ForceMode.VelocityChange);
-
-            if(Input.GetKey(KeyCode.Space) && m_canJump)
-            {
-                //  JUMP
-                m_body.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
-            }
+            m_body.useGravity = false;
+            m_body.drag = 10.0f;
         }
         else
         {
-            //  AIR CONTROL
+            m_body.useGravity = true;
+            m_body.drag = 1.0f;
+        }
+    }
+
+    private void Movement()
+    {
+        if(m_flyMode)
+        {
+            float upDown = 0.0f;
+            if (Input.GetKey(KeyCode.Space)) upDown = 1.0f;
+            if (Input.GetKey(KeyCode.LeftShift)) upDown = -1.0f;
+
+            m_body.AddForce(m_transform.forward * inputRaw.y * m_runSpeed * 25);
+            m_body.AddForce(m_transform.up * upDown * m_runSpeed * 25);
+            m_body.AddForce(m_transform.right * inputRaw.x * m_runSpeed * 25);
+        }
+        else
+        {
+            if (m_isGrounded)
+            {
+                //  MOVEMENT
+                Vector3 targetVelocity = new Vector3(inputRaw.x, 0, inputRaw.y);
+                targetVelocity = transform.TransformDirection(targetVelocity);
+                targetVelocity *= m_runSpeed;
+
+                Vector3 velocity = m_body.velocity;
+                Vector3 velocityChange = (targetVelocity - velocity);
+                velocityChange.x = Mathf.Clamp(velocityChange.x, -10f, 10f);
+                velocityChange.z = Mathf.Clamp(velocityChange.z, -10f, 10f);
+                velocityChange.y = 0;
+                m_body.AddForce(velocityChange, ForceMode.VelocityChange);
+
+                if (Input.GetKey(KeyCode.Space) && m_canJump)
+                {
+                    //  JUMP
+                    m_body.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
+                }
+            }
+            else
+            {
+                //  AIR CONTROL
+            }
         }
     }
 
