@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool m_trySwapDimension;
 
+    [SerializeField]
     private Dimension m_currentDimension;
     private Dimension m_switchingToDimension;
     private bool m_switchingDimensions;
@@ -61,13 +62,13 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
 
+        SwitchDimension(Dimension.Normal);
         isInitialized = true;
     }
     private void CreatePlayerCameras()
     {
         m_cameras = new List<Camera>();
         int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
-        Debug.Log("Length is " + numberOfDimensions);
         for (int i = 0; i < numberOfDimensions; i++)
         {
             string camName = ("Camera_" + ((Dimension)i).ToString());
@@ -79,19 +80,31 @@ public class PlayerController : MonoBehaviour {
             LayerMask newMask = newCam.cullingMask;
             if(((Dimension)i) == Dimension.Normal)
             {
-                LayerMaskTools.RemoveFromMask(ref newMask, "Default");
-                LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
+                for (int j = 0; j < numberOfDimensions; j++)
+                {
+                    if(i != j)
+                    {
+                        LayerMaskTools.RemoveFromMask(ref newMask, ("Default_" + ((Dimension)j).ToString()));
+                        LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)j).ToString()));
+                    }
+                }
             }
             else
             {
-                LayerMaskTools.RemoveFromMask(ref newMask, ("Default_" + ((Dimension)i).ToString()));
-                LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)i).ToString()));
+                LayerMaskTools.RemoveFromMask(ref newMask, "Default");
+                LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
+                for (int j = 0; j < numberOfDimensions; j++)
+                {
+                    if (((Dimension)j) != Dimension.Normal && i != j)
+                    {
+                        LayerMaskTools.RemoveFromMask(ref newMask, ("Default_" + ((Dimension)j).ToString()));
+                        LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)j).ToString()));
+                    }
+                }
             }
             newCam.cullingMask = newMask;
-
             m_cameras.Add(newCam);
-
-            Debug.Log("Added camera " + i);
+            Debug.Log("Added camera '" + camName + "'.");
         }
     }
 
@@ -103,7 +116,17 @@ public class PlayerController : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            m_sceneLoader.LoadMultiScene("test");
+            switch (m_currentDimension)
+            {
+                case Dimension.Normal:
+                    SwitchDimension(Dimension.Other);
+                    break;
+                case Dimension.Other:
+                    SwitchDimension(Dimension.Normal);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -194,10 +217,15 @@ public class PlayerController : MonoBehaviour {
     private IEnumerator SwitchDimensionCoroutine(Dimension newDimension)
     {
         m_switchingDimensions = true;
+        m_switchingToDimension = newDimension;
 
-        
+        for (int i = 0; i < Singletons.layerController.dimensionDefs.Length; i++)
+        {
+            m_cameras[i].enabled = (i == (int)newDimension);
+        }
 
         m_switchingDimensions = false;
+        m_currentDimension = newDimension;
         yield return null;
     }
 }

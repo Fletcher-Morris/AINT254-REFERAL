@@ -6,7 +6,17 @@ public class DimensionLayerController : MonoBehaviour {
     
     public DimensionDef[] dimensionDefs;
 
+    private void Awake()
+    {
+        CheckSingleton();
+    }
+
     private void Start()
+    {
+        CheckSingleton();
+    }
+
+    public void CheckSingleton()
     {
         if (Singletons.layerController == null)
         {

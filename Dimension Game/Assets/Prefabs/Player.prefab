@@ -208,6 +208,9 @@ MonoBehaviour:
   m_lookSensitivity: 50
   m_isGrounded: 0
   m_trySwapDimension: 0
+  m_currentDimension: 0
+  m_switchingToDimension: 0
+  m_switchingDimensions: 0
 --- !u!136 &136432746976662744
 CapsuleCollider:
   m_ObjectHideFlags: 1

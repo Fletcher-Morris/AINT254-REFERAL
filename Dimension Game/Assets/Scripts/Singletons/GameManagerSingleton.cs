@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class GameManagerSingleton : MonoBehaviour {
 
+    private void Awake()
+    {
+        CheckSingleton();
+    }
+
     private void Start()
     {
-        if(Singletons.gameManager == null)
+        CheckSingleton();
+    }
+
+    public void CheckSingleton()
+    {
+        if (Singletons.gameManager == null)
         {
             Singletons.gameManager = this;
         }
         else
         {
-            if(Singletons.gameManager != this)
+            if (Singletons.gameManager != this)
             {
                 Destroy(gameObject);
             }
