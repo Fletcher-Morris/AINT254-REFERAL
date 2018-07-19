@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 23525732730140958}
   - component: {fileID: 136432746976662744}
   m_Layer: 9
-  m_Name: Capsule
+  m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -209,8 +209,6 @@ MonoBehaviour:
   m_isGrounded: 0
   m_trySwapDimension: 0
   m_currentDimension: 0
-  m_switchingToDimension: 0
-  m_switchingDimensions: 0
 --- !u!136 &136432746976662744
 CapsuleCollider:
   m_ObjectHideFlags: 1

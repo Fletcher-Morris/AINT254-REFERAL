@@ -49,13 +49,14 @@ public class PlayerController : MonoBehaviour {
         PlayerInit();
     }
 
+    //  Set up the player
     public void PlayerInit()
     {
         m_transform = GetComponent<Transform>();
         m_cameraAnchor = m_transform.Find("CameraAnchor");
         CreatePlayerCameras();
         m_body = GetComponent<Rigidbody>();
-        m_col = GetComponent<CapsuleCollider>();
+        m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
 
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour {
         SwitchDimension(Dimension.Normal);
         isInitialized = true;
     }
+    //  Generate the cameras needed for each dimension
     private void CreatePlayerCameras()
     {
         m_cameras = new List<Camera>();
@@ -207,6 +209,7 @@ public class PlayerController : MonoBehaviour {
         Movement();
     }
 
+    //  Switch to a different dimension
     public void SwitchDimension(Dimension newDimension)
     {
         if(!m_switchingDimensions)
@@ -219,9 +222,24 @@ public class PlayerController : MonoBehaviour {
         m_switchingDimensions = true;
         m_switchingToDimension = newDimension;
 
+        //  Switch cameras
         for (int i = 0; i < Singletons.layerController.dimensionDefs.Length; i++)
         {
             m_cameras[i].enabled = (i == (int)newDimension);
+        }
+
+        //  Switch the collider layer
+        if(newDimension == Dimension.Normal)
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_currentDimension.ToString()));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+        }
+        else
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
         }
 
         m_switchingDimensions = false;
