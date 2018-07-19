@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour {
     private CapsuleCollider m_col;
     private Transform m_groundCheck;
     private DimensionSceneLoader m_sceneLoader;
+    private Text m_dimensionText;
 
     //  Movement settings
     [SerializeField]
@@ -61,6 +63,7 @@ public class PlayerController : MonoBehaviour {
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
+        m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
 
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -277,6 +280,8 @@ public class PlayerController : MonoBehaviour {
 
         m_switchingDimensions = false;
         m_currentDimension = newDimension;
+        m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
+
         yield return null;
     }
 }
