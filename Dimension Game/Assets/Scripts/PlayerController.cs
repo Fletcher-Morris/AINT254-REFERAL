@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 
         m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
         Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
-        SwitchDimension(Dimension.Normal);
+        SwitchDimension(Dimension.Normal, Dimension.Other);
         isInitialized = true;
     }
     //  Generate the cameras needed for each dimension
@@ -255,10 +255,17 @@ public class PlayerController : MonoBehaviour {
     {
         if(!m_switchingDimensions)
         {
-            StartCoroutine(SwitchDimensionCoroutine(newDimension));
+            StartCoroutine(SwitchDimensionCoroutine(newDimension, m_currentDimension));
         }
     }
-    private IEnumerator SwitchDimensionCoroutine(Dimension newDimension)
+    public void SwitchDimension(Dimension newDimension, Dimension fromDimesion)
+    {
+        if (!m_switchingDimensions)
+        {
+            StartCoroutine(SwitchDimensionCoroutine(newDimension, fromDimesion));
+        }
+    }
+    private IEnumerator SwitchDimensionCoroutine(Dimension newDimension, Dimension fromDimesion)
     {
         m_switchingDimensions = true;
         m_switchingToDimension = newDimension;
@@ -271,7 +278,7 @@ public class PlayerController : MonoBehaviour {
             {
                 m_cameras[i].targetTexture = null;
             }
-            else if(i == (int)m_currentDimension)
+            else if(i == (int)fromDimesion)
             {
                 m_cameras[i].targetTexture = m_dimensionPreviewTex;
             }
@@ -285,7 +292,7 @@ public class PlayerController : MonoBehaviour {
             m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
             m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
 
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_currentDimension.ToString()));
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimesion.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
         }
         else
