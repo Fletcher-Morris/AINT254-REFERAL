@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour {
     private Transform m_groundCheck;
     private DimensionSceneLoader m_sceneLoader;
     private Text m_dimensionText;
+    private Transform m_lookingGlass;
 
     //  Movement settings
     [SerializeField]
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour {
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
+        m_lookingGlass = m_cameraAnchor.Find("LookingGlass");
 
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
@@ -279,12 +281,20 @@ public class PlayerController : MonoBehaviour {
         if(newDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_currentDimension.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
         }
         else
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
+            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
         }
