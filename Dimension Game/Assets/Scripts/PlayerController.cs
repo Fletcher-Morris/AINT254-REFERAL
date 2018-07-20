@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour {
     private Dimension m_switchingToDimension;
     private bool m_switchingDimensions;
     private RenderTexture m_dimensionPreviewTex;
+    private Vector2 m_prevWindowSize;
     [SerializeField]
     private Vector3 m_lookingGlassInUse;
     [SerializeField]
@@ -79,8 +80,7 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
 
-        m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
-        Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
+        CreateNewDimensionPrevewTex();
         SwitchDimension(Dimension.Normal, Dimension.Other);
         isInitialized = true;
     }
@@ -127,6 +127,12 @@ public class PlayerController : MonoBehaviour {
             Debug.Log("Added camera '" + camName + "'.");
         }
     }
+    public void CreateNewDimensionPrevewTex()
+    {
+        m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
+        Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
+        m_prevWindowSize = new Vector2(Screen.width, Screen.height);
+    }
 
     private void GetInput()
     {
@@ -151,6 +157,8 @@ public class PlayerController : MonoBehaviour {
         m_lookThroughGlass = Input.GetMouseButton(0);
         if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
+
+        if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
     }
 
     private void GroundCheck()
