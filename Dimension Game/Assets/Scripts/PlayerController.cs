@@ -49,6 +49,14 @@ public class PlayerController : MonoBehaviour {
     private Dimension m_switchingToDimension;
     private bool m_switchingDimensions;
     private RenderTexture m_dimensionPreviewTex;
+    [SerializeField]
+    private Vector3 m_lookingGlassInUse;
+    [SerializeField]
+    private Vector3 m_lookingGlassPutAway;
+    [SerializeField]
+    private float m_lookingGlassMoveSpeed = 1.0f;
+    [SerializeField]
+    private bool m_lookThroughGlass;
 
     private void Start()
     {
@@ -140,6 +148,7 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+        m_lookThroughGlass = Input.GetMouseButton(0);
         if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
     }
@@ -215,6 +224,15 @@ public class PlayerController : MonoBehaviour {
             {
                 //  AIR CONTROL
             }
+        }
+
+        if(m_lookThroughGlass)
+        {
+            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
         }
     }
 
