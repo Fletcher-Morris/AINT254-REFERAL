@@ -264,7 +264,15 @@ public class PlayerController : MonoBehaviour {
         //  Switch cameras
         for (int i = 0; i < Singletons.layerController.dimensionDefs.Length; i++)
         {
-            m_cameras[i].enabled = (i == (int)newDimension);
+            //m_cameras[i].enabled = (i == (int)newDimension);
+            if (i == (int)newDimension)
+            {
+                m_cameras[i].targetTexture = null;
+            }
+            else if(i == (int)m_currentDimension)
+            {
+                m_cameras[i].targetTexture = m_dimensionPreviewTex;
+            }
         }
 
         //  Switch the collider layer
