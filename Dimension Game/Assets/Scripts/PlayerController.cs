@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour {
     private Dimension m_currentDimension;
     private Dimension m_switchingToDimension;
     private bool m_switchingDimensions;
+    private RenderTexture m_dimensionPreviewTex;
 
     private void Start()
     {
@@ -68,6 +69,8 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
 
+        m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
+        Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
         SwitchDimension(Dimension.Normal);
         isInitialized = true;
     }
