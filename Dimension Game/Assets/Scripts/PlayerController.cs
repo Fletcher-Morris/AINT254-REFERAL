@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour {
     //  References to various instances
     private Transform m_transform;
     private Transform m_cameraAnchor;
-    private List<Camera> m_cameras;
+    private Camera[] m_cameras;
     private Transform m_camTransform;
     private Rigidbody m_body;
     private CapsuleCollider m_col;
@@ -87,8 +87,18 @@ public class PlayerController : MonoBehaviour {
     //  Generate the cameras needed for each dimension
     private void CreatePlayerCameras()
     {
-        m_cameras = new List<Camera>();
         int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        m_cameras = new Camera[numberOfDimensions + 1];
+
+        Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
+        selfCam.cullingMask = 0 << 0;
+        selfCam.depth = 1;
+        selfCam.clearFlags = CameraClearFlags.Depth;
+        selfCam.transform.SetParent(m_cameraAnchor);
+        selfCam.transform.localPosition = Vector3.zero;
+        selfCam.transform.localEulerAngles = Vector3.zero;
+        LayerMask selfMask = selfCam.cullingMask;
+
         for (int i = 0; i < numberOfDimensions; i++)
         {
             string camName = ("Camera_" + ((Dimension)i).ToString());
@@ -108,6 +118,8 @@ public class PlayerController : MonoBehaviour {
                         LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)j).ToString()));
                     }
                 }
+
+                LayerMaskTools.AddToMask(ref selfMask, "PlayerSelf");
             }
             else
             {
@@ -121,11 +133,16 @@ public class PlayerController : MonoBehaviour {
                         LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)j).ToString()));
                     }
                 }
+
+                LayerMaskTools.AddToMask(ref selfMask, ("PlayerSelf_" + ((Dimension)i).ToString()));
             }
             newCam.cullingMask = newMask;
-            m_cameras.Add(newCam);
+            m_cameras[i] = newCam;
             Debug.Log("Added camera '" + camName + "'.");
         }
+
+        selfCam.cullingMask = selfMask;
+        m_cameras[numberOfDimensions] = selfCam;
     }
     public void CreateNewDimensionPrevewTex()
     {
