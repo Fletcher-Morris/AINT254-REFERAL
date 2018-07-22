@@ -6,54 +6,54 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
+    //  Has the player been fully set up?
     private bool isInitialized = false;
 
     //  References to various instances
-    private Transform m_transform;
-    private Transform m_cameraAnchor;
-    private Camera[] m_cameras;
-    private Transform m_camTransform;
-    private Rigidbody m_body;
-    private CapsuleCollider m_col;
-    private Transform m_groundCheck;
-    private DimensionSceneLoader m_sceneLoader;
-    private Text m_dimensionText;
-    private Transform m_lookingGlass;
+    private Transform m_transform;                  //  A reference to the player's Transform
+    private Transform m_cameraAnchor;               //  A reference to the camera anchor
+    private Camera[] m_cameras;                     //  A reference to each of the player's cameras
+    private Rigidbody m_body;                       //  A reference to the player's Rigidbody
+    private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
+    private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
+    private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
+    private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
+    private Transform m_lookingGlass;               //  A reference to the Looking-Glass' Transform
 
     //  Movement settings
     [SerializeField]
-    private float m_runSpeed = 5f;
+    private float m_runSpeed = 5f;          //  The player's maximum movement speed
     [SerializeField]
-    private float m_jumpForce = 2f;
+    private float m_jumpForce = 2f;         //  The upwards force applied to jump
     [SerializeField]
-    private float m_groundDist = 0.5f;
+    private float m_groundDist = 0.5f;      // The radius of the sphere-check ground-detection
     [SerializeField]
-    private LayerMask m_groundMask;
+    private LayerMask m_groundMask;         //  The layers detected as ground
     [SerializeField]
-    private float m_lookSensitivity = 50f;
+    private float m_lookSensitivity = 50f;  //  The mouse ensitivity used for looking around
     [SerializeField]
-    private bool m_flyMode = false;
+    private bool m_flyMode = false;         //  Is the player superman?
 
     //  Input variables
-    private Vector2 inputRaw, inputNorm;
+    private Vector2 inputRaw, inputNorm;    //  Raw and normalised movement input
     [SerializeField]
-    private bool m_isGrounded;
-    private bool m_prevGrounded;
-    private bool m_jumping;
-    private bool m_canJump;
+    private bool m_isGrounded;              //  Is the player currently grounded?
+    private bool m_prevGrounded;            //  Was the player grounded during the previous frame?
+    private bool m_jumping;                 //  Is the player currently jumping?
+    private bool m_canJump;                 //  Should the player be able to jump?
     [SerializeField]
-    private bool m_trySwapDimension;
+    private bool m_trySwapDimension;        //  Is the player trying to switch dimension?
 
     [SerializeField]
-    private Dimension m_currentDimension;
-    private Dimension m_switchingToDimension;
-    private bool m_switchingDimensions;
-    private RenderTexture m_dimensionPreviewTex;
-    private Vector2 m_prevWindowSize;
+    private Dimension m_currentDimension;           //  The dimension in which the player currently exists
+    private Dimension m_switchingToDimension;       //  The dimension the player is currently switching to
+    private bool m_switchingDimensions;             //  Is the player currently switching dimensions?
+    private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
+    private Vector2 m_prevWindowSize;               //  The window size during the previous frame
     [SerializeField]
-    private Vector3 m_lookingGlassInUse;
+    private Vector3 m_lookingGlassInUse;            //  The local position of the Looking-Glass when in use
     [SerializeField]
-    private Vector3 m_lookingGlassPutAway;
+    private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
     [SerializeField]
     private float m_lookingGlassMoveSpeed = 1.0f;
     [SerializeField]
@@ -144,13 +144,18 @@ public class PlayerController : MonoBehaviour {
         selfCam.cullingMask = selfMask;
         m_cameras[numberOfDimensions] = selfCam;
     }
+    //  Create the RenderTexture needed for dimension preview
     public void CreateNewDimensionPrevewTex()
     {
+        //  Set the texture to a new instance
         m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
+        //  Set the global shader variable
         Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
+        //  Set the previous window sise value
         m_prevWindowSize = new Vector2(Screen.width, Screen.height);
     }
 
+    //  Get input from the mouse & keyboard
     private void GetInput()
     {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
