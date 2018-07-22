@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+    //  A singleton class used for managing dimensions
 public class DimensionLayerController : MonoBehaviour {
     
     public DimensionDef[] dimensionDefs;
@@ -32,6 +33,7 @@ public class DimensionLayerController : MonoBehaviour {
     }
 }
 
+    //  An enum class for each dimension
 public enum Dimension
 {
     Normal = 0,

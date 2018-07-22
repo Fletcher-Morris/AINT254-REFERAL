@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+    //  A sington class used for storing various misc game variables
 public class GameManagerSingleton : MonoBehaviour {
 
     private void Awake()
