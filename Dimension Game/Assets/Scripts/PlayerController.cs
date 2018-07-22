@@ -370,7 +370,7 @@ public class PlayerController : MonoBehaviour {
         m_switchingToDimension = newDimension;
 
         //  Switch cameras
-        for (int i = 0; i < Singletons.layerController.dimensionDefs.Length; i++)
+        for (int i = 0; i < Dimension.GetNames(typeof(Dimension)).Length; i++)
         {
             if (i == (int)newDimension)
             {

@@ -6,5 +6,4 @@ using UnityEngine;
 public static class Singletons
 {
     public static GameManagerSingleton gameManager;
-    public static DimensionLayerController layerController;
 }
