@@ -22,27 +22,27 @@ public class PlayerController : MonoBehaviour {
 
     //  Movement settings
     [SerializeField]
-    private float m_runSpeed = 5f;          //  The player's maximum movement speed
+    private float m_runSpeed = 5f;                  //  The player's maximum movement speed
     [SerializeField]
-    private float m_jumpForce = 2f;         //  The upwards force applied to jump
+    private float m_jumpForce = 2f;                 //  The upwards force applied to jump
     [SerializeField]
-    private float m_groundDist = 0.5f;      // The radius of the sphere-check ground-detection
+    private float m_groundDist = 0.5f;              // The radius of the sphere-check ground-detection
     [SerializeField]
-    private LayerMask m_groundMask;         //  The layers detected as ground
+    private LayerMask m_groundMask;                 //  The layers detected as ground
     [SerializeField]
-    private float m_lookSensitivity = 50f;  //  The mouse ensitivity used for looking around
+    private float m_lookSensitivity = 50f;          //  The mouse ensitivity used for looking around
     [SerializeField]
-    private bool m_flyMode = false;         //  Is the player superman?
+    private bool m_flyMode = false;                 //  Is the player superman?
 
     //  Input variables
-    private Vector2 inputRaw, inputNorm;    //  Raw and normalised movement input
+    private Vector2 inputRaw, inputNorm;            //  Raw and normalised movement input
     [SerializeField]
-    private bool m_isGrounded;              //  Is the player currently grounded?
-    private bool m_prevGrounded;            //  Was the player grounded during the previous frame?
-    private bool m_jumping;                 //  Is the player currently jumping?
-    private bool m_canJump;                 //  Should the player be able to jump?
+    private bool m_isGrounded;                      //  Is the player currently grounded?
+    private bool m_prevGrounded;                    //  Was the player grounded during the previous frame?
+    private bool m_jumping;                         //  Is the player currently jumping?
+    private bool m_canJump;                         //  Should the player be able to jump?
     [SerializeField]
-    private bool m_trySwapDimension;        //  Is the player trying to switch dimension?
+    private bool m_trySwapDimension;                //  Is the player trying to switch dimension?
 
     [SerializeField]
     private Dimension m_currentDimension;           //  The dimension in which the player currently exists
@@ -55,21 +55,22 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
     [SerializeField]
-    private float m_lookingGlassMoveSpeed = 1.0f;
+    private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
     [SerializeField]
-    private bool m_lookThroughGlass;
+    private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
     private void Start()
     {
-        PlayerInit();
+        PlayerInit();   //  Initialise the player
     }
 
-    //  Set up the player
+    //  Initialise up the player
     public void PlayerInit()
     {
+        //  Find and assign various references
         m_transform = GetComponent<Transform>();
         m_cameraAnchor = m_transform.Find("CameraAnchor");
-        CreatePlayerCameras();
+        CreatePlayerCameras();                      //  Create thee cameras needed for each dimension
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
@@ -77,19 +78,28 @@ public class PlayerController : MonoBehaviour {
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
         m_lookingGlass = m_cameraAnchor.Find("LookingGlass");
 
+        //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
+        //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-
+        //  Create the RenderTExture used for dimension previews
         CreateNewDimensionPrevewTex();
+        //  Switch to the normal dimension
         SwitchDimension(Dimension.Normal, Dimension.Other);
+
+        //  Declare that the player is all set up
         isInitialized = true;
     }
+
     //  Generate the cameras needed for each dimension
     private void CreatePlayerCameras()
     {
+        //  Get the number of dimension cameras needed
         int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        //  Create a new array the size of the number of dimenions, plus the self-camera
         m_cameras = new Camera[numberOfDimensions + 1];
 
+        //  Create and set up the self-camera
         Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
         selfCam.cullingMask = 0 << 0;
         selfCam.depth = 1;
@@ -99,14 +109,17 @@ public class PlayerController : MonoBehaviour {
         selfCam.transform.localEulerAngles = Vector3.zero;
         LayerMask selfMask = selfCam.cullingMask;
 
+        //  Loop through each dimension
         for (int i = 0; i < numberOfDimensions; i++)
         {
+            //  Create a new camera for the dimension
             string camName = ("Camera_" + ((Dimension)i).ToString());
             Camera newCam = new GameObject(camName).AddComponent<Camera>();
             newCam.transform.SetParent(m_cameraAnchor);
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
 
+            //  Add and remove the appropriate layers from the camera's culling mask
             LayerMask newMask = newCam.cullingMask;
             if(((Dimension)i) == Dimension.Normal)
             {
@@ -137,13 +150,18 @@ public class PlayerController : MonoBehaviour {
                 LayerMaskTools.AddToMask(ref selfMask, ("PlayerSelf_" + ((Dimension)i).ToString()));
             }
             newCam.cullingMask = newMask;
+
+            //  Add the new camera to the array
             m_cameras[i] = newCam;
             Debug.Log("Added camera '" + camName + "'.");
         }
 
+        //  Set the self-camera's culling mask
         selfCam.cullingMask = selfMask;
+        //  Add the self-camera to the array
         m_cameras[numberOfDimensions] = selfCam;
     }
+
     //  Create the RenderTexture needed for dimension preview
     public void CreateNewDimensionPrevewTex()
     {
@@ -158,8 +176,11 @@ public class PlayerController : MonoBehaviour {
     //  Get input from the mouse & keyboard
     private void GetInput()
     {
+        //  Create a Vector2 from the appropriate Input axis
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        //  Normalise the Vector2
         inputNorm = inputRaw.normalized;
+
         m_trySwapDimension = Input.GetKey(KeyCode.E);
 
         if(Input.GetKeyDown(KeyCode.E))
@@ -176,25 +197,36 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+
         m_lookThroughGlass = Input.GetMouseButton(0);
+
         if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
+
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
     }
 
+    //  Check if the player is grounded
     private void GroundCheck()
     {
+        //  Use a CheckSphere to set the grounded state
         m_isGrounded = Physics.CheckSphere(m_groundCheck.position, m_groundDist, m_groundMask, QueryTriggerInteraction.Ignore);
+
+        //  If the new grounded state is different from the previous, call the appropriate method
         if (m_isGrounded && !m_prevGrounded) OnGrounded();
         else if (!m_isGrounded && m_prevGrounded) OnUngrounded();
+
+        //  Set the previous grounded state
         m_prevGrounded = m_isGrounded;
     }
 
+    //  What to do when the player becomes grounded
     private void OnGrounded()
     {
         m_canJump = true;
     }
+    //  What to do when the player becomes un-grounded
     private void OnUngrounded()
     {
         m_canJump = false;
