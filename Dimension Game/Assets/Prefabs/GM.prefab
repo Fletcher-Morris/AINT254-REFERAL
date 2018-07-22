@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4281761386957184}
-  - component: {fileID: 114282782172127082}
   - component: {fileID: 114072819670624088}
   - component: {fileID: 114276347683094122}
   m_Layer: 0
@@ -65,29 +64,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc15bcf0159dac449b44b4555b7de76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114282782172127082
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1019474054561326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53071902f67d2644ab7fa796e09f0daa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dimensionDefs:
-  - name: Normal
-    visibleLayers:
-      serializedVersion: 2
-      m_Bits: 4294942719
-    lightingLayers:
-      serializedVersion: 2
-      m_Bits: 4294942719
-  - name: Other
-    visibleLayers:
-      serializedVersion: 2
-      m_Bits: 4294966782
-    lightingLayers:
-      serializedVersion: 2
-      m_Bits: 4294966782

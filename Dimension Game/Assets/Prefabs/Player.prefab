@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 20212136713001826}
   - component: {fileID: 124104449839457726}
   - component: {fileID: 81531346148225138}
+  - component: {fileID: 114451845808731922}
   m_Layer: 9
   m_Name: TestCam
   m_TagString: Untagged
@@ -305,7 +306,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 06958ac7025c5a244a9b8063117655d0, type: 3}
+  - {fileID: 2100000, guid: d52d9cbd54867e64b97b4372717eabdb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -375,7 +376,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 06958ac7025c5a244a9b8063117655d0, type: 3}
+  - {fileID: 2100000, guid: 3248c2bfa47450c42a6a0d905b034ba8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -464,6 +465,20 @@ MonoBehaviour:
   m_lookingGlassPutAway: {x: 0.331, y: -0.788, z: 0.609}
   m_lookingGlassMoveSpeed: 10
   m_lookThroughGlass: 0
+--- !u!114 &114451845808731922
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1986737686109282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5e04d85528cf574aaaa26f2216e7f39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectShader: {fileID: 4800000, guid: a5cb713a29009f146ae48611c24a0b56, type: 3}
+  intensity: 0.5
+  speed: 0.54
 --- !u!124 &124104449839457726
 Behaviour:
   m_ObjectHideFlags: 1
