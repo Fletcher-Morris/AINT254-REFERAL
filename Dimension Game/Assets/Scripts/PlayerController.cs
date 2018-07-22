@@ -232,6 +232,7 @@ public class PlayerController : MonoBehaviour {
         m_canJump = false;
     }
 
+    //  Allow the player to fly (for debuging)
     private void ToggleFlyMode()
     {
         m_flyMode = !m_flyMode;
@@ -248,10 +249,13 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    //  Control the player's movement
     private void Movement()
     {
         if(m_flyMode)
         {
+            //  The movement to use if flying
+
             float upDown = 0.0f;
             if (Input.GetKey(KeyCode.Space)) upDown = 1.0f;
             if (Input.GetKey(KeyCode.LeftShift)) upDown = -1.0f;
@@ -262,6 +266,8 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
+            //  The movement to use if not flying
+
             if (m_isGrounded)
             {
                 //  MOVEMENT
@@ -288,6 +294,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
+        //  Move the Looking-Glass to the required position
         if(m_lookThroughGlass)
         {
             m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
@@ -298,6 +305,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    //  Control the player's camera
     private void CamMovement()
     {
         Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
@@ -313,20 +321,27 @@ public class PlayerController : MonoBehaviour {
 
     private void Update()
     {
+        //  If the player is not yet initialised, return early
         if (!isInitialized) return;
 
+        //  Get the mouse & keyboard input
         GetInput();
+        //  Check the grounded state of the player
         GroundCheck();
+        //  Control the player's camera
         CamMovement();
 
+        //  Draw two lines to show where the player is looking (for debugging)
         Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * -0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
         Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * 0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()
     {
+        //  If the player is not yet initialised, return early
         if (!isInitialized) return;
 
+        //  Control the player's movement
         Movement();
     }
 
@@ -335,16 +350,20 @@ public class PlayerController : MonoBehaviour {
     {
         if(!m_switchingDimensions)
         {
+            //  If the player is not currently switching dimensions, start the co-routine
             StartCoroutine(SwitchDimensionCoroutine(newDimension, m_currentDimension));
         }
     }
+    //  Switch to a different dimension, from a specific dimension
     public void SwitchDimension(Dimension newDimension, Dimension fromDimesion)
     {
         if (!m_switchingDimensions)
         {
+            //  If the player is not currently switching dimensions, start the co-routine
             StartCoroutine(SwitchDimensionCoroutine(newDimension, fromDimesion));
         }
     }
+    //  The co-routine that switches the player to a different dimension
     private IEnumerator SwitchDimensionCoroutine(Dimension newDimension, Dimension fromDimesion)
     {
         m_switchingDimensions = true;
@@ -353,7 +372,6 @@ public class PlayerController : MonoBehaviour {
         //  Switch cameras
         for (int i = 0; i < Singletons.layerController.dimensionDefs.Length; i++)
         {
-            //m_cameras[i].enabled = (i == (int)newDimension);
             if (i == (int)newDimension)
             {
                 m_cameras[i].targetTexture = null;
@@ -364,7 +382,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
-        //  Switch the collider layer
+        //  Switch the collider's layers
         if(newDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
