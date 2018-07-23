@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Gradient ("Texture", 2D) = "white" {}
 		_Intensity ("Intensity", Range(0.0, 1.0)) = 0.0
 		_1 ("1", 2D) = "white" {}
 		_2 ("2", 2D) = "white" {}
@@ -50,7 +49,6 @@
 			}
 			
 			sampler2D _MainTex;
-			sampler2D _Gradient;
 			float _Intensity;
 			int _Img;
 
