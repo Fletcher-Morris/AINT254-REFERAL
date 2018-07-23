@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour {
     private Dimension m_currentDimension;           //  The dimension in which the player currently exists
     private Dimension m_switchingToDimension;       //  The dimension the player is currently switching to
     private bool m_switchingDimensions;             //  Is the player currently switching dimensions?
+    [SerializeField]
+    private float m_dimensionSwitchSpeed = 1.0f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
     [SerializeField]
@@ -56,7 +58,6 @@ public class PlayerController : MonoBehaviour {
     private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
     [SerializeField]
     private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
-    [SerializeField]
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
     private void Start()
