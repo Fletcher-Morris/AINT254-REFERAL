@@ -27,6 +27,8 @@ public class DimensionTransitionEffect : MonoBehaviour {
             effectShader = Shader.Find("Custom/DimensionTransitionShader");
             m_mat = new Material(effectShader);
         }
+
+        intensity = 0.0f;
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
