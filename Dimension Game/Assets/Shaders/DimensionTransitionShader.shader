@@ -80,7 +80,7 @@
 
 				fixed4 col = tex2D(_MainTex, i.uv);
 				// just invert the colors
-				col.rgb = effect.rgb + col.rgb;
+				col.rgb = col.rgb + (effect.rgb * _Intensity);
 				return col;
 			}
 			ENDCG
