@@ -465,40 +465,32 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.014089524
-      outSlope: 0.014089524
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.31645656
-    - serializedVersion: 3
-      time: 0.500791
-      value: 1.0000556
-      inSlope: 0.027362386
-      outSlope: 0.027362386
+      time: 0.4996153
+      value: 1.000025
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: -0.0046958923
-      inSlope: -0.024701335
-      outSlope: -0.024701335
+      value: 0.0014533997
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.18730111
+      inWeight: 0.33333334
       outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
+    m_PreInfinity: 0
+    m_PostInfinity: 0
     m_RotationOrder: 4
   m_startFov: 60
   m_endFov: 80
   m_lookingGlassInUse: {x: 0, y: 0, z: 1}
   m_lookingGlassPutAway: {x: 0.331, y: -0.788, z: 0.609}
   m_lookingGlassMoveSpeed: 10
+  speedEffectMaterial: {fileID: 2100000, guid: 5370d0610a2eaef4b964141f1332cd90, type: 2}
 --- !u!124 &124104449839457726
 Behaviour:
   m_ObjectHideFlags: 1

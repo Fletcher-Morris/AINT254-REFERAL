@@ -9,7 +9,7 @@ public class DimensionTransitionEffect : MonoBehaviour {
     [Range(0, 1)]
     public float intensity = 0.5f;
     public float speed = 30.0f;
-    private Material m_mat = null;
+    public Material material;
 
     [SerializeField]
     private float t;
@@ -18,34 +18,34 @@ public class DimensionTransitionEffect : MonoBehaviour {
 
     private void Start()
     {
-        if (effectShader)
-        {
-            m_mat = new Material(effectShader);
-        }
-        else
-        {
-            effectShader = Shader.Find("Custom/DimensionTransitionShader");
-            m_mat = new Material(effectShader);
-        }
+        //if (effectShader)
+        //{
+        //    material = new Material(effectShader);
+        //}
+        //else
+        //{
+        //    effectShader = Shader.Find("Custom/DimensionTransitionShader");
+        //    material = new Material(effectShader);
+        //}
 
         intensity = 0.0f;
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        if(m_mat)
+        if(material)
         {
             t += speed * Time.deltaTime;
 
             if (t >= 10) t = 0;
             i = Mathf.FloorToInt(t);
 
-            m_mat.SetInt("_Img", i);
-            m_mat.SetFloat("_Intensity", intensity);
+            material.SetInt("_Img", i);
+            material.SetFloat("_Intensity", intensity);
 
-            Graphics.Blit(source, destination, m_mat);
+            Graphics.Blit(source, destination, material);
         }
 
-        m_mat = new Material(effectShader);
+        //material = new Material(effectShader);
     }
 }

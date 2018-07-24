@@ -5,6 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - effectShader: {fileID: 4800000, guid: a5cb713a29009f146ae48611c24a0b56, type: 3}
+  - material: {fileID: 2100000, guid: 5370d0610a2eaef4b964141f1332cd90, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

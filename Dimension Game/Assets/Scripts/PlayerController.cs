@@ -66,6 +66,8 @@ public class PlayerController : MonoBehaviour {
     private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
+    public Material speedEffectMaterial;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -116,6 +118,7 @@ public class PlayerController : MonoBehaviour {
         selfCam.transform.localPosition = Vector3.zero;
         selfCam.transform.localEulerAngles = Vector3.zero;
         selfCam.gameObject.AddComponent<DimensionTransitionEffect>();
+        selfCam.gameObject.GetComponent<DimensionTransitionEffect>().material = speedEffectMaterial;
         LayerMask selfMask = selfCam.cullingMask;
 
         //  Loop through each dimension

@@ -2,18 +2,18 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex ("Texture", 2D) = "gray" {}
 		_Intensity ("Intensity", Range(0.0, 1.0)) = 0.0
-		_1 ("1", 2D) = "white" {}
-		_2 ("2", 2D) = "white" {}
-		_3 ("3", 2D) = "white" {}
-		_4 ("4", 2D) = "white" {}
-		_5 ("5", 2D) = "white" {}
-		_6 ("6", 2D) = "white" {}
-		_7 ("7", 2D) = "white" {}
-		_8 ("8", 2D) = "white" {}
-		_9 ("9", 2D) = "white" {}
-		_10 ("10", 2D) = "white" {}
+		_1 ("1", 2D) = "gray" {}
+		_2 ("2", 2D) = "gray" {}
+		_3 ("3", 2D) = "gray" {}
+		_4 ("4", 2D) = "gray" {}
+		_5 ("5", 2D) = "gray" {}
+		_6 ("6", 2D) = "gray" {}
+		_7 ("7", 2D) = "gray" {}
+		_8 ("8", 2D) = "gray" {}
+		_9 ("9", 2D) = "gray" {}
+		_10 ("10", 2D) = "gray" {}
 	}
 	SubShader
 	{
