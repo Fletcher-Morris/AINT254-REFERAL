@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 
     //  Has the player been fully set up?
+    [SerializeField]
     private bool isInitialized = false;
 
     //  References to various instances
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour {
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
     private Transform m_lookingGlass;               //  A reference to the Looking-Glass' Transform
+
+    [Space]
+    [Space]
 
     //  Movement settings
     [SerializeField]
@@ -34,6 +38,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool m_flyMode = false;                 //  Is the player superman?
 
+    [Space]
+    [Space]
+
     //  Input variables
     private Vector2 inputRaw, inputNorm;            //  Raw and normalised movement input
     [SerializeField]
@@ -43,6 +50,9 @@ public class PlayerController : MonoBehaviour {
     private bool m_canJump;                         //  Should the player be able to jump?
     [SerializeField]
     private bool m_trySwapDimension;                //  Is the player trying to switch dimension?
+
+    [Space]
+    [Space]
 
     [SerializeField]
     private Dimension m_currentDimension;           //  The dimension in which the player currently exists
