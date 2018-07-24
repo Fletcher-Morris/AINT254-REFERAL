@@ -461,32 +461,43 @@ MonoBehaviour:
   m_trySwapDimension: 0
   m_currentDimension: 0
   m_transitionTime: 0.8
+  m_transitionSwitchPoint: 0.8
+  m_autoSwitchPoint: 0
   m_curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.4996153
-      value: 1.000025
+      time: 0
+      value: 0.000007316703
       inSlope: 0
       outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.79999995
+      value: 0.9999981
+      inSlope: 0.00008769697
+      outSlope: 0.00008769697
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0.0014533997
+      value: 0.00006578141
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
-    m_PreInfinity: 0
-    m_PostInfinity: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
     m_RotationOrder: 4
   m_startFov: 60
-  m_endFov: 80
+  m_endFov: 90
   m_lookingGlassInUse: {x: 0, y: 0, z: 1}
   m_lookingGlassPutAway: {x: 0.331, y: -0.788, z: 0.609}
   m_lookingGlassMoveSpeed: 10

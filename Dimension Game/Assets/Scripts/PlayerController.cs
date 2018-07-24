@@ -51,6 +51,11 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_transitionTime = 1.0f;
     [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float m_transitionSwitchPoint = 0.8f;
+    [SerializeField]
+    private bool m_autoSwitchPoint = false;
+    [SerializeField]
     private AnimationCurve m_curve;
     [SerializeField]
     private float m_startFov = 60f;
@@ -394,20 +399,24 @@ public class PlayerController : MonoBehaviour {
         int toI = (int)newDimension;
 
         bool halfWay = false;
+        float prevE = 0.0f;
 
         while(transitioning)
         {
             t += Time.deltaTime;
             completion = Mathf.Clamp01(t / m_transitionTime);
+            float e = m_curve.Evaluate(completion);
 
-            effect.intensity = m_curve.Evaluate(completion);
-            m_cameras[fromI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, m_curve.Evaluate(completion));
-            m_cameras[toI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, m_curve.Evaluate(completion));
-            m_cameras[numberOfDimensions].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, m_curve.Evaluate(completion));
+            effect.intensity = e;
+            m_cameras[fromI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            m_cameras[toI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            m_cameras[numberOfDimensions].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
 
-            if (completion >= 0.5f && !halfWay)
+            if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
             {
                 halfWay = true;
+
+                Debug.Log("HALF WAY : " + completion);
 
                 //  Switch cameras
                 for (int i = 0; i < numberOfDimensions; i++)
@@ -445,6 +454,8 @@ public class PlayerController : MonoBehaviour {
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
                 }
             }
+
+            prevE =  e;
 
             if (completion >= 1.0f) transitioning = false;
             yield return new WaitForEndOfFrame();
