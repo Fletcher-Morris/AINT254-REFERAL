@@ -238,6 +238,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1019474054561326, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
@@ -629,6 +633,43 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1532491408645144, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986737686109282, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1858207863869524, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1565222252683216, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1715792830091840, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1550802836195210, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20212136713001826, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
+        type: 2}
+      propertyPath: m_CullingMask.m_Bits
+      value: 2147459071
+      objectReference: {fileID: 0}
+    - target: {fileID: 1284273127685282, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378111203401226, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
   m_IsPrefabParent: 0
@@ -901,9 +942,9 @@ ReflectionProbe:
   m_Enabled: 1
   serializedVersion: 2
   m_Type: 0
-  m_Mode: 0
-  m_RefreshMode: 0
-  m_TimeSlicingMode: 0
+  m_Mode: 1
+  m_RefreshMode: 1
+  m_TimeSlicingMode: 1
   m_Resolution: 128
   m_UpdateFrequency: 0
   m_BoxSize: {x: 20, y: 20, z: 20}
@@ -915,7 +956,7 @@ ReflectionProbe:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 513
   m_IntensityMultiplier: 1
   m_BlendDistance: 1
   m_HDR: 1

@@ -19,10 +19,13 @@ public class LayerEditor : EditorWindow {
     string includeLayers = "Default,PlayerSelf";
     bool setCameraCullingMasks = true;
     bool setLightCullingMask = true;
+    bool setReflectionCullingMask = true;
+
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
     List<Light> lightObjects;
+    List<ReflectionProbe> reflectionProbeObjects;
 
     private void OnGUI()
     {
@@ -45,6 +48,7 @@ public class LayerEditor : EditorWindow {
         EditorGUILayout.EndHorizontal();
         setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
         setLightCullingMask = EditorGUILayout.Toggle("Set Light Culling", setLightCullingMask);
+        setReflectionCullingMask = EditorGUILayout.Toggle("Set Reflection Culling", setReflectionCullingMask);
 
 
         EditorGUILayout.Separator();
@@ -87,6 +91,7 @@ public class LayerEditor : EditorWindow {
         normalObjects = new List<GameObject>();
         cameraObjects = new List<Camera>();
         lightObjects = new List<Light>();
+        reflectionProbeObjects = new List<ReflectionProbe>();
 
         foreach(GameObject go in UnityEngine.Object.FindObjectsOfType<GameObject>())
         {
@@ -116,6 +121,11 @@ public class LayerEditor : EditorWindow {
                 if (go.GetComponent<Light>())
                 {
                     lightObjects.Add(go.GetComponent<Light>());
+                }
+
+                if (go.GetComponent<ReflectionProbe>())
+                {
+                    reflectionProbeObjects.Add(go.GetComponent<ReflectionProbe>());
                 }
 
                 normalObjects.Add(go);
@@ -168,8 +178,22 @@ public class LayerEditor : EditorWindow {
             Debug.Log("Converted " + convertedObjects + " Lights to " + newDimension.ToString() + " dimension.");
         }
 
+        if (setReflectionCullingMask)
+        {
+            convertedObjects = 0;
+            foreach (ReflectionProbe probe in reflectionProbeObjects)
+            {
+                LayerMask newCullingMask = probe.cullingMask;
+                ConvertCullingMask(ref newCullingMask);
+                probe.cullingMask = newCullingMask;
+                convertedObjects++;
+            }
+            Debug.Log("Converted " + convertedObjects + " Refleuction Probes to " + newDimension.ToString() + " dimension.");
+        }
+
         currentDimension = newDimension;
     }
+
     private void ConvertCullingMask(ref LayerMask mask)
     {
         if (newDimension != Dimension.Normal)
