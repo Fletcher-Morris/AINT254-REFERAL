@@ -123,7 +123,7 @@ GameObject:
   m_Component:
   - component: {fileID: 80146800}
   - component: {fileID: 80146799}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Light Probe Group (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 233040592}
   - component: {fileID: 233040591}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Light Probe Group (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 259451584}
   - component: {fileID: 259451583}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Reflection Probe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,9 +231,9 @@ ReflectionProbe:
   m_Enabled: 1
   serializedVersion: 2
   m_Type: 0
-  m_Mode: 0
-  m_RefreshMode: 0
-  m_TimeSlicingMode: 0
+  m_Mode: 1
+  m_RefreshMode: 1
+  m_TimeSlicingMode: 1
   m_Resolution: 128
   m_UpdateFrequency: 0
   m_BoxSize: {x: 20, y: 20, z: 20}
@@ -245,7 +245,7 @@ ReflectionProbe:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 24576
   m_IntensityMultiplier: 1
   m_BlendDistance: 1
   m_HDR: 1
@@ -361,7 +361,7 @@ GameObject:
   m_Component:
   - component: {fileID: 333844510}
   - component: {fileID: 333844509}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Light Probe Group (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1015554498}
   - component: {fileID: 1015554497}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Light Probe Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}

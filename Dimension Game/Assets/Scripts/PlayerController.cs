@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour {
 
     //  Has the player been fully set up?
+    [SerializeField]
     private bool isInitialized = false;
 
     //  References to various instances
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour {
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
     private Transform m_lookingGlass;               //  A reference to the Looking-Glass' Transform
+
+    [Space]
+    [Space]
 
     //  Movement settings
     [SerializeField]
@@ -34,6 +38,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool m_flyMode = false;                 //  Is the player superman?
 
+    [Space]
+    [Space]
+
     //  Input variables
     private Vector2 inputRaw, inputNorm;            //  Raw and normalised movement input
     [SerializeField]
@@ -44,10 +51,26 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool m_trySwapDimension;                //  Is the player trying to switch dimension?
 
+    [Space]
+    [Space]
+
     [SerializeField]
     private Dimension m_currentDimension;           //  The dimension in which the player currently exists
     private Dimension m_switchingToDimension;       //  The dimension the player is currently switching to
     private bool m_switchingDimensions;             //  Is the player currently switching dimensions?
+    [SerializeField]
+    private float m_transitionTime = 1.0f;
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float m_transitionSwitchPoint = 0.8f;
+    [SerializeField]
+    private bool m_autoSwitchPoint = false;
+    [SerializeField]
+    private AnimationCurve m_curve;
+    [SerializeField]
+    private float m_startFov = 60f;
+    [SerializeField]
+    private float m_endFov = 80f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
     [SerializeField]
@@ -56,8 +79,9 @@ public class PlayerController : MonoBehaviour {
     private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
     [SerializeField]
     private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
-    [SerializeField]
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
+
+    public Material speedEffectMaterial;
 
     private void Start()
     {
@@ -101,6 +125,7 @@ public class PlayerController : MonoBehaviour {
 
         //  Create and set up the self-camera
         Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
+        selfCam.fieldOfView = m_startFov;
         selfCam.cullingMask = 0 << 0;
         selfCam.depth = 1;
         selfCam.clearFlags = CameraClearFlags.Depth;
@@ -108,6 +133,7 @@ public class PlayerController : MonoBehaviour {
         selfCam.transform.localPosition = Vector3.zero;
         selfCam.transform.localEulerAngles = Vector3.zero;
         selfCam.gameObject.AddComponent<DimensionTransitionEffect>();
+        selfCam.gameObject.GetComponent<DimensionTransitionEffect>().material = speedEffectMaterial;
         LayerMask selfMask = selfCam.cullingMask;
 
         //  Loop through each dimension
@@ -116,6 +142,7 @@ public class PlayerController : MonoBehaviour {
             //  Create a new camera for the dimension
             string camName = ("Camera_" + ((Dimension)i).ToString());
             Camera newCam = new GameObject(camName).AddComponent<Camera>();
+            newCam.fieldOfView = m_startFov;
             newCam.transform.SetParent(m_cameraAnchor);
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
@@ -365,45 +392,86 @@ public class PlayerController : MonoBehaviour {
         }
     }
     //  The co-routine that switches the player to a different dimension
-    private IEnumerator SwitchDimensionCoroutine(Dimension newDimension, Dimension fromDimesion)
+    private IEnumerator SwitchDimensionCoroutine(Dimension newDimension, Dimension fromDimension)
     {
         m_switchingDimensions = true;
         m_switchingToDimension = newDimension;
+        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
 
-        //  Switch cameras
-        for (int i = 0; i < Dimension.GetNames(typeof(Dimension)).Length; i++)
+        bool transitioning = true;
+        float t = 0.0f;
+        float completion = 0.0f;
+
+        DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
+        effect.intensity = 1.0f;
+
+        int fromI = (int)fromDimension;
+        int toI = (int)newDimension;
+
+        bool halfWay = false;
+        float prevE = 0.0f;
+
+        while(transitioning)
         {
-            if (i == (int)newDimension)
+            t += Time.deltaTime;
+            completion = Mathf.Clamp01(t / m_transitionTime);
+            float e = m_curve.Evaluate(completion);
+
+            effect.intensity = e;
+            m_cameras[fromI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            m_cameras[toI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            m_cameras[numberOfDimensions].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+
+            if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
             {
-                m_cameras[i].targetTexture = null;
+                halfWay = true;
+
+                Debug.Log("HALF WAY : " + completion);
+
+                //  Switch cameras
+                for (int i = 0; i < numberOfDimensions; i++)
+                {
+
+                    if (i == (int)newDimension)
+                    {
+                        m_cameras[i].targetTexture = null;
+                    }
+                    else if (i == (int)fromDimension)
+                    {
+                        m_cameras[i].targetTexture = m_dimensionPreviewTex;
+                    }
+                }
+
+                //  Switch the collider's layers
+                if (newDimension == Dimension.Normal)
+                {
+                    m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
+                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
+                    LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+                }
+                else
+                {
+                    m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
+                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
+                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+                    LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
+                }
             }
-            else if(i == (int)fromDimesion)
-            {
-                m_cameras[i].targetTexture = m_dimensionPreviewTex;
-            }
+
+            prevE =  e;
+
+            if (completion >= 1.0f) transitioning = false;
+            yield return new WaitForEndOfFrame();
         }
 
-        //  Switch the collider's layers
-        if(newDimension == Dimension.Normal)
-        {
-            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
-            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimesion.ToString()));
-            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
-        }
-        else
-        {
-            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
-            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
-            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
-        }
+        effect.intensity = 0.0f;
 
         m_switchingDimensions = false;
         m_currentDimension = newDimension;

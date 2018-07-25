@@ -89,7 +89,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 112000014, guid: 88b70470c294a4a4e92ab8a1a0781ba3,
+  m_LightingDataAsset: {fileID: 112000012, guid: 88b70470c294a4a4e92ab8a1a0781ba3,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -236,6 +236,10 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4281761386957184, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
       propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1019474054561326, guid: 3687f21faff43e348960d073ce03e8fc, type: 2}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -629,28 +633,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 20212136713001826, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
-        type: 2}
-      propertyPath: m_Depth
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 114451845808731922, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
-        type: 2}
-      propertyPath: speed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 114451845808731922, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
-        type: 2}
-      propertyPath: t
-      value: 4.4020557
-      objectReference: {fileID: 0}
-    - target: {fileID: 114451845808731922, guid: 2b708cd6f30aa00438c6bab6cd72d3cc,
-        type: 2}
-      propertyPath: i
-      value: 4
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114451845808731922, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2b708cd6f30aa00438c6bab6cd72d3cc, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1769368755
@@ -922,9 +905,9 @@ ReflectionProbe:
   m_Enabled: 1
   serializedVersion: 2
   m_Type: 0
-  m_Mode: 0
-  m_RefreshMode: 0
-  m_TimeSlicingMode: 0
+  m_Mode: 1
+  m_RefreshMode: 1
+  m_TimeSlicingMode: 1
   m_Resolution: 128
   m_UpdateFrequency: 0
   m_BoxSize: {x: 20, y: 20, z: 20}
@@ -936,7 +919,7 @@ ReflectionProbe:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 513
   m_IntensityMultiplier: 1
   m_BlendDistance: 1
   m_HDR: 1
