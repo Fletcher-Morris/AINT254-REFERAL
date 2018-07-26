@@ -5,7 +5,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class GrassMaterialScript : MonoBehaviour {
 
-    public Material[] grassMaterials;
+    public Material grassMaterial;
     private string property = "_PlayerPos";
     [SerializeField]
     private Transform m_transform;
@@ -17,12 +17,10 @@ public class GrassMaterialScript : MonoBehaviour {
 
     private void LateUpdate()
     {
-        if (grassMaterials.Length <= 0) return;
+        if (grassMaterial == null) return;
         if (m_transform == null) return;
 
-        foreach(Material mat in grassMaterials)
-        {
-            mat.SetVector(property, m_transform.position);
-        }
+        grassMaterial.SetVector(property, m_transform.position);
+        Debug.Log(gameObject.name + " : " + m_transform.position);
     }
 }

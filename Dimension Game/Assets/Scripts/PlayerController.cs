@@ -82,7 +82,6 @@ public class PlayerController : MonoBehaviour {
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
     public Material speedEffectMaterial;
-    public Material grassMaterial;
 
     private void Start()
     {

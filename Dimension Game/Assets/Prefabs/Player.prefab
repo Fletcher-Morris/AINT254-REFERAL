@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4781457321918526}
   - component: {fileID: 114129592487749360}
   - component: {fileID: 54639363838725974}
-  - component: {fileID: 114744663727740264}
+  - component: {fileID: 114217464217586636}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -218,7 +218,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1284273127685282}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3.5}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4246681898794454}
@@ -504,8 +504,7 @@ MonoBehaviour:
   m_lookingGlassPutAway: {x: 0.331, y: -0.788, z: 0.609}
   m_lookingGlassMoveSpeed: 10
   speedEffectMaterial: {fileID: 2100000, guid: 5370d0610a2eaef4b964141f1332cd90, type: 2}
-  grassMaterial: {fileID: 0}
---- !u!114 &114744663727740264
+--- !u!114 &114217464217586636
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -516,8 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254d5897026ed534b93390758396b96f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grassMaterials:
-  - {fileID: 2100000, guid: e94133411163c2643a82deb8540a4647, type: 2}
+  grassMaterial: {fileID: 2100000, guid: e94133411163c2643a82deb8540a4647, type: 2}
   m_transform: {fileID: 4781457321918526}
 --- !u!124 &124104449839457726
 Behaviour:
