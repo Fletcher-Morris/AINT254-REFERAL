@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiensionPortal : MonoBehaviour {
+public class DimensionPortal : MonoBehaviour {
+
+    private bool initialised = false;
 
     [SerializeField]
     private Dimension m_showDimension;
@@ -14,6 +16,13 @@ public class DiensionPortal : MonoBehaviour {
     [SerializeField]
     private Renderer m_renderer;
 
+    [SerializeField]
+    private float m_switchDistance = 0.1f;
+    [SerializeField]
+    private float m_effectDistance = 2.0f;
+
+    public float currentRange = 100f;
+
     private void Start()
     {
         InitPortal();
@@ -24,5 +33,15 @@ public class DiensionPortal : MonoBehaviour {
         m_transform = GetComponent<Transform>();
         m_playerTransform = GameObject.Find("Player").transform;
         m_collider = GetComponent<Collider>();
+
+        initialised = true;
+    }
+
+    private void Update()
+    {
+        if (!initialised) return;
+        if (!m_playerTransform) return;
+
+        currentRange = Vector3.Distance(m_transform.position, m_playerTransform.position);
     }
 }
