@@ -6,16 +6,31 @@ ModelImporter:
     100000: Blade
     100002: Handle
     100004: //RootNode
+    100006: Glass
+    100008: Hilt
+    100010: Guard
     400000: Blade
     400002: Handle
     400004: //RootNode
+    400006: Glass
+    400008: Hilt
+    400010: Guard
     2100000: No Name
     2300000: Blade
     2300002: Handle
+    2300004: Glass
+    2300006: Hilt
+    2300008: Guard
     3300000: Blade
     3300002: Handle
+    3300004: Glass
+    3300006: Hilt
+    3300008: Guard
     4300000: Handle
     4300002: Blade
+    4300004: Glass
+    4300006: Hilt
+    4300008: Guard
   externalObjects: {}
   materials:
     importMaterials: 1
