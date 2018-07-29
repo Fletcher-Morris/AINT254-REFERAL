@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour {
 
     public Material speedEffectMaterial;
 
+    public bool stopCamMovement = false;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -239,6 +241,7 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+        if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
         m_lookThroughGlass = Input.GetMouseButton(0);
 
@@ -350,6 +353,8 @@ public class PlayerController : MonoBehaviour {
     //  Control the player's camera
     private void CamMovement()
     {
+        if (stopCamMovement) return;
+
         Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
         m_body.MoveRotation(Quaternion.Euler(newY));
 
