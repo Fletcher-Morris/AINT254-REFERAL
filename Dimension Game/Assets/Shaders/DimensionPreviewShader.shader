@@ -47,9 +47,9 @@ Shader "DimensionPrevewShader"
 				float4 ase_texcoord1 : TEXCOORD1;
 			};
 
+			uniform sampler2D _DimensionPrevewTex;
 			uniform sampler2D _Blend;
 			uniform float4 _Blend_ST;
-			uniform sampler2D _DimensionPrevewTex;
 			
 			v2f vert ( appdata v )
 			{
@@ -92,17 +92,17 @@ Shader "DimensionPrevewShader"
 }
 /*ASEBEGIN
 Version=15401
-207;92;1349;655;1210.201;1806.371;1.744102;True;True
+207;92;1349;655;655.4606;1470.668;1.775566;True;True
 Node;AmplifyShaderEditor.ScreenPosInputsNode;6;-768,-1056;Float;True;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SamplerNode;61;-464,-1136;Float;True;Global;_DimensionPrevewTex;_DimensionPrevewTex;0;0;Create;True;0;0;True;0;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;80;-769.4516,-1416.182;Float;True;Property;_Blend;Blend;1;0;Create;True;0;0;False;0;a8142b596723e084c8ce1d79e94bad65;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;61;-464,-1136;Float;True;Global;_DimensionPrevewTex;_DimensionPrevewTex;0;0;Create;True;0;0;True;0;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleAddOpNode;67;-128,-1280;Float;True;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.ClampOpNode;81;152.0448,-1274.862;Float;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,1,1,1;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;79;438.2219,-1286.241;Float;False;True;2;Float;ASEMaterialInspector;0;1;DimensionPrevewShader;0770190933193b94aaa3065e307002fa;0;0;SubShader 0 Pass 0;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;-1;False;-1;-1;False;-1;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque;True;2;0;False;False;False;False;False;False;False;False;False;False;0;;0;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;87;445.9886,-1280.002;Float;False;True;2;Float;ASEMaterialInspector;0;1;DimensionPrevewShader;0770190933193b94aaa3065e307002fa;0;0;SubShader 0 Pass 0;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;-1;False;-1;-1;False;-1;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque;True;2;0;False;False;False;False;False;False;False;False;False;False;0;;0;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;61;1;6;0
 WireConnection;67;0;80;0
 WireConnection;67;1;61;0
 WireConnection;81;0;67;0
-WireConnection;79;0;81;0
+WireConnection;87;0;81;0
 ASEEND*/
-//CHKSM=30F202BD5441E0A12364F4C1C86568D66F8BBD99
+//CHKSM=64199ABCEBF9B41DE298066476FFED3E1E8DDBDF

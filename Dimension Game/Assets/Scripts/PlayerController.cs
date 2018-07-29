@@ -342,11 +342,11 @@ public class PlayerController : MonoBehaviour {
         //  Move the Looking-Glass to the required position
         if(m_lookThroughGlass)
         {
-            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
+            m_lookingGlass.transform.localPosition = Vector3.Slerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
         }
         else
         {
-            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
+            m_lookingGlass.transform.localPosition = Vector3.Slerp(m_lookingGlass.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
         }
     }
 
