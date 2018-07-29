@@ -18,6 +18,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Blend:
+        m_Texture: {fileID: 2800000, guid: a8142b596723e084c8ce1d79e94bad65, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: ab21fe2483069fb4eba79dea595cc6e3, type: 3}
         m_Scale: {x: 1, y: 1}

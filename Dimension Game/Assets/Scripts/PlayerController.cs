@@ -102,7 +102,7 @@ public class PlayerController : MonoBehaviour {
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
-        m_lookingGlass = m_cameraAnchor.Find("LookingGlass");
+        m_lookingGlass = m_cameraAnchor.Find("Knife");
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
