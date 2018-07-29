@@ -647,10 +647,9 @@ MonoBehaviour:
   m_showDimension: 0
   m_collider: {fileID: 0}
   m_renderer: {fileID: 0}
-  m_minRange: 0.5
-  m_maxRange: 2
+  m_switchDistance: 0.1
+  m_effectDistance: 2
   currentRange: 100
-  absoluteRange: 100
 --- !u!1 &1510032924
 GameObject:
   m_ObjectHideFlags: 0

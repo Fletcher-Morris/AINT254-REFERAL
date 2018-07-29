@@ -225,6 +225,20 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            switch (m_currentDimension)
+            {
+                case Dimension.Normal:
+                    SwitchDimensionImmediate(Dimension.Dark);
+                    break;
+                case Dimension.Dark:
+                    SwitchDimensionImmediate(Dimension.Normal);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         m_lookThroughGlass = Input.GetMouseButton(0);
 
@@ -472,6 +486,79 @@ public class PlayerController : MonoBehaviour {
         }
 
         effect.intensity = 0.0f;
+
+        m_switchingDimensions = false;
+        m_currentDimension = newDimension;
+        m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
+
+        yield return null;
+    }
+    //  Switch to a different dimension immediately, with no transition
+    public void SwitchDimensionImmediate(Dimension newDimension)
+    {
+        if (!m_switchingDimensions)
+        {
+            //  If the player is not currently switching dimensions, start the co-routine
+            StartCoroutine(SwitchDimensionImmediateCoroutine(newDimension, m_currentDimension));
+        }
+    }
+    //  Switch to a different dimension, from a specific dimension, with no transition
+    public void SwitchDimensionImmediate(Dimension newDimension, Dimension fromDimesion)
+    {
+        if (!m_switchingDimensions)
+        {
+            //  If the player is not currently switching dimensions, start the co-routine
+            StartCoroutine(SwitchDimensionImmediateCoroutine(newDimension, fromDimesion));
+        }
+    }
+    //  Switch dimensions without the transition
+    private IEnumerator SwitchDimensionImmediateCoroutine(Dimension newDimension, Dimension fromDimension)
+    {
+        m_switchingDimensions = true;
+        m_switchingToDimension = newDimension;
+        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+
+        DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
+        effect.intensity = 0.0f;
+
+        int fromI = (int)fromDimension;
+        int toI = (int)newDimension;
+
+        //  Switch cameras
+        for (int i = 0; i < numberOfDimensions; i++)
+        {
+
+            if (i == (int)newDimension)
+            {
+                m_cameras[i].targetTexture = null;
+            }
+            else if (i == (int)fromDimension)
+            {
+                m_cameras[i].targetTexture = m_dimensionPreviewTex;
+            }
+        }
+
+        //  Switch the collider's layers
+        if (newDimension == Dimension.Normal)
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+        }
+        else
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
+            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
+        }
 
         m_switchingDimensions = false;
         m_currentDimension = newDimension;
