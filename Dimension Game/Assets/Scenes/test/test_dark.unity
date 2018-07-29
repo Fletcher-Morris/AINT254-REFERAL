@@ -710,7 +710,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2011722962}
   - component: {fileID: 2011722961}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Directional Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -745,7 +745,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2147459071
+    m_Bits: 2147483134
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
