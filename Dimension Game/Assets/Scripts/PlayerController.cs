@@ -149,6 +149,11 @@ public class PlayerController : MonoBehaviour {
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
 
+            //  Set the new camera's skybox to match the dimension
+            Skybox sky = newCam.gameObject.AddComponent<Skybox>();
+            SkyboxHolder holder = GameObject.Find("Skybox_" + ((Dimension)i).ToString()).GetComponent<SkyboxHolder>();
+            sky.material = holder.skybox;
+
             //  Add and remove the appropriate layers from the camera's culling mask
             LayerMask newMask = newCam.cullingMask;
             if(((Dimension)i) == Dimension.Normal)
@@ -379,8 +384,7 @@ public class PlayerController : MonoBehaviour {
         CamMovement();
 
         //  Draw two lines to show where the player is looking (for debugging)
-        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * -0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
-        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * 0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
+        Debug.DrawLine(m_cameraAnchor.position, m_cameraAnchor.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()
