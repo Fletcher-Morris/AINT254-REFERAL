@@ -472,6 +472,8 @@ public class PlayerController : MonoBehaviour {
                     m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
                     m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
                     m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
@@ -482,6 +484,8 @@ public class PlayerController : MonoBehaviour {
                     m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
                     m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
                     m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
@@ -531,13 +535,13 @@ public class PlayerController : MonoBehaviour {
         effect.intensity = 0.0f;
 
         int fromI = (int)fromDimension;
-        int toI = (int)newDimension;
+        int toI = (int)m_switchingToDimension;
 
         //  Switch cameras
         for (int i = 0; i < numberOfDimensions; i++)
         {
 
-            if (i == (int)newDimension)
+            if (i == (int)m_switchingToDimension)
             {
                 m_cameras[i].targetTexture = null;
             }
@@ -548,29 +552,33 @@ public class PlayerController : MonoBehaviour {
         }
 
         //  Switch the collider's layers
-        if (newDimension == Dimension.Normal)
+        if (m_switchingToDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
             m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
             m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
             m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
         }
         else
         {
-            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + m_switchingToDimension.ToString());
             m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
             m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
             m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
-            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_switchingToDimension.ToString()));
         }
 
         m_switchingDimensions = false;
-        m_currentDimension = newDimension;
+        m_currentDimension = m_switchingToDimension;
         m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
