@@ -85,6 +85,10 @@ public class PlayerController : MonoBehaviour {
 
     public bool stopCamMovement = false;
 
+    public GameObject dimensionPortalPrefab;
+    [SerializeField]
+    private GameObject m_currentPortal;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -232,20 +236,23 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            switch (m_currentDimension)
-            {
-                case Dimension.Normal:
-                    SwitchDimensionImmediate(Dimension.Dark);
-                    break;
-                case Dimension.Dark:
-                    SwitchDimensionImmediate(Dimension.Normal);
-                    break;
-                default:
-                    break;
-            }
-        }
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    switch (m_currentDimension)
+        //    {
+        //        case Dimension.Normal:
+        //            SwitchDimensionImmediate(Dimension.Dark);
+        //            break;
+        //        case Dimension.Dark:
+        //            SwitchDimensionImmediate(Dimension.Normal);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        if (Input.GetKeyDown(KeyCode.Q)) CreateDimensionalPortal();
+
         if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
         m_lookThroughGlass = Input.GetMouseButton(0);
@@ -580,5 +587,14 @@ public class PlayerController : MonoBehaviour {
         m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
+    }
+
+    //  Create a dimensional portal in front of the player
+    private void CreateDimensionalPortal()
+    {
+        if (m_currentPortal) GameObject.Destroy(m_currentPortal);
+
+        m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
+        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(Dimension.Dark);
     }
 }

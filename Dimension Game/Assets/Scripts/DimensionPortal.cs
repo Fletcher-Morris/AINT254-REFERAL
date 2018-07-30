@@ -33,6 +33,7 @@ public class DimensionPortal : MonoBehaviour {
     private void InitPortal()
     {
         m_transform = GetComponent<Transform>();
+        m_renderer = GetComponent<Renderer>();
         m_playerTransform = GameObject.Find("Player").transform;
         m_collider = GetComponent<Collider>();
 
@@ -41,7 +42,8 @@ public class DimensionPortal : MonoBehaviour {
 
     public void OpenPortal(Dimension toDimension)
     {
-
+        if (!initialised) InitPortal();
+        StartCoroutine(OpenPortalCoroutine(toDimension));
     }
 
     private IEnumerator OpenPortalCoroutine(Dimension toDimension)

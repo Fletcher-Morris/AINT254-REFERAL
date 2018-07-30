@@ -508,7 +508,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: d52d9cbd54867e64b97b4372717eabdb, type: 2}
+  - {fileID: 2100000, guid: 8f32e9534839eec4ca05f1977e5774a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -610,7 +610,7 @@ MonoBehaviour:
   m_groundDist: 0.45
   m_groundMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   m_lookSensitivity: 50
   m_flyMode: 0
   m_isGrounded: 0
@@ -659,6 +659,9 @@ MonoBehaviour:
   m_lookingGlassMoveSpeed: 10
   speedEffectMaterial: {fileID: 2100000, guid: 5370d0610a2eaef4b964141f1332cd90, type: 2}
   stopCamMovement: 0
+  dimensionPortalPrefab: {fileID: 1641018162508676, guid: 359bada6b82c661478bf7daf8c09b4cb,
+    type: 2}
+  m_currentPortal: {fileID: 0}
 --- !u!124 &124104449839457726
 Behaviour:
   m_ObjectHideFlags: 1
