@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-        //  Create the RenderTExture used for dimension previews
+        //  Create the RenderTexture used for dimension previews
         CreateNewDimensionPrevewTex();
         //  Switch to the normal dimension
         SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);

@@ -20,12 +20,15 @@ public class LayerEditor : EditorWindow {
     bool setCameraCullingMasks = true;
     bool setLightCullingMask = true;
     bool setReflectionCullingMask = true;
+    bool setSkyboxHolder= true;
 
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
     List<Light> lightObjects;
     List<ReflectionProbe> reflectionProbeObjects;
+    GameObject skyboxHolder;
+
 
     private void OnGUI()
     {
@@ -49,6 +52,7 @@ public class LayerEditor : EditorWindow {
         setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
         setLightCullingMask = EditorGUILayout.Toggle("Set Light Culling", setLightCullingMask);
         setReflectionCullingMask = EditorGUILayout.Toggle("Set Reflection Culling", setReflectionCullingMask);
+        setSkyboxHolder = EditorGUILayout.Toggle("Set Skybox Holder", setSkyboxHolder);
 
 
         EditorGUILayout.Separator();
@@ -130,6 +134,11 @@ public class LayerEditor : EditorWindow {
 
                 normalObjects.Add(go);
             }
+
+            if(setSkyboxHolder && go.name.ToLower().Contains("skybox"))
+            {
+                skyboxHolder = go;
+            }
         }
 
         Debug.Log(normalObjects.Count + " GameObjects, " + cameraObjects.Count + " Cameras, " + lightObjects.Count + " Lights gathered.");
@@ -189,6 +198,11 @@ public class LayerEditor : EditorWindow {
                 convertedObjects++;
             }
             Debug.Log("Converted " + convertedObjects + " Refleuction Probes to " + newDimension.ToString() + " dimension.");
+        }
+
+        if(setSkyboxHolder && skyboxHolder)
+        {
+            skyboxHolder.name = ("Skybox_" + newDimension.ToString());
         }
 
         currentDimension = newDimension;
