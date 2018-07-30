@@ -116,4 +116,4 @@ MonoBehaviour:
   m_switchDistance: 0.1
   m_effectDistance: 2
   currentRange: 100
-  openTime: 0.33333334
+  openTime: 0.8

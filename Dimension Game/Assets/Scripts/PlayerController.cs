@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour {
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
         m_knife = m_cameraAnchor.Find("Knife");
-        m_knifeAnim = GetComponent<Animator>();
+        m_knifeAnim = m_knife.GetComponent<Animator>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -597,6 +597,8 @@ public class PlayerController : MonoBehaviour {
     private void CreateDimensionalPortal()
     {
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
+
+        m_knifeAnim.SetTrigger("Slash");
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
         m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(Dimension.Dark);
