@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour {
     private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
-    private Transform m_lookingGlass;               //  A reference to the Looking-Glass' Transform
+    private Transform m_knife;               //  A reference to the Looking-Glass' Transform
 
     [Space]
     [Space]
@@ -89,6 +89,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private GameObject m_currentPortal;
 
+
+    private Animator m_knifeAnim;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -106,7 +109,8 @@ public class PlayerController : MonoBehaviour {
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
-        m_lookingGlass = m_cameraAnchor.Find("Knife");
+        m_knife = m_cameraAnchor.Find("Knife");
+        m_knifeAnim = GetComponent<Animator>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -354,11 +358,11 @@ public class PlayerController : MonoBehaviour {
         //  Move the Looking-Glass to the required position
         if(m_lookThroughGlass)
         {
-            m_lookingGlass.transform.localPosition = Vector3.Slerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
+            m_knife.transform.localPosition = Vector3.Slerp(m_knife.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
         }
         else
         {
-            m_lookingGlass.transform.localPosition = Vector3.Slerp(m_lookingGlass.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
+            m_knife.transform.localPosition = Vector3.Slerp(m_knife.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -474,11 +478,11 @@ public class PlayerController : MonoBehaviour {
                 if (newDimension == Dimension.Normal)
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
-                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
@@ -486,11 +490,11 @@ public class PlayerController : MonoBehaviour {
                 else
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
-                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
@@ -560,11 +564,11 @@ public class PlayerController : MonoBehaviour {
         if (m_switchingToDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
-            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+            m_knife.gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
@@ -572,11 +576,11 @@ public class PlayerController : MonoBehaviour {
         else
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + m_switchingToDimension.ToString());
-            m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(2).gameObject.layer = m_col.gameObject.layer;
-            m_lookingGlass.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+            m_knife.gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
             LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_switchingToDimension.ToString()));
