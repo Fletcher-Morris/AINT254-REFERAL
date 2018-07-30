@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviour {
         //  Create the RenderTExture used for dimension previews
         CreateNewDimensionPrevewTex();
         //  Switch to the normal dimension
-        SwitchDimension(Dimension.Normal, Dimension.Dark);
+        SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);
 
         //  Declare that the player is all set up
         isInitialized = true;
