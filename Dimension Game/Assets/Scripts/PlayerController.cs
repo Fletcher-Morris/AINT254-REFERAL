@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour {
 
             //  Add the new camera to the array
             m_cameras[i] = newCam;
-            Debug.Log("Added camera '" + camName + "'.");
+            if(Singletons.gameManager.debug) Debug.Log("Added camera '" + camName + "'.");
         }
 
         //  Set the self-camera's culling mask
@@ -448,8 +448,6 @@ public class PlayerController : MonoBehaviour {
             if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
             {
                 halfWay = true;
-
-                Debug.Log("HALF WAY : " + completion);
 
                 //  Switch cameras
                 for (int i = 0; i < numberOfDimensions; i++)
