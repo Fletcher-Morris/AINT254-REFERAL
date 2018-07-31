@@ -29,6 +29,7 @@ public class DimensionPortal : MonoBehaviour {
     private Vector3 startScale, endScale;
 
     public float effectFactor = 0f;
+    public AnimationCurve effectCurve = AnimationCurve.EaseInOut(0.0f,0.0f,1.0f,1.0f);
 
     private void InitPortal(FloatHolder knifeFloat)
     {
@@ -73,20 +74,26 @@ public class DimensionPortal : MonoBehaviour {
     {
         if (!initialised) return;
 
-        currentRange = Vector3.Distance(m_transform.position, m_player.cameraAnchor.position);
+        currentRange = Vector2.Distance(new Vector2(m_transform.position.x, m_transform.position.z), new Vector2(m_player.cameraAnchor.position.x, m_player.cameraAnchor.position.z));
 
         if(currentRange <= m_effectDistance)
         {
 
             effectFactor = Mathf.Lerp(0, 1, 1 - currentRange);
 
-            m_transform.localScale = Vector3.Lerp(startScale, endScale, effectFactor);
+            float t = effectCurve.Evaluate(effectFactor);
+
+            m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
+
+            if (currentRange <= m_switchDistance)
+            {
+                m_player.SwitchDimensionImmediate(destination);
+                GameObject.Destroy(gameObject);
+            }
         }
         else
         {
             m_transform.localScale = startScale;
         }
-
-        if (effectFactor >= 0.5) m_player.SwitchDimensionImmediate(destination);
     }
 }
