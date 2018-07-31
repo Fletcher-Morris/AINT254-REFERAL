@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour {
     public GameObject dimensionPortalPrefab;
     [SerializeField]
     private GameObject m_currentPortal;
+    private DimensionPortal m_portalControler;
 
 
     private Animator m_knifeAnim;
@@ -360,15 +361,29 @@ public class PlayerController : MonoBehaviour {
     {
         if (stopCamMovement) return;
 
-        Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
-        m_body.MoveRotation(Quaternion.Euler(newY));
+        if(!m_currentPortal || m_portalControler.isOpen)
+        {
+            Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
+            m_body.MoveRotation(Quaternion.Euler(newY));
 
-        Vector3 newX = cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
+            Vector3 newX = cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
 
-        if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
-        if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
+            if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
+            if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
 
-        cameraAnchor.localEulerAngles = newX;
+            cameraAnchor.localEulerAngles = newX;
+        }
+        else
+        {
+            float newX = cameraAnchor.localEulerAngles.x;
+            float s = 100f;
+
+            if (newX >= 45f && newX <= 315f) s = 200f;
+            //if (newX <= 271f && newX >= 180f) s = 100f;
+
+            newX = Mathf.MoveTowardsAngle(newX, 0f, s * Time.deltaTime);
+            cameraAnchor.localEulerAngles = new Vector3(newX, 0, 0);
+        }
     }
 
     private void Update()
@@ -590,6 +605,7 @@ public class PlayerController : MonoBehaviour {
         m_knifeAnim.SetTrigger("Slash");
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
-        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(destination, m_knifeFloat);
+        m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
+        m_portalControler.OpenPortal(destination, m_currentDimension, m_knifeFloat);
     }
 }

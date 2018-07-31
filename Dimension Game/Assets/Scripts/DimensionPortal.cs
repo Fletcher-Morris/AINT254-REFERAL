@@ -24,12 +24,11 @@ public class DimensionPortal : MonoBehaviour {
 
     public float currentRange = 100f;
 
-    public float openTime = 0.5f;
-
     private Vector3 startScale, endScale;
 
     public float effectFactor = 0f;
     public AnimationCurve effectCurve = AnimationCurve.EaseInOut(0.0f,0.0f,1.0f,1.0f);
+    public bool isOpen = false;
 
     private Vector3 m_originalPosition;
 
@@ -42,30 +41,37 @@ public class DimensionPortal : MonoBehaviour {
         m_collider = GetComponent<Collider>();
         m_knifeFloat = knifeFloat;
         startScale = m_transform.localScale;
-        endScale = startScale * 10;
+        endScale = new Vector3(20f,20f,1f);
 
         initialised = true;
     }
 
-    public void OpenPortal(Dimension dest, FloatHolder knifeFloat)
+    public void OpenPortal(Dimension dest, Dimension origin, FloatHolder knifeFloat)
     {
         if (!initialised) InitPortal(knifeFloat);
         destination = dest;
+        if(origin == Dimension.Normal)
+        {
+            gameObject.layer = LayerMask.NameToLayer("Default");
+        }
+        else
+        {
+            gameObject.layer = LayerMask.NameToLayer("Default_" + origin.ToString());
+        }
         StartCoroutine(OpenPortalCoroutine());
     }
 
     private IEnumerator OpenPortalCoroutine()
     {
         float completion = 0.0f;
-        bool open = false;
 
-        while(!open)
+        while(!isOpen)
         {
             completion = Mathf.Clamp01(m_knifeFloat.value);
 
             m_renderer.material.SetFloat("_Completion", completion);
 
-            if (completion >= 1.0f) open = true;
+            if (completion >= 1.0f) isOpen = true;
 
             yield return new WaitForEndOfFrame();
         }
