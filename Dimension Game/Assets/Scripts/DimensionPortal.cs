@@ -41,7 +41,7 @@ public class DimensionPortal : MonoBehaviour {
         m_collider = GetComponent<Collider>();
         m_knifeFloat = knifeFloat;
         startScale = m_transform.localScale;
-        endScale = new Vector3(20f,20f,1f);
+        endScale = new Vector3(30f, 30f, 1f);
 
         initialised = true;
     }
@@ -96,7 +96,7 @@ public class DimensionPortal : MonoBehaviour {
 
             m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
 
-            if (currentRange <= m_switchDistance)
+            if (currentRange <= m_switchDistance && isOpen)
             {
                 m_player.SwitchDimensionImmediate(destination);
                 GameObject.Destroy(gameObject);
