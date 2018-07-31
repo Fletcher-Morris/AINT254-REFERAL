@@ -11,6 +11,7 @@ public class DimensionPortal : MonoBehaviour {
 
     private Transform m_transform;
     private Transform m_playerTransform;
+    private FloatHolder m_knifeFloat;
     [SerializeField]
     private Collider m_collider;
     [SerializeField]
@@ -25,37 +26,31 @@ public class DimensionPortal : MonoBehaviour {
 
     public float openTime = 0.5f;
 
-    private void Start()
-    {
-        InitPortal();
-    }
-
-    private void InitPortal()
+    private void InitPortal(FloatHolder knifeFloat)
     {
         m_transform = GetComponent<Transform>();
         m_renderer = GetComponent<Renderer>();
         m_playerTransform = GameObject.Find("Player").transform;
         m_collider = GetComponent<Collider>();
+        m_knifeFloat = knifeFloat;
 
         initialised = true;
     }
 
-    public void OpenPortal(Dimension toDimension)
+    public void OpenPortal(Dimension toDimension, FloatHolder knifeFloat)
     {
-        if (!initialised) InitPortal();
+        if (!initialised) InitPortal(knifeFloat);
         StartCoroutine(OpenPortalCoroutine(toDimension));
     }
 
     private IEnumerator OpenPortalCoroutine(Dimension toDimension)
     {
-        float t = 0.0f;
         float completion = 0.0f;
         bool open = false;
 
         while(!open)
         {
-            t += Time.deltaTime;
-            completion = Mathf.Clamp01(t / openTime);
+            completion = Mathf.Clamp01(m_knifeFloat.value);
 
             m_renderer.material.SetFloat("_Completion", completion);
 

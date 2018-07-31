@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour {
 
 
     private Animator m_knifeAnim;
+    private FloatHolder m_knifeFloat;
 
     private void Start()
     {
@@ -111,6 +112,7 @@ public class PlayerController : MonoBehaviour {
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
         m_knife = m_cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
+        m_knifeFloat = m_knife.GetComponent<FloatHolder>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -601,6 +603,6 @@ public class PlayerController : MonoBehaviour {
         m_knifeAnim.SetTrigger("Slash");
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
-        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(Dimension.Dark);
+        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(Dimension.Dark, m_knifeFloat);
     }
 }
