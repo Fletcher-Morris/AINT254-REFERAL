@@ -7,10 +7,10 @@ public class DimensionPortal : MonoBehaviour {
     private bool initialised = false;
 
     [SerializeField]
-    private Dimension m_showDimension;
+    private Dimension destination;
 
     private Transform m_transform;
-    private Transform m_playerTransform;
+    private PlayerController m_player;
     private FloatHolder m_knifeFloat;
     [SerializeField]
     private Collider m_collider;
@@ -20,30 +20,37 @@ public class DimensionPortal : MonoBehaviour {
     [SerializeField]
     private float m_switchDistance = 0.1f;
     [SerializeField]
-    private float m_effectDistance = 2.0f;
+    private float m_effectDistance = 1.0f;
 
     public float currentRange = 100f;
 
     public float openTime = 0.5f;
 
+    private Vector3 startScale, endScale;
+
+    public float effectFactor = 0f;
+
     private void InitPortal(FloatHolder knifeFloat)
     {
         m_transform = GetComponent<Transform>();
         m_renderer = GetComponent<Renderer>();
-        m_playerTransform = GameObject.Find("Player").transform;
+        m_player = GameObject.Find("Player").GetComponent<PlayerController>();
         m_collider = GetComponent<Collider>();
         m_knifeFloat = knifeFloat;
+        startScale = m_transform.localScale;
+        endScale = startScale * 10;
 
         initialised = true;
     }
 
-    public void OpenPortal(Dimension toDimension, FloatHolder knifeFloat)
+    public void OpenPortal(Dimension dest, FloatHolder knifeFloat)
     {
         if (!initialised) InitPortal(knifeFloat);
-        StartCoroutine(OpenPortalCoroutine(toDimension));
+        destination = dest;
+        StartCoroutine(OpenPortalCoroutine());
     }
 
-    private IEnumerator OpenPortalCoroutine(Dimension toDimension)
+    private IEnumerator OpenPortalCoroutine()
     {
         float completion = 0.0f;
         bool open = false;
@@ -65,8 +72,21 @@ public class DimensionPortal : MonoBehaviour {
     private void Update()
     {
         if (!initialised) return;
-        if (!m_playerTransform) return;
 
-        currentRange = Vector3.Distance(m_transform.position, m_playerTransform.position);
+        currentRange = Vector3.Distance(m_transform.position, m_player.cameraAnchor.position);
+
+        if(currentRange <= m_effectDistance)
+        {
+
+            effectFactor = Mathf.Lerp(0, 1, 1 - currentRange);
+
+            m_transform.localScale = Vector3.Lerp(startScale, endScale, effectFactor);
+        }
+        else
+        {
+            m_transform.localScale = startScale;
+        }
+
+        if (effectFactor >= 0.5) m_player.SwitchDimensionImmediate(destination);
     }
 }

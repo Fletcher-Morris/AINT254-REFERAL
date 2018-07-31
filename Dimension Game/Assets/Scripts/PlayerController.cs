@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour {
 
     //  References to various instances
     private Transform m_transform;                  //  A reference to the player's Transform
-    private Transform m_cameraAnchor;               //  A reference to the camera anchor
+    public Transform cameraAnchor;               //  A reference to the camera anchor
     private Camera[] m_cameras;                     //  A reference to each of the player's cameras
     private Rigidbody m_body;                       //  A reference to the player's Rigidbody
     private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
@@ -98,14 +98,14 @@ public class PlayerController : MonoBehaviour {
     {
         //  Find and assign various references
         m_transform = GetComponent<Transform>();
-        m_cameraAnchor = m_transform.Find("CameraAnchor");
+        cameraAnchor = m_transform.Find("CameraAnchor");
         CreatePlayerCameras();                      //  Create thee cameras needed for each dimension
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
-        m_knife = m_cameraAnchor.Find("Knife");
+        m_knife = cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
 
@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour {
         selfCam.cullingMask = 0 << 0;
         selfCam.depth = 1;
         selfCam.clearFlags = CameraClearFlags.Depth;
-        selfCam.transform.SetParent(m_cameraAnchor);
+        selfCam.transform.SetParent(cameraAnchor);
         selfCam.transform.localPosition = Vector3.zero;
         selfCam.transform.localEulerAngles = Vector3.zero;
         selfCam.gameObject.AddComponent<DimensionTransitionEffect>();
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour {
             string camName = ("Camera_" + ((Dimension)i).ToString());
             Camera newCam = new GameObject(camName).AddComponent<Camera>();
             newCam.fieldOfView = m_startFov;
-            newCam.transform.SetParent(m_cameraAnchor);
+            newCam.transform.SetParent(cameraAnchor);
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
 
@@ -237,22 +237,21 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    switch (m_currentDimension)
-        //    {
-        //        case Dimension.Normal:
-        //            SwitchDimensionImmediate(Dimension.Dark);
-        //            break;
-        //        case Dimension.Dark:
-        //            SwitchDimensionImmediate(Dimension.Normal);
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
 
-        if (Input.GetKeyDown(KeyCode.Q)) CreateDimensionalPortal();
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            switch (m_currentDimension)
+            {
+                case Dimension.Normal:
+                    CreateDimensionalPortal(Dimension.Dark);
+                    break;
+                case Dimension.Dark:
+                    CreateDimensionalPortal(Dimension.Normal);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
@@ -364,12 +363,12 @@ public class PlayerController : MonoBehaviour {
         Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
         m_body.MoveRotation(Quaternion.Euler(newY));
 
-        Vector3 newX = m_cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
+        Vector3 newX = cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
 
         if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
         if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
 
-        m_cameraAnchor.localEulerAngles = newX;
+        cameraAnchor.localEulerAngles = newX;
     }
 
     private void Update()
@@ -385,7 +384,7 @@ public class PlayerController : MonoBehaviour {
         CamMovement();
 
         //  Draw two lines to show where the player is looking (for debugging)
-        Debug.DrawLine(m_cameraAnchor.position, m_cameraAnchor.forward * 5f, Color.blue);
+        Debug.DrawLine(cameraAnchor.position, cameraAnchor.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()
@@ -584,13 +583,13 @@ public class PlayerController : MonoBehaviour {
     }
 
     //  Create a dimensional portal in front of the player
-    private void CreateDimensionalPortal()
+    private void CreateDimensionalPortal(Dimension destination)
     {
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
 
         m_knifeAnim.SetTrigger("Slash");
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
-        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(Dimension.Dark, m_knifeFloat);
+        m_currentPortal.GetComponent<DimensionPortal>().OpenPortal(destination, m_knifeFloat);
     }
 }
