@@ -31,9 +31,12 @@ public class DimensionPortal : MonoBehaviour {
     public float effectFactor = 0f;
     public AnimationCurve effectCurve = AnimationCurve.EaseInOut(0.0f,0.0f,1.0f,1.0f);
 
+    private Vector3 m_originalPosition;
+
     private void InitPortal(FloatHolder knifeFloat)
     {
         m_transform = GetComponent<Transform>();
+        m_originalPosition = m_transform.position;
         m_renderer = GetComponent<Renderer>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
         m_collider = GetComponent<Collider>();
@@ -74,6 +77,8 @@ public class DimensionPortal : MonoBehaviour {
     {
         if (!initialised) return;
 
+        RotateToPlayer();
+
         currentRange = Vector2.Distance(new Vector2(m_transform.position.x, m_transform.position.z), new Vector2(m_player.cameraAnchor.position.x, m_player.cameraAnchor.position.z));
 
         if(currentRange <= m_effectDistance)
@@ -95,5 +100,17 @@ public class DimensionPortal : MonoBehaviour {
         {
             m_transform.localScale = startScale;
         }
+    }
+
+    public void RotateToPlayer()
+    {
+        Vector3 a = m_transform.position;
+        a.y = 0.0f;
+        Vector3 b = m_player.cameraAnchor.position;
+        b.y = 0.0f;
+
+        Vector3 relativePos = a - b;
+        Quaternion rotation = Quaternion.LookRotation(relativePos);
+        m_transform.rotation = rotation;
     }
 }
