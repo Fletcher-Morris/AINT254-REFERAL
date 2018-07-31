@@ -73,12 +73,7 @@ public class PlayerController : MonoBehaviour {
     private float m_endFov = 80f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
-    [SerializeField]
-    private Vector3 m_lookingGlassInUse;            //  The local position of the Looking-Glass when in use
-    [SerializeField]
-    private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
-    [SerializeField]
-    private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
+
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
     public Material speedEffectMaterial;
@@ -358,14 +353,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         //  Move the Looking-Glass to the required position
-        if(m_lookThroughGlass)
-        {
-            m_knife.transform.localPosition = Vector3.Slerp(m_knife.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
-        }
-        else
-        {
-            m_knife.transform.localPosition = Vector3.Slerp(m_knife.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
-        }
+        m_knifeAnim.SetBool("Viewing", m_lookThroughGlass);
     }
 
     //  Control the player's camera
