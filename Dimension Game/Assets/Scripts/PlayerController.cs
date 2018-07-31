@@ -12,14 +12,14 @@ public class PlayerController : MonoBehaviour {
 
     //  References to various instances
     private Transform m_transform;                  //  A reference to the player's Transform
-    private Transform m_cameraAnchor;               //  A reference to the camera anchor
+    public Transform cameraAnchor;               //  A reference to the camera anchor
     private Camera[] m_cameras;                     //  A reference to each of the player's cameras
     private Rigidbody m_body;                       //  A reference to the player's Rigidbody
     private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
     private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
-    private Transform m_lookingGlass;               //  A reference to the Looking-Glass' Transform
+    private Transform m_knife;               //  A reference to the Looking-Glass' Transform
 
     [Space]
     [Space]
@@ -73,15 +73,21 @@ public class PlayerController : MonoBehaviour {
     private float m_endFov = 80f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
-    [SerializeField]
-    private Vector3 m_lookingGlassInUse;            //  The local position of the Looking-Glass when in use
-    [SerializeField]
-    private Vector3 m_lookingGlassPutAway;          //  The position of the Looking-Glass when not in use
-    [SerializeField]
-    private float m_lookingGlassMoveSpeed = 1.0f;   //  The speed at which the Looking-Glass is moved
+
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
 
     public Material speedEffectMaterial;
+
+    public bool stopCamMovement = false;
+
+    public GameObject dimensionPortalPrefab;
+    [SerializeField]
+    private GameObject m_currentPortal;
+    private DimensionPortal m_portalControler;
+
+
+    private Animator m_knifeAnim;
+    private FloatHolder m_knifeFloat;
 
     private void Start()
     {
@@ -93,23 +99,25 @@ public class PlayerController : MonoBehaviour {
     {
         //  Find and assign various references
         m_transform = GetComponent<Transform>();
-        m_cameraAnchor = m_transform.Find("CameraAnchor");
+        cameraAnchor = m_transform.Find("CameraAnchor");
         CreatePlayerCameras();                      //  Create thee cameras needed for each dimension
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
         m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
-        m_lookingGlass = m_cameraAnchor.Find("LookingGlass");
+        m_knife = cameraAnchor.Find("Knife");
+        m_knifeAnim = m_knife.GetComponent<Animator>();
+        m_knifeFloat = m_knife.GetComponent<FloatHolder>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
         //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-        //  Create the RenderTExture used for dimension previews
+        //  Create the RenderTexture used for dimension previews
         CreateNewDimensionPrevewTex();
         //  Switch to the normal dimension
-        SwitchDimension(Dimension.Normal, Dimension.Dark);
+        SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);
 
         //  Declare that the player is all set up
         isInitialized = true;
@@ -129,7 +137,7 @@ public class PlayerController : MonoBehaviour {
         selfCam.cullingMask = 0 << 0;
         selfCam.depth = 1;
         selfCam.clearFlags = CameraClearFlags.Depth;
-        selfCam.transform.SetParent(m_cameraAnchor);
+        selfCam.transform.SetParent(cameraAnchor);
         selfCam.transform.localPosition = Vector3.zero;
         selfCam.transform.localEulerAngles = Vector3.zero;
         selfCam.gameObject.AddComponent<DimensionTransitionEffect>();
@@ -143,9 +151,14 @@ public class PlayerController : MonoBehaviour {
             string camName = ("Camera_" + ((Dimension)i).ToString());
             Camera newCam = new GameObject(camName).AddComponent<Camera>();
             newCam.fieldOfView = m_startFov;
-            newCam.transform.SetParent(m_cameraAnchor);
+            newCam.transform.SetParent(cameraAnchor);
             newCam.transform.localPosition = Vector3.zero;
             newCam.transform.localEulerAngles = Vector3.zero;
+
+            //  Set the new camera's skybox to match the dimension
+            Skybox sky = newCam.gameObject.AddComponent<Skybox>();
+            SkyboxHolder holder = GameObject.Find("Skybox_" + ((Dimension)i).ToString()).GetComponent<SkyboxHolder>();
+            sky.material = holder.skybox;
 
             //  Add and remove the appropriate layers from the camera's culling mask
             LayerMask newMask = newCam.cullingMask;
@@ -181,7 +194,7 @@ public class PlayerController : MonoBehaviour {
 
             //  Add the new camera to the array
             m_cameras[i] = newCam;
-            Debug.Log("Added camera '" + camName + "'.");
+            if(Singletons.gameManager.debug) Debug.Log("Added camera '" + camName + "'.");
         }
 
         //  Set the self-camera's culling mask
@@ -225,6 +238,23 @@ public class PlayerController : MonoBehaviour {
                     break;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            switch (m_currentDimension)
+            {
+                case Dimension.Normal:
+                    CreateDimensionalPortal(Dimension.Dark);
+                    break;
+                case Dimension.Dark:
+                    CreateDimensionalPortal(Dimension.Normal);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
         m_lookThroughGlass = Input.GetMouseButton(0);
 
@@ -323,28 +353,37 @@ public class PlayerController : MonoBehaviour {
         }
 
         //  Move the Looking-Glass to the required position
-        if(m_lookThroughGlass)
-        {
-            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassInUse, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
-        }
-        else
-        {
-            m_lookingGlass.transform.localPosition = Vector3.Lerp(m_lookingGlass.transform.localPosition, m_lookingGlassPutAway, m_lookingGlassMoveSpeed * Time.fixedDeltaTime);
-        }
+        m_knifeAnim.SetBool("Viewing", m_lookThroughGlass);
     }
 
     //  Control the player's camera
     private void CamMovement()
     {
-        Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
-        m_body.MoveRotation(Quaternion.Euler(newY));
+        if (stopCamMovement) return;
 
-        Vector3 newX = m_cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
+        if(!m_currentPortal || m_portalControler.isOpen)
+        {
+            Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
+            m_body.MoveRotation(Quaternion.Euler(newY));
 
-        if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
-        if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
+            Vector3 newX = cameraAnchor.localEulerAngles - new Vector3(Input.GetAxis("Mouse Y") * Time.deltaTime * m_lookSensitivity, 0, 0);
 
-        m_cameraAnchor.localEulerAngles = newX;
+            if (newX.x >= 89f && newX.x <= 180f) newX.x = 89f;
+            if (newX.x <= 271f && newX.x >= 180f) newX.x = 271f;
+
+            cameraAnchor.localEulerAngles = newX;
+        }
+        else
+        {
+            float newX = cameraAnchor.localEulerAngles.x;
+            float s = 100f;
+
+            if (newX >= 45f && newX <= 315f) s = 200f;
+            //if (newX <= 271f && newX >= 180f) s = 100f;
+
+            newX = Mathf.MoveTowardsAngle(newX, 0f, s * Time.deltaTime);
+            cameraAnchor.localEulerAngles = new Vector3(newX, 0, 0);
+        }
     }
 
     private void Update()
@@ -360,8 +399,7 @@ public class PlayerController : MonoBehaviour {
         CamMovement();
 
         //  Draw two lines to show where the player is looking (for debugging)
-        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * -0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
-        Debug.DrawLine((m_cameraAnchor.position + (m_cameraAnchor.right * 0.2f)), m_cameraAnchor.forward * 5f, Color.blue);
+        Debug.DrawLine(cameraAnchor.position, cameraAnchor.forward * 5f, Color.blue);
     }
 
     private void FixedUpdate()
@@ -426,8 +464,6 @@ public class PlayerController : MonoBehaviour {
             {
                 halfWay = true;
 
-                Debug.Log("HALF WAY : " + completion);
-
                 //  Switch cameras
                 for (int i = 0; i < numberOfDimensions; i++)
                 {
@@ -446,9 +482,11 @@ public class PlayerController : MonoBehaviour {
                 if (newDimension == Dimension.Normal)
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
-                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
@@ -456,9 +494,11 @@ public class PlayerController : MonoBehaviour {
                 else
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + newDimension.ToString());
-                    m_lookingGlass.gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(0).gameObject.layer = m_col.gameObject.layer;
-                    m_lookingGlass.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+                    m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
 
                     LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
@@ -478,5 +518,94 @@ public class PlayerController : MonoBehaviour {
         m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
+    }
+    //  Switch to a different dimension immediately, with no transition
+    public void SwitchDimensionImmediate(Dimension newDimension)
+    {
+        if (!m_switchingDimensions)
+        {
+            //  If the player is not currently switching dimensions, start the co-routine
+            StartCoroutine(SwitchDimensionImmediateCoroutine(newDimension, m_currentDimension));
+        }
+    }
+    //  Switch to a different dimension, from a specific dimension, with no transition
+    public void SwitchDimensionImmediate(Dimension newDimension, Dimension fromDimesion)
+    {
+        if (!m_switchingDimensions)
+        {
+            //  If the player is not currently switching dimensions, start the co-routine
+            StartCoroutine(SwitchDimensionImmediateCoroutine(newDimension, fromDimesion));
+        }
+    }
+    //  Switch dimensions without the transition
+    private IEnumerator SwitchDimensionImmediateCoroutine(Dimension newDimension, Dimension fromDimension)
+    {
+        m_switchingDimensions = true;
+        m_switchingToDimension = newDimension;
+        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+
+        DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
+        effect.intensity = 0.0f;
+
+        int fromI = (int)fromDimension;
+        int toI = (int)m_switchingToDimension;
+
+        //  Switch cameras
+        for (int i = 0; i < numberOfDimensions; i++)
+        {
+
+            if (i == (int)m_switchingToDimension)
+            {
+                m_cameras[i].targetTexture = null;
+            }
+            else if (i == (int)fromDimension)
+            {
+                m_cameras[i].targetTexture = m_dimensionPreviewTex;
+            }
+        }
+
+        //  Switch the collider's layers
+        if (m_switchingToDimension == Dimension.Normal)
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+            m_knife.gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+        }
+        else
+        {
+            m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf_" + m_switchingToDimension.ToString());
+            m_knife.gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(0).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
+            m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
+
+            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
+            LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_switchingToDimension.ToString()));
+        }
+
+        m_switchingDimensions = false;
+        m_currentDimension = m_switchingToDimension;
+        m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
+
+        yield return null;
+    }
+
+    //  Create a dimensional portal in front of the player
+    private void CreateDimensionalPortal(Dimension destination)
+    {
+        if (m_currentPortal) GameObject.Destroy(m_currentPortal);
+
+        m_knifeAnim.SetTrigger("Slash");
+
+        m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
+        m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
+        m_portalControler.OpenPortal(destination, m_currentDimension, m_knifeFloat);
     }
 }

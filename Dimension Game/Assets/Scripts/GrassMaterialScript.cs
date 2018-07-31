@@ -21,6 +21,5 @@ public class GrassMaterialScript : MonoBehaviour {
         if (m_transform == null) return;
 
         grassMaterial.SetVector(property, m_transform.position);
-        Debug.Log(gameObject.name + " : " + m_transform.position);
     }
 }

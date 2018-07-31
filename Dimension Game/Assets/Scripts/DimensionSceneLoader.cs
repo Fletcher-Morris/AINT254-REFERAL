@@ -28,7 +28,7 @@ public class DimensionSceneLoader : MonoBehaviour {
             //  If the scene isn't loaded, load it
             if (SceneManager.GetActiveScene().name != sceneString)
             {
-                Debug.Log("Loading scene '" + sceneString + "'.");
+                if (Singletons.gameManager.debug) Debug.Log("Loading scene '" + sceneString + "'.");
                 //  Load the scene
                 SceneManager.LoadScene(sceneString, LoadSceneMode.Additive);
             }

@@ -5,6 +5,8 @@ using UnityEngine;
     //  A sington class used for storing various misc game variables
 public class GameManagerSingleton : MonoBehaviour {
 
+    public bool debug = true;
+
     private void Awake()
     {
         CheckSingleton();

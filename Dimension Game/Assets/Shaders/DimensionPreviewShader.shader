@@ -4,7 +4,8 @@ Shader "DimensionPrevewShader"
 {
 	Properties
 	{
-		
+		_Blend("Blend", 2D) = "white" {}
+		[HideInInspector] _texcoord( "", 2D ) = "white" {}
 	}
 	
 	SubShader
@@ -35,7 +36,7 @@ Shader "DimensionPrevewShader"
 			{
 				float4 vertex : POSITION;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
-				float3 ase_normal : NORMAL;
+				float4 ase_texcoord : TEXCOORD0;
 			};
 			
 			struct v2f
@@ -44,9 +45,10 @@ Shader "DimensionPrevewShader"
 				UNITY_VERTEX_OUTPUT_STEREO
 				float4 ase_texcoord : TEXCOORD0;
 				float4 ase_texcoord1 : TEXCOORD1;
-				float4 ase_texcoord2 : TEXCOORD2;
 			};
 
+			uniform sampler2D _Blend;
+			uniform float4 _Blend_ST;
 			uniform sampler2D _DimensionPrevewTex;
 			
 			v2f vert ( appdata v )
@@ -54,18 +56,14 @@ Shader "DimensionPrevewShader"
 				v2f o;
 				UNITY_SETUP_INSTANCE_ID(v);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-				float3 ase_worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-				o.ase_texcoord.xyz = ase_worldPos;
-				float3 ase_worldNormal = UnityObjectToWorldNormal(v.ase_normal);
-				o.ase_texcoord1.xyz = ase_worldNormal;
 				float4 ase_clipPos = UnityObjectToClipPos(v.vertex);
 				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord2 = screenPos;
+				o.ase_texcoord1 = screenPos;
 				
+				o.ase_texcoord.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
-				o.ase_texcoord.w = 0;
-				o.ase_texcoord1.w = 0;
+				o.ase_texcoord.zw = 0;
 				
 				v.vertex.xyz +=  float3(0,0,0) ;
 				o.vertex = UnityObjectToClipPos(v.vertex);
@@ -75,19 +73,14 @@ Shader "DimensionPrevewShader"
 			fixed4 frag (v2f i ) : SV_Target
 			{
 				fixed4 finalColor;
-				float3 ase_worldPos = i.ase_texcoord.xyz;
-				float3 ase_worldViewDir = UnityWorldSpaceViewDir(ase_worldPos);
-				ase_worldViewDir = normalize(ase_worldViewDir);
-				float3 ase_worldNormal = i.ase_texcoord1.xyz;
-				float fresnelNdotV76 = dot( ase_worldNormal, ase_worldViewDir );
-				float fresnelNode76 = ( 0.0 + 7.63 * pow( 1.0 - fresnelNdotV76, 1.5 ) );
-				float clampResult72 = clamp( fresnelNode76 , 0.0 , 1.0 );
-				float4 screenPos = i.ase_texcoord2;
+				float2 uv_Blend = i.ase_texcoord.xy * _Blend_ST.xy + _Blend_ST.zw;
+				float4 screenPos = i.ase_texcoord1;
 				float4 ase_screenPosNorm = screenPos/screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
+				float4 clampResult81 = clamp( ( tex2D( _Blend, uv_Blend ) + tex2D( _DimensionPrevewTex, ase_screenPosNorm.xy ) ) , float4( 0,0,0,0 ) , float4( 1,1,1,1 ) );
 				
 				
-				finalColor = ( clampResult72 + tex2D( _DimensionPrevewTex, ase_screenPosNorm.xy ) );
+				finalColor = clampResult81;
 				return finalColor;
 			}
 			ENDCG
@@ -99,17 +92,17 @@ Shader "DimensionPrevewShader"
 }
 /*ASEBEGIN
 Version=15401
--1913;30;1906;1004;1101.149;1700.144;1;True;True
+264;92;1307;655;1325.66;1935.047;2.075566;True;True
 Node;AmplifyShaderEditor.ScreenPosInputsNode;6;-768,-1056;Float;True;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FresnelNode;76;-768,-1280;Float;True;Standard;WorldNormal;ViewDir;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;7.63;False;3;FLOAT;1.5;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SamplerNode;80;-769.4516,-1416.182;Float;True;Property;_Blend;Blend;1;0;Create;True;0;0;False;0;a8142b596723e084c8ce1d79e94bad65;a8142b596723e084c8ce1d79e94bad65;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SamplerNode;61;-464,-1136;Float;True;Global;_DimensionPrevewTex;_DimensionPrevewTex;0;0;Create;True;0;0;True;0;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ClampOpNode;72;-464,-1280;Float;False;3;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleAddOpNode;67;-128,-1280;Float;True;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;79;96,-1280;Float;False;True;2;Float;ASEMaterialInspector;0;1;DimensionPrevewShader;0770190933193b94aaa3065e307002fa;0;0;SubShader 0 Pass 0;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;-1;False;-1;-1;False;-1;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque;True;2;0;False;False;False;False;False;False;False;False;False;False;0;;0;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.SimpleAddOpNode;67;-128,-1280;Float;True;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ClampOpNode;81;152.0448,-1274.862;Float;True;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,1,1,1;False;1;COLOR;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;87;445.9886,-1280.002;Float;False;True;2;Float;ASEMaterialInspector;0;1;DimensionPrevewShader;0770190933193b94aaa3065e307002fa;0;0;SubShader 0 Pass 0;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;-1;False;-1;-1;False;-1;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque;True;2;0;False;False;False;False;False;False;False;False;False;False;0;;0;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;61;1;6;0
-WireConnection;72;0;76;0
-WireConnection;67;0;72;0
+WireConnection;67;0;80;0
 WireConnection;67;1;61;0
-WireConnection;79;0;67;0
+WireConnection;81;0;67;0
+WireConnection;87;0;81;0
 ASEEND*/
-//CHKSM=B962583733F3D28B384C8E4D79817692EFE0C8CB
+//CHKSM=E4AE4E65954BBF502685CDEB9174D7030AAA8BBA

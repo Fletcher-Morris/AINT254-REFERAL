@@ -32,10 +32,14 @@ public static class LayerMaskTools
     //  Remove a specific layer to a layer mask
     public static void RemoveFromMask(ref LayerMask mask, string layerName)
     {
+        if (!IncludesLayer(mask, layerName)) return;
+
         mask ^= (1 << LayerMask.NameToLayer(layerName));
     }
     public static void RemoveFromMask(ref LayerMask mask, int layer)
     {
+        if (!IncludesLayer(mask, layer)) return;
+
         mask ^= (1 << layer);
     }
 }
