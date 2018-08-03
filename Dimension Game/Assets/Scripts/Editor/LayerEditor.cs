@@ -197,7 +197,7 @@ public class LayerEditor : EditorWindow {
                 probe.cullingMask = newCullingMask;
                 convertedObjects++;
             }
-            Debug.Log("Converted " + convertedObjects + " Refleuction Probes to " + newDimension.ToString() + " dimension.");
+            Debug.Log("Converted " + convertedObjects + " Reflection Probes to " + newDimension.ToString() + " dimension.");
         }
 
         if(setSkyboxHolder && skyboxHolder)
