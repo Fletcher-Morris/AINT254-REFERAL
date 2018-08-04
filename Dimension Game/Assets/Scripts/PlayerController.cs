@@ -630,20 +630,15 @@ public class PlayerController : MonoBehaviour {
     {
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
 
-        //  Switch cameras
+        //  Switch render textures
         for (int i = 0; i < m_numberOfDimensions; i++)
         {
 
             if (i == (int)destination)
             {
                 m_cameras[i].targetTexture = m_portalPreviewTex;
-            }
-            else if (m_cameras[i].targetTexture == m_portalPreviewTex)
-            {
-                m_cameras[i].targetTexture = null;
-            }
+            }            
         }
-
 
         m_knifeAnim.SetTrigger("Slash");
 
