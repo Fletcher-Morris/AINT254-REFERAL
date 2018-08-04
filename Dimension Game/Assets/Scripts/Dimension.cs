@@ -6,5 +6,6 @@ using UnityEngine;
 public enum Dimension
 {
     Normal = 0,
-    Dark = 1
+    Dark = 1,
+    Light = 2
 }
