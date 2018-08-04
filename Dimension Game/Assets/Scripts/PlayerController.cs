@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
     private Transform m_knife;                       //  A reference to the Looking-Glass' Transform
+    private int m_numberOfDimensions = 0;
 
     [Space]
     [Space]
@@ -102,7 +103,10 @@ public class PlayerController : MonoBehaviour {
         //  Find and assign various references
         m_transform = GetComponent<Transform>();
         cameraAnchor = m_transform.Find("CameraAnchor");
-        CreatePlayerCameras();                      //  Create thee cameras needed for each dimension
+        //  Get the number of dimension cameras needed
+        m_numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        //  Create the cameras needed for each dimension
+        CreatePlayerCameras();
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
@@ -127,11 +131,9 @@ public class PlayerController : MonoBehaviour {
 
     //  Generate the cameras needed for each dimension
     private void CreatePlayerCameras()
-    {
-        //  Get the number of dimension cameras needed
-        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+    {        
         //  Create a new array the size of the number of dimenions, plus the self-camera
-        m_cameras = new Camera[numberOfDimensions + 1];
+        m_cameras = new Camera[m_numberOfDimensions + 1];
 
         //  Create and set up the self-camera
         Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
@@ -147,7 +149,7 @@ public class PlayerController : MonoBehaviour {
         LayerMask selfMask = selfCam.cullingMask;
 
         //  Loop through each dimension
-        for (int i = 0; i < numberOfDimensions; i++)
+        for (int i = 0; i < m_numberOfDimensions; i++)
         {
             //  Create a new camera for the dimension
             string camName = ("Camera_" + ((Dimension)i).ToString());
@@ -166,7 +168,7 @@ public class PlayerController : MonoBehaviour {
             LayerMask newMask = newCam.cullingMask;
             if(((Dimension)i) == Dimension.Normal)
             {
-                for (int j = 0; j < numberOfDimensions; j++)
+                for (int j = 0; j < m_numberOfDimensions; j++)
                 {
                     if(i != j)
                     {
@@ -181,7 +183,7 @@ public class PlayerController : MonoBehaviour {
             {
                 LayerMaskTools.RemoveFromMask(ref newMask, "Default");
                 LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
-                for (int j = 0; j < numberOfDimensions; j++)
+                for (int j = 0; j < m_numberOfDimensions; j++)
                 {
                     if (((Dimension)j) != Dimension.Normal && i != j)
                     {
@@ -202,7 +204,7 @@ public class PlayerController : MonoBehaviour {
         //  Set the self-camera's culling mask
         selfCam.cullingMask = selfMask;
         //  Add the self-camera to the array
-        m_cameras[numberOfDimensions] = selfCam;
+        m_cameras[m_numberOfDimensions] = selfCam;
     }
 
     //  Create the RenderTexture needed for dimension preview
@@ -627,6 +629,21 @@ public class PlayerController : MonoBehaviour {
     private void CreateDimensionalPortal(Dimension destination)
     {
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
+
+        //  Switch cameras
+        for (int i = 0; i < m_numberOfDimensions; i++)
+        {
+
+            if (i == (int)destination)
+            {
+                m_cameras[i].targetTexture = m_portalPreviewTex;
+            }
+            else if (m_cameras[i].targetTexture == m_portalPreviewTex)
+            {
+                m_cameras[i].targetTexture = null;
+            }
+        }
+
 
         m_knifeAnim.SetTrigger("Slash");
 
