@@ -226,20 +226,15 @@ public class PlayerController : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            switch (m_currentDimension)
-            {
-                case Dimension.Normal:
-                    SwitchDimension(Dimension.Dark);
-                    break;
-                case Dimension.Dark:
-                    SwitchDimension(Dimension.Normal);
-                    break;
-                default:
-                    break;
-            }
+            NextDimension();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
+        {
+            PrevDimension();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
         {
             switch (m_currentDimension)
             {
@@ -263,6 +258,41 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
+    }
+
+    private void NextDimension()
+    {
+        switch (m_currentDimension)
+        {
+            case Dimension.Normal:
+                SwitchDimension(Dimension.Dark);
+                break;
+            case Dimension.Dark:
+                SwitchDimension(Dimension.Light);
+                break;
+            case Dimension.Light:
+                SwitchDimension(Dimension.Normal);
+                break;
+            default:
+                break;
+        }
+    }
+    private void PrevDimension()
+    {
+        switch (m_currentDimension)
+        {
+            case Dimension.Normal:
+                SwitchDimension(Dimension.Light);
+                break;
+            case Dimension.Dark:
+                SwitchDimension(Dimension.Normal);
+                break;
+            case Dimension.Light:
+                SwitchDimension(Dimension.Dark);
+                break;
+            default:
+                break;
+        }
     }
 
     //  Check if the player is grounded
