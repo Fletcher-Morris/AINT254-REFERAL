@@ -226,12 +226,12 @@ public class PlayerController : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            NextDimension();
+            SwitchDimension(GetNextDimension());
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            PrevDimension();
+            SwitchDimension(GetPrevDimension());
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -260,37 +260,39 @@ public class PlayerController : MonoBehaviour {
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
     }
 
-    private void NextDimension()
+    private Dimension GetNextDimension()
     {
         switch (m_currentDimension)
         {
             case Dimension.Normal:
-                SwitchDimension(Dimension.Dark);
+                return Dimension.Dark;
                 break;
             case Dimension.Dark:
-                SwitchDimension(Dimension.Light);
+                return Dimension.Light;
                 break;
             case Dimension.Light:
-                SwitchDimension(Dimension.Normal);
+                return Dimension.Normal;
                 break;
             default:
+                return Dimension.Normal;
                 break;
         }
     }
-    private void PrevDimension()
+    private Dimension GetPrevDimension()
     {
         switch (m_currentDimension)
         {
             case Dimension.Normal:
-                SwitchDimension(Dimension.Light);
+                return Dimension.Light;
                 break;
             case Dimension.Dark:
-                SwitchDimension(Dimension.Normal);
+                return Dimension.Normal;
                 break;
             case Dimension.Light:
-                SwitchDimension(Dimension.Dark);
+                return Dimension.Dark;
                 break;
             default:
+                return Dimension.Normal;
                 break;
         }
     }
