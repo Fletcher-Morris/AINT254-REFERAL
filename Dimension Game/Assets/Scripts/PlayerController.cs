@@ -250,6 +250,7 @@ public class PlayerController : MonoBehaviour {
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
     }
 
+    //  Return the next dimension
     private Dimension GetNextDimension()
     {
         switch (m_currentDimension)
@@ -264,6 +265,7 @@ public class PlayerController : MonoBehaviour {
                 return Dimension.Normal;
         }
     }
+    //  Return the previous dimension
     private Dimension GetPrevDimension()
     {
         switch (m_currentDimension)
