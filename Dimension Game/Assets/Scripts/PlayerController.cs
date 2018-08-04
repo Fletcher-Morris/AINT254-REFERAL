@@ -12,14 +12,15 @@ public class PlayerController : MonoBehaviour {
 
     //  References to various instances
     private Transform m_transform;                  //  A reference to the player's Transform
-    public Transform cameraAnchor;               //  A reference to the camera anchor
+    [HideInInspector]
+    public Transform cameraAnchor;                  //  A reference to the camera anchor
     private Camera[] m_cameras;                     //  A reference to each of the player's cameras
     private Rigidbody m_body;                       //  A reference to the player's Rigidbody
     private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
     private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
-    private Transform m_knife;               //  A reference to the Looking-Glass' Transform
+    private Transform m_knife;                       //  A reference to the Looking-Glass' Transform
 
     [Space]
     [Space]
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_endFov = 80f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
+    private RenderTexture m_portalPreviewTex;       //  A reference to the portal RenderTexture
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
 
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
@@ -210,6 +212,14 @@ public class PlayerController : MonoBehaviour {
         m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
         //  Set the global shader variable
         Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
+
+
+        //  Set the texture to a new instance
+        m_portalPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
+        //  Set the global shader variable
+        Shader.SetGlobalTexture("_PortalPrevewTex", m_portalPreviewTex);
+
+
         //  Set the previous window sise value
         m_prevWindowSize = new Vector2(Screen.width, Screen.height);
     }
