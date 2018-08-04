@@ -236,17 +236,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            switch (m_currentDimension)
-            {
-                case Dimension.Normal:
-                    CreateDimensionalPortal(Dimension.Dark);
-                    break;
-                case Dimension.Dark:
-                    CreateDimensionalPortal(Dimension.Normal);
-                    break;
-                default:
-                    break;
-            }
+            CreateDimensionalPortal(GetNextDimension());
         }
 
         if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
@@ -266,16 +256,12 @@ public class PlayerController : MonoBehaviour {
         {
             case Dimension.Normal:
                 return Dimension.Dark;
-                break;
             case Dimension.Dark:
                 return Dimension.Light;
-                break;
             case Dimension.Light:
                 return Dimension.Normal;
-                break;
             default:
                 return Dimension.Normal;
-                break;
         }
     }
     private Dimension GetPrevDimension()
@@ -284,16 +270,12 @@ public class PlayerController : MonoBehaviour {
         {
             case Dimension.Normal:
                 return Dimension.Light;
-                break;
             case Dimension.Dark:
                 return Dimension.Normal;
-                break;
             case Dimension.Light:
                 return Dimension.Dark;
-                break;
             default:
                 return Dimension.Normal;
-                break;
         }
     }
 
