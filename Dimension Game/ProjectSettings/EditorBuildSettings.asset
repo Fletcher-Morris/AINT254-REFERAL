@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/test/test_dark.unity
     guid: 0ddeaff8f7eb33c4693f7bb644fcf855
+  - enabled: 1
+    path: Assets/Scenes/test/test_light.unity
+    guid: 77b94e27367fd854f928218d7b5063bd
   m_configObjects: {}
