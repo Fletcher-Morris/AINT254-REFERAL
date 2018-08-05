@@ -269,6 +269,12 @@ public class PlayerController : MonoBehaviour {
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
     }
 
+    //  Return the current dimension
+    public Dimension GetDimension()
+    {
+        return m_currentDimension;
+    }
+
     //  Return the next dimension
     private Dimension GetNextDimension()
     {

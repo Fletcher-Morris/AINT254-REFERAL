@@ -7,7 +7,8 @@ public class DimensionPortal : MonoBehaviour {
     private bool initialised = false;
 
     [SerializeField]
-    private Dimension destination;
+    private Dimension m_destination;
+    private Dimension m_origin;
 
     private Transform m_transform;
     private PlayerController m_player;
@@ -46,17 +47,18 @@ public class DimensionPortal : MonoBehaviour {
         initialised = true;
     }
 
-    public void OpenPortal(Dimension dest, Dimension origin, FloatHolder knifeFloat)
+    public void OpenPortal(Dimension destination, Dimension origin, FloatHolder knifeFloat)
     {
         if (!initialised) InitPortal(knifeFloat);
-        destination = dest;
-        if(origin == Dimension.Normal)
+        m_destination = destination;
+        m_origin = origin;
+        if(m_origin == Dimension.Normal)
         {
             gameObject.layer = LayerMask.NameToLayer("Default");
         }
         else
         {
-            gameObject.layer = LayerMask.NameToLayer("Default_" + origin.ToString());
+            gameObject.layer = LayerMask.NameToLayer("Default_" + m_origin.ToString());
         }
         StartCoroutine(OpenPortalCoroutine());
     }
@@ -96,9 +98,9 @@ public class DimensionPortal : MonoBehaviour {
 
             m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
 
-            if (currentRange <= m_switchDistance && isOpen)
+            if (currentRange <= m_switchDistance && isOpen && m_origin == m_player.GetDimension())
             {
-                m_player.SwitchDimensionImmediate(destination);
+                m_player.SwitchDimensionImmediate(m_destination);
                 GameObject.Destroy(gameObject);
             }
         }
