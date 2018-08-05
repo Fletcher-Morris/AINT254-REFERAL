@@ -75,6 +75,9 @@ public class PlayerController : MonoBehaviour {
     private float m_endFov = 80f;
     private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
     private RenderTexture m_portalPreviewTex;       //  A reference to the portal RenderTexture
+
+    public RenderTexture[] m_renderTextures;
+
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
 
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
@@ -120,8 +123,8 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-        //  Create the RenderTexture used for dimension previews
-        CreateNewDimensionPrevewTex();
+        //  Create the render textures used for dimension previews
+        CreateRenderTextures();
         //  Switch to the normal dimension
         SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);
 
@@ -129,11 +132,13 @@ public class PlayerController : MonoBehaviour {
         isInitialized = true;
     }
 
-    //  Generate the cameras needed for each dimension
+    //  Generate the cameras and render textures needed for each dimension
     private void CreatePlayerCameras()
     {        
         //  Create a new array the size of the number of dimenions, plus the self-camera
         m_cameras = new Camera[m_numberOfDimensions + 1];
+        //  Create a new array the size of the number of dimensions
+        m_renderTextures = new RenderTexture[m_numberOfDimensions];
 
         //  Create and set up the self-camera
         Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
@@ -208,18 +213,13 @@ public class PlayerController : MonoBehaviour {
     }
 
     //  Create the RenderTexture needed for dimension preview
-    public void CreateNewDimensionPrevewTex()
+    public void CreateRenderTextures()
     {
-        //  Set the texture to a new instance
-        m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
-        //  Set the global shader variable
-        Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
-
-
-        //  Set the texture to a new instance
-        m_portalPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
-        //  Set the global shader variable
-        Shader.SetGlobalTexture("_PortalPrevewTex", m_portalPreviewTex);
+        //  Create the render textures
+        for (int i = 0; i < m_numberOfDimensions; i++)
+        {
+            m_renderTextures[i] = new RenderTexture(Screen.width, Screen.height, 24);
+        }
 
 
         //  Set the previous window sise value
@@ -266,7 +266,7 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
-        if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
+        if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
     }
 
     //  Return the current dimension
@@ -494,9 +494,6 @@ public class PlayerController : MonoBehaviour {
         DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
         effect.intensity = 1.0f;
 
-        int fromI = (int)fromDimension;
-        int toI = (int)newDimension;
-
         bool halfWay = false;
         float prevE = 0.0f;
 
@@ -522,22 +519,21 @@ public class PlayerController : MonoBehaviour {
                 for (int i = 0; i < numberOfDimensions; i++)
                 {
                     Camera cam = m_cameras[i];
-                    if (i == (int)GetNextDimension(newDimension))
-                    {
-                        cam.targetTexture = m_dimensionPreviewTex;
-                        cam.depth = -2;
-                    }
-                    else if (i == (int)newDimension)
+
+                    if (i == (int)m_switchingToDimension)
                     {
                         cam.targetTexture = null;
                         cam.depth = 0;
                     }
                     else
                     {
-                        cam.targetTexture = null;
+                        m_cameras[i].targetTexture = m_renderTextures[i];
                         cam.depth = -1;
                     }
                 }
+
+                //  Set the new render texture
+                Shader.SetGlobalTexture("_DimensionPrevewTex", m_renderTextures[(int)GetNextDimension(m_switchingToDimension)]);
 
                 //  Switch the collider's layers
                 m_groundMask = 0;
@@ -605,29 +601,25 @@ public class PlayerController : MonoBehaviour {
         DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
         effect.intensity = 0.0f;
 
-        int fromI = (int)fromDimension;
-        int toI = (int)m_switchingToDimension;
-
         //  Switch render textures
         for (int i = 0; i < numberOfDimensions; i++)
         {
             Camera cam = m_cameras[i];
-            if (i == (int)GetNextDimension(newDimension))
-            {
-                cam.targetTexture = m_dimensionPreviewTex;
-                cam.depth = -2;
-            }
-            else if (i == (int)newDimension)
+
+            if(i == (int)m_switchingToDimension)
             {
                 cam.targetTexture = null;
                 cam.depth = 0;
             }
             else
             {
-                cam.targetTexture = null;
+                m_cameras[i].targetTexture = m_renderTextures[i];
                 cam.depth = -1;
             }
         }
+
+        //  Set the new render texture
+        Shader.SetGlobalTexture("_DimensionPrevewTex", m_renderTextures[(int)GetNextDimension(m_switchingToDimension)]);
 
         //  Switch the collider's layers
         m_groundMask = 0;
@@ -665,19 +657,11 @@ public class PlayerController : MonoBehaviour {
     {
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
 
-        //  Switch render textures
-        for (int i = 0; i < m_numberOfDimensions; i++)
-        {
-            if (i == (int)destination)
-            {
-                m_cameras[i].targetTexture = m_portalPreviewTex;
-            }            
-        }
-
         m_knifeAnim.SetTrigger("Slash");
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
         m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
+        Shader.SetGlobalTexture("_PortalPrevewTex", m_renderTextures[(int)destination]);
         m_portalControler.OpenPortal(destination, m_currentDimension, m_knifeFloat);
     }
 }
