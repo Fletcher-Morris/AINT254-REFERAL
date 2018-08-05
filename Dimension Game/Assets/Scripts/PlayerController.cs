@@ -534,6 +534,7 @@ public class PlayerController : MonoBehaviour {
                 }
 
                 //  Switch the collider's layers
+                m_groundMask = 0;
                 if (newDimension == Dimension.Normal)
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
@@ -542,8 +543,6 @@ public class PlayerController : MonoBehaviour {
                     m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                 }
                 else
@@ -554,8 +553,6 @@ public class PlayerController : MonoBehaviour {
                     m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
                 }
             }
@@ -627,6 +624,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         //  Switch the collider's layers
+        m_groundMask = 0;
         if (m_switchingToDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
@@ -635,8 +633,6 @@ public class PlayerController : MonoBehaviour {
             m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
         }
         else
@@ -647,8 +643,6 @@ public class PlayerController : MonoBehaviour {
             m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_switchingToDimension.ToString()));
         }
 
