@@ -253,7 +253,14 @@ public class PlayerController : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
-        m_lookThroughGlass = Input.GetMouseButton(0);
+        if (Input.GetMouseButtonDown(0))
+        {
+            m_lookThroughGlass = true;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            m_lookThroughGlass = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
 
@@ -265,7 +272,17 @@ public class PlayerController : MonoBehaviour {
     //  Return the next dimension
     private Dimension GetNextDimension()
     {
-        switch (m_currentDimension)
+        return GetNextDimension(m_currentDimension);
+    }
+    //  Return the previous dimension
+    private Dimension GetPrevDimension()
+    {
+        return GetPrevDimension(m_currentDimension);
+    }
+    //  Return the next dimension
+    private Dimension GetNextDimension(Dimension dim)
+    {
+        switch (dim)
         {
             case Dimension.Normal:
                 return Dimension.Dark;
@@ -278,9 +295,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
     //  Return the previous dimension
-    private Dimension GetPrevDimension()
+    private Dimension GetPrevDimension(Dimension dim)
     {
-        switch (m_currentDimension)
+        switch (dim)
         {
             case Dimension.Normal:
                 return Dimension.Light;
@@ -492,17 +509,24 @@ public class PlayerController : MonoBehaviour {
             {
                 halfWay = true;
 
-                //  Switch cameras
+                //  Switch render textures
                 for (int i = 0; i < numberOfDimensions; i++)
                 {
-
-                    if (i == (int)newDimension)
+                    Camera cam = m_cameras[i];
+                    if (i == (int)GetNextDimension(newDimension))
                     {
-                        m_cameras[i].targetTexture = null;
+                        cam.targetTexture = m_dimensionPreviewTex;
+                        cam.depth = -2;
                     }
-                    else if (i == (int)fromDimension)
+                    else if (i == (int)newDimension)
                     {
-                        m_cameras[i].targetTexture = m_dimensionPreviewTex;
+                        cam.targetTexture = null;
+                        cam.depth = 0;
+                    }
+                    else
+                    {
+                        cam.targetTexture = null;
+                        cam.depth = -1;
                     }
                 }
 
@@ -578,17 +602,24 @@ public class PlayerController : MonoBehaviour {
         int fromI = (int)fromDimension;
         int toI = (int)m_switchingToDimension;
 
-        //  Switch cameras
+        //  Switch render textures
         for (int i = 0; i < numberOfDimensions; i++)
         {
-
-            if (i == (int)m_switchingToDimension)
+            Camera cam = m_cameras[i];
+            if (i == (int)GetNextDimension(newDimension))
             {
-                m_cameras[i].targetTexture = null;
+                cam.targetTexture = m_dimensionPreviewTex;
+                cam.depth = -2;
             }
-            else if (i == (int)fromDimension)
+            else if (i == (int)newDimension)
             {
-                m_cameras[i].targetTexture = m_dimensionPreviewTex;
+                cam.targetTexture = null;
+                cam.depth = 0;
+            }
+            else
+            {
+                cam.targetTexture = null;
+                cam.depth = -1;
             }
         }
 
@@ -620,6 +651,7 @@ public class PlayerController : MonoBehaviour {
 
         m_switchingDimensions = false;
         m_currentDimension = m_switchingToDimension;
+
         m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
@@ -633,7 +665,6 @@ public class PlayerController : MonoBehaviour {
         //  Switch render textures
         for (int i = 0; i < m_numberOfDimensions; i++)
         {
-
             if (i == (int)destination)
             {
                 m_cameras[i].targetTexture = m_portalPreviewTex;
