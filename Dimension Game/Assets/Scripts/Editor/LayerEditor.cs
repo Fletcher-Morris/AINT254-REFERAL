@@ -21,12 +21,14 @@ public class LayerEditor : EditorWindow {
     bool setLightCullingMask = true;
     bool setReflectionCullingMask = true;
     bool setSkyboxHolder= true;
+    bool setGems = true;
 
 
     List<GameObject> normalObjects;
     List<Camera> cameraObjects;
     List<Light> lightObjects;
     List<ReflectionProbe> reflectionProbeObjects;
+    List<Gem> gemObjects;
     GameObject skyboxHolder;
 
 
@@ -53,6 +55,7 @@ public class LayerEditor : EditorWindow {
         setLightCullingMask = EditorGUILayout.Toggle("Set Light Culling", setLightCullingMask);
         setReflectionCullingMask = EditorGUILayout.Toggle("Set Reflection Culling", setReflectionCullingMask);
         setSkyboxHolder = EditorGUILayout.Toggle("Set Skybox Holder", setSkyboxHolder);
+        setGems = EditorGUILayout.Toggle("Set Gems", setGems);
 
 
         EditorGUILayout.Separator();
@@ -96,6 +99,7 @@ public class LayerEditor : EditorWindow {
         cameraObjects = new List<Camera>();
         lightObjects = new List<Light>();
         reflectionProbeObjects = new List<ReflectionProbe>();
+        gemObjects = new List<Gem>();
 
         foreach(GameObject go in UnityEngine.Object.FindObjectsOfType<GameObject>())
         {
@@ -132,6 +136,11 @@ public class LayerEditor : EditorWindow {
                     reflectionProbeObjects.Add(go.GetComponent<ReflectionProbe>());
                 }
 
+                if(go.GetComponent<Gem>())
+                {
+                    gemObjects.Add(go.GetComponent<Gem>());
+                }
+
                 normalObjects.Add(go);
             }
 
@@ -141,12 +150,13 @@ public class LayerEditor : EditorWindow {
             }
         }
 
-        Debug.Log(normalObjects.Count + " GameObjects, " + cameraObjects.Count + " Cameras, " + lightObjects.Count + " Lights gathered.");
+        Debug.Log(normalObjects.Count + " GameObjects, " + cameraObjects.Count + " Cameras, " + lightObjects.Count + " Lights, " + reflectionProbeObjects.Count + " Reflection Probes, " + gemObjects.Count + " Gems gathered.");
     }
 
     private void ConvertLayers()
     {
         int convertedObjects = 0;
+
         foreach (GameObject obj in normalObjects)
         {
             string currentLayer = LayerMask.LayerToName(obj.layer);
@@ -159,11 +169,9 @@ public class LayerEditor : EditorWindow {
             obj.layer = LayerMask.NameToLayer(currentLayer);
             convertedObjects++;
         }
-        Debug.Log("Converted " + convertedObjects + " GameObjects to " + newDimension.ToString() + " dimension.");
 
         if(setCameraCullingMasks)
         {
-            convertedObjects = 0;
             foreach (Camera cam in cameraObjects)
             {
                 LayerMask newCullingMask = cam.cullingMask;
@@ -171,12 +179,10 @@ public class LayerEditor : EditorWindow {
                 cam.cullingMask = newCullingMask;
                 convertedObjects++;
             }
-            Debug.Log("Converted " + convertedObjects + " Cameras to " + newDimension.ToString() + " dimension.");
         }
 
         if (setLightCullingMask)
         {
-            convertedObjects = 0;
             foreach (Light light in lightObjects)
             {
                 LayerMask newCullingMask = light.cullingMask;
@@ -184,12 +190,10 @@ public class LayerEditor : EditorWindow {
                 light.cullingMask = newCullingMask;
                 convertedObjects++;
             }
-            Debug.Log("Converted " + convertedObjects + " Lights to " + newDimension.ToString() + " dimension.");
         }
 
         if (setReflectionCullingMask)
         {
-            convertedObjects = 0;
             foreach (ReflectionProbe probe in reflectionProbeObjects)
             {
                 LayerMask newCullingMask = probe.cullingMask;
@@ -197,13 +201,23 @@ public class LayerEditor : EditorWindow {
                 probe.cullingMask = newCullingMask;
                 convertedObjects++;
             }
-            Debug.Log("Converted " + convertedObjects + " Reflection Probes to " + newDimension.ToString() + " dimension.");
         }
 
         if(setSkyboxHolder && skyboxHolder)
         {
             skyboxHolder.name = ("Skybox_" + newDimension.ToString());
         }
+
+        if(setGems)
+        {
+            foreach (Gem gem in gemObjects)
+            {
+                gem.dimension = newDimension;
+                convertedObjects++;
+            }
+        }
+
+        Debug.Log("Converted " + convertedObjects + " objects to " + newDimension.ToString() + " dimension.");
 
         currentDimension = newDimension;
     }

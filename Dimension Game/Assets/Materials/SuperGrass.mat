@@ -85,9 +85,13 @@ Material:
     - _Offset: 1
     - _Parallax: 0.02
     - _Radius: 1
+    - _Scale: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _TessMax: 10
+    - _TessMin: 2
+    - _TessValue: 15
     - _UVSec: 0
     - _ZWrite: 1
     - __dirty: 0
@@ -96,5 +100,5 @@ Material:
     - _BaseColour: {r: 0.32156855, g: 0.22745097, b: 0.11764706, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PlayerPos: {r: 0, g: 0, b: -3, a: 0}
+    - _PlayerPos: {r: 0.37, g: 0, b: -2.728, a: 0}
     - _TipColour: {r: 0.58431375, g: 0.7490196, b: 0.20784315, a: 1}
