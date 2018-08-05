@@ -501,9 +501,12 @@ public class PlayerController : MonoBehaviour {
             float e = m_curve.Evaluate(completion);
 
             effect.intensity = e;
-            m_cameras[fromI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
-            m_cameras[toI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
-            m_cameras[numberOfDimensions].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            float newFov = Mathf.Lerp(m_startFov, m_endFov, e);
+
+            for (int i = 0; i < numberOfDimensions; i++)
+            {
+                m_cameras[i].fieldOfView = newFov;
+            }
 
             if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
             {
