@@ -12,14 +12,16 @@ public class PlayerController : MonoBehaviour {
 
     //  References to various instances
     private Transform m_transform;                  //  A reference to the player's Transform
-    public Transform cameraAnchor;               //  A reference to the camera anchor
+    [HideInInspector]
+    public Transform cameraAnchor;                  //  A reference to the camera anchor
     private Camera[] m_cameras;                     //  A reference to each of the player's cameras
     private Rigidbody m_body;                       //  A reference to the player's Rigidbody
     private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
     private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
     private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
-    private Transform m_knife;               //  A reference to the Looking-Glass' Transform
+    private Transform m_knife;                       //  A reference to the Looking-Glass' Transform
+    private int m_numberOfDimensions = 0;
 
     [Space]
     [Space]
@@ -71,7 +73,9 @@ public class PlayerController : MonoBehaviour {
     private float m_startFov = 60f;
     [SerializeField]
     private float m_endFov = 80f;
-    private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
+
+    public RenderTexture[] m_renderTextures;        //  An array of the render textures used for previews
+
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
 
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
@@ -100,7 +104,10 @@ public class PlayerController : MonoBehaviour {
         //  Find and assign various references
         m_transform = GetComponent<Transform>();
         cameraAnchor = m_transform.Find("CameraAnchor");
-        CreatePlayerCameras();                      //  Create thee cameras needed for each dimension
+        //  Get the number of dimension cameras needed
+        m_numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+        //  Create the cameras needed for each dimension
+        CreatePlayerCameras();
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
@@ -114,8 +121,8 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
-        //  Create the RenderTexture used for dimension previews
-        CreateNewDimensionPrevewTex();
+        //  Create the render textures used for dimension previews
+        CreateRenderTextures();
         //  Switch to the normal dimension
         SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);
 
@@ -123,13 +130,13 @@ public class PlayerController : MonoBehaviour {
         isInitialized = true;
     }
 
-    //  Generate the cameras needed for each dimension
+    //  Generate the cameras and render textures needed for each dimension
     private void CreatePlayerCameras()
-    {
-        //  Get the number of dimension cameras needed
-        int numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
+    {        
         //  Create a new array the size of the number of dimenions, plus the self-camera
-        m_cameras = new Camera[numberOfDimensions + 1];
+        m_cameras = new Camera[m_numberOfDimensions + 1];
+        //  Create a new array the size of the number of dimensions
+        m_renderTextures = new RenderTexture[m_numberOfDimensions];
 
         //  Create and set up the self-camera
         Camera selfCam = new GameObject("Camera_self").AddComponent<Camera>();
@@ -145,7 +152,7 @@ public class PlayerController : MonoBehaviour {
         LayerMask selfMask = selfCam.cullingMask;
 
         //  Loop through each dimension
-        for (int i = 0; i < numberOfDimensions; i++)
+        for (int i = 0; i < m_numberOfDimensions; i++)
         {
             //  Create a new camera for the dimension
             string camName = ("Camera_" + ((Dimension)i).ToString());
@@ -164,7 +171,7 @@ public class PlayerController : MonoBehaviour {
             LayerMask newMask = newCam.cullingMask;
             if(((Dimension)i) == Dimension.Normal)
             {
-                for (int j = 0; j < numberOfDimensions; j++)
+                for (int j = 0; j < m_numberOfDimensions; j++)
                 {
                     if(i != j)
                     {
@@ -179,7 +186,7 @@ public class PlayerController : MonoBehaviour {
             {
                 LayerMaskTools.RemoveFromMask(ref newMask, "Default");
                 LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
-                for (int j = 0; j < numberOfDimensions; j++)
+                for (int j = 0; j < m_numberOfDimensions; j++)
                 {
                     if (((Dimension)j) != Dimension.Normal && i != j)
                     {
@@ -200,16 +207,19 @@ public class PlayerController : MonoBehaviour {
         //  Set the self-camera's culling mask
         selfCam.cullingMask = selfMask;
         //  Add the self-camera to the array
-        m_cameras[numberOfDimensions] = selfCam;
+        m_cameras[m_numberOfDimensions] = selfCam;
     }
 
     //  Create the RenderTexture needed for dimension preview
-    public void CreateNewDimensionPrevewTex()
+    public void CreateRenderTextures()
     {
-        //  Set the texture to a new instance
-        m_dimensionPreviewTex = new RenderTexture(Screen.width, Screen.height, 24);
-        //  Set the global shader variable
-        Shader.SetGlobalTexture("_DimensionPrevewTex", m_dimensionPreviewTex);
+        //  Create the render textures
+        for (int i = 0; i < m_numberOfDimensions; i++)
+        {
+            m_renderTextures[i] = new RenderTexture(Screen.width, Screen.height, 24);
+        }
+
+
         //  Set the previous window sise value
         m_prevWindowSize = new Vector2(Screen.width, Screen.height);
     }
@@ -226,43 +236,82 @@ public class PlayerController : MonoBehaviour {
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            switch (m_currentDimension)
-            {
-                case Dimension.Normal:
-                    SwitchDimension(Dimension.Dark);
-                    break;
-                case Dimension.Dark:
-                    SwitchDimension(Dimension.Normal);
-                    break;
-                default:
-                    break;
-            }
+            SwitchDimension(GetNextDimension());
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            switch (m_currentDimension)
-            {
-                case Dimension.Normal:
-                    CreateDimensionalPortal(Dimension.Dark);
-                    break;
-                case Dimension.Dark:
-                    CreateDimensionalPortal(Dimension.Normal);
-                    break;
-                default:
-                    break;
-            }
+            SwitchDimension(GetPrevDimension());
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            CreateDimensionalPortal(GetNextDimension());
         }
 
         if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
 
-        m_lookThroughGlass = Input.GetMouseButton(0);
+        if (Input.GetMouseButtonDown(0))
+        {
+            m_lookThroughGlass = true;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            m_lookThroughGlass = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
 
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
-        if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateNewDimensionPrevewTex();
+        if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
+    }
+
+    //  Return the current dimension
+    public Dimension GetDimension()
+    {
+        return m_currentDimension;
+    }
+
+    //  Return the next dimension
+    private Dimension GetNextDimension()
+    {
+        return GetNextDimension(m_currentDimension);
+    }
+    //  Return the previous dimension
+    private Dimension GetPrevDimension()
+    {
+        return GetPrevDimension(m_currentDimension);
+    }
+    //  Return the next dimension
+    private Dimension GetNextDimension(Dimension dim)
+    {
+        switch (dim)
+        {
+            case Dimension.Normal:
+                return Dimension.Dark;
+            case Dimension.Dark:
+                return Dimension.Light;
+            case Dimension.Light:
+                return Dimension.Normal;
+            default:
+                return Dimension.Normal;
+        }
+    }
+    //  Return the previous dimension
+    private Dimension GetPrevDimension(Dimension dim)
+    {
+        switch (dim)
+        {
+            case Dimension.Normal:
+                return Dimension.Light;
+            case Dimension.Dark:
+                return Dimension.Normal;
+            case Dimension.Light:
+                return Dimension.Dark;
+            default:
+                return Dimension.Normal;
+        }
     }
 
     //  Check if the player is grounded
@@ -443,9 +492,6 @@ public class PlayerController : MonoBehaviour {
         DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
         effect.intensity = 1.0f;
 
-        int fromI = (int)fromDimension;
-        int toI = (int)newDimension;
-
         bool halfWay = false;
         float prevE = 0.0f;
 
@@ -456,29 +502,39 @@ public class PlayerController : MonoBehaviour {
             float e = m_curve.Evaluate(completion);
 
             effect.intensity = e;
-            m_cameras[fromI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
-            m_cameras[toI].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
-            m_cameras[numberOfDimensions].fieldOfView = Mathf.Lerp(m_startFov, m_endFov, e);
+            float newFov = Mathf.Lerp(m_startFov, m_endFov, e);
+
+            for (int i = 0; i < numberOfDimensions; i++)
+            {
+                m_cameras[i].fieldOfView = newFov;
+            }
 
             if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
             {
                 halfWay = true;
 
-                //  Switch cameras
+                //  Switch render textures
                 for (int i = 0; i < numberOfDimensions; i++)
                 {
+                    Camera cam = m_cameras[i];
 
-                    if (i == (int)newDimension)
+                    if (i == (int)m_switchingToDimension)
                     {
-                        m_cameras[i].targetTexture = null;
+                        cam.targetTexture = null;
+                        cam.depth = 0;
                     }
-                    else if (i == (int)fromDimension)
+                    else
                     {
-                        m_cameras[i].targetTexture = m_dimensionPreviewTex;
+                        m_cameras[i].targetTexture = m_renderTextures[i];
+                        cam.depth = -1;
                     }
                 }
 
+                //  Set the new render texture
+                Shader.SetGlobalTexture("_DimensionPrevewTex", m_renderTextures[(int)GetNextDimension(m_switchingToDimension)]);
+
                 //  Switch the collider's layers
+                m_groundMask = 0;
                 if (newDimension == Dimension.Normal)
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
@@ -487,8 +543,6 @@ public class PlayerController : MonoBehaviour {
                     m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                 }
                 else
@@ -499,8 +553,6 @@ public class PlayerController : MonoBehaviour {
                     m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
                     m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-                    LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
                     LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + newDimension.ToString()));
                 }
             }
@@ -547,24 +599,28 @@ public class PlayerController : MonoBehaviour {
         DimensionTransitionEffect effect = m_cameras[numberOfDimensions].GetComponent<DimensionTransitionEffect>();
         effect.intensity = 0.0f;
 
-        int fromI = (int)fromDimension;
-        int toI = (int)m_switchingToDimension;
-
-        //  Switch cameras
+        //  Switch render textures
         for (int i = 0; i < numberOfDimensions; i++)
         {
+            Camera cam = m_cameras[i];
 
-            if (i == (int)m_switchingToDimension)
+            if(i == (int)m_switchingToDimension)
             {
-                m_cameras[i].targetTexture = null;
+                cam.targetTexture = null;
+                cam.depth = 0;
             }
-            else if (i == (int)fromDimension)
+            else
             {
-                m_cameras[i].targetTexture = m_dimensionPreviewTex;
+                m_cameras[i].targetTexture = m_renderTextures[i];
+                cam.depth = -1;
             }
         }
 
+        //  Set the new render texture
+        Shader.SetGlobalTexture("_DimensionPrevewTex", m_renderTextures[(int)GetNextDimension(m_switchingToDimension)]);
+
         //  Switch the collider's layers
+        m_groundMask = 0;
         if (m_switchingToDimension == Dimension.Normal)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
@@ -573,8 +629,6 @@ public class PlayerController : MonoBehaviour {
             m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + fromDimension.ToString()));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
         }
         else
@@ -585,13 +639,12 @@ public class PlayerController : MonoBehaviour {
             m_knife.GetChild(1).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(2).gameObject.layer = m_col.gameObject.layer;
             m_knife.GetChild(3).gameObject.layer = m_col.gameObject.layer;
-
-            LayerMaskTools.RemoveFromMask(ref m_groundMask, LayerMask.NameToLayer("Default"));
             LayerMaskTools.AddToMask(ref m_groundMask, LayerMask.NameToLayer("Default_" + m_switchingToDimension.ToString()));
         }
 
         m_switchingDimensions = false;
         m_currentDimension = m_switchingToDimension;
+
         m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
@@ -606,6 +659,7 @@ public class PlayerController : MonoBehaviour {
 
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
         m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
+        Shader.SetGlobalTexture("_PortalPrevewTex", m_renderTextures[(int)destination]);
         m_portalControler.OpenPortal(destination, m_currentDimension, m_knifeFloat);
     }
 }
