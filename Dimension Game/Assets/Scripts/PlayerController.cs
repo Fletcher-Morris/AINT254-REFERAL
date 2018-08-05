@@ -73,10 +73,8 @@ public class PlayerController : MonoBehaviour {
     private float m_startFov = 60f;
     [SerializeField]
     private float m_endFov = 80f;
-    private RenderTexture m_dimensionPreviewTex;    //  A reference to the dimension preview RenderTexture
-    private RenderTexture m_portalPreviewTex;       //  A reference to the portal RenderTexture
 
-    public RenderTexture[] m_renderTextures;
+    public RenderTexture[] m_renderTextures;        //  An array of the render textures used for previews
 
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
 
