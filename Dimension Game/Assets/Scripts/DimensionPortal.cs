@@ -10,6 +10,9 @@ public class DimensionPortal : MonoBehaviour {
     private Dimension m_destination;
     private Dimension m_origin;
 
+    [SerializeField]
+    private PortalState m_state;
+
     private Transform m_transform;
     private PlayerController m_player;
     private FloatHolder m_knifeFloat;
@@ -29,7 +32,6 @@ public class DimensionPortal : MonoBehaviour {
 
     public float effectFactor = 0f;
     public AnimationCurve effectCurve = AnimationCurve.EaseInOut(0.0f,0.0f,1.0f,1.0f);
-    public bool isOpen = false;
 
     private Vector3 m_originalPosition;
 
@@ -43,6 +45,7 @@ public class DimensionPortal : MonoBehaviour {
         m_knifeFloat = knifeFloat;
         startScale = m_transform.localScale;
         endScale = new Vector3(30f, 30f, 1f);
+        m_state = PortalState.Opening;
 
         initialised = true;
     }
@@ -67,13 +70,13 @@ public class DimensionPortal : MonoBehaviour {
     {
         float completion = 0.0f;
 
-        while(!isOpen)
+        while(m_state == PortalState.Opening)
         {
             completion = Mathf.Clamp01(m_knifeFloat.value);
 
             m_renderer.material.SetFloat("_Completion", completion);
 
-            if (completion >= 1.0f) isOpen = true;
+            if (completion >= 1.0f) m_state = PortalState.Open;
 
             yield return new WaitForEndOfFrame();
         }
@@ -98,7 +101,7 @@ public class DimensionPortal : MonoBehaviour {
 
             m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
 
-            if (currentRange <= m_switchDistance && isOpen && m_origin == m_player.GetDimension())
+            if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension())
             {
                 m_player.SwitchDimensionImmediate(m_destination);
                 GameObject.Destroy(gameObject);
@@ -121,4 +124,16 @@ public class DimensionPortal : MonoBehaviour {
         Quaternion rotation = Quaternion.LookRotation(relativePos);
         m_transform.rotation = rotation;
     }
+
+    public PortalState GetState()
+    {
+        return m_state;
+    }
+}
+
+public enum PortalState
+{
+    Opening,
+    Open,
+    Closing
 }

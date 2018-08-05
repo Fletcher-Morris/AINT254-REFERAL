@@ -410,7 +410,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (stopCamMovement) return;
 
-        if(!m_currentPortal || m_portalControler.isOpen)
+        if(!m_currentPortal || m_portalControler.GetState() == PortalState.Open)
         {
             Vector3 newY = m_transform.localEulerAngles += new Vector3(0, Input.GetAxis("Mouse X") * Time.deltaTime * m_lookSensitivity, 0);
             m_body.MoveRotation(Quaternion.Euler(newY));
@@ -463,7 +463,7 @@ public class PlayerController : MonoBehaviour {
     //  Switch to a different dimension
     public void SwitchDimension(Dimension newDimension)
     {
-        if(!m_switchingDimensions)
+        if(!m_switchingDimensions && (!m_currentPortal || m_portalControler.GetState() == PortalState.Open))
         {
             //  If the player is not currently switching dimensions, start the co-routine
             StartCoroutine(SwitchDimensionCoroutine(newDimension, m_currentDimension));
@@ -653,6 +653,8 @@ public class PlayerController : MonoBehaviour {
     //  Create a dimensional portal in front of the player
     private void CreateDimensionalPortal(Dimension destination)
     {
+        if (m_switchingDimensions) return;
+
         if (m_currentPortal) GameObject.Destroy(m_currentPortal);
 
         m_knifeAnim.SetTrigger("Slash");
