@@ -208,6 +208,7 @@ MonoBehaviour:
   dimension: 0
   m_rotate: 1
   m_bob: 0
+  m_collectable: 1
   t: 0
 --- !u!135 &135745016918528156
 SphereCollider:

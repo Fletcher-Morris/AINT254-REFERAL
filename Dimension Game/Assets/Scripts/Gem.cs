@@ -11,6 +11,8 @@ public class Gem : MonoBehaviour {
     private bool m_rotate = true;
     [SerializeField]
     private bool m_bob = true;
+    [SerializeField]
+    private bool m_collectable = true;
 
     private Transform m_transform;
     private Transform m_player;
@@ -47,7 +49,7 @@ public class Gem : MonoBehaviour {
             newPos.y = t;
         }
 
-        if(m_player)
+        if(m_player && m_collectable)
         {
             m_currentRange = Vector3.Distance(m_transform.position, m_player.position);
 
