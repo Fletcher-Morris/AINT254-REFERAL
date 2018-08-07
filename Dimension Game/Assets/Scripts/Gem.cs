@@ -33,6 +33,9 @@ public class Gem : MonoBehaviour {
 
     public float t = 0;
 
+    private Transform m_endPos;
+    private Vector3 m_endScale;
+
     private void Start()
     {
         m_transform = GetComponent<Transform>();
@@ -41,6 +44,8 @@ public class Gem : MonoBehaviour {
         m_originalPosition = m_transform.position;
         m_rotationAxis = m_transform.up;
         m_bobRdm = Random.Range(0f, 1f);
+        m_endPos = GameObject.Find("GemPosition").transform;
+        m_endScale = new Vector3(0.4f, 0.4f, 0.4f);
 
         if(m_randomColour)
         {
@@ -56,17 +61,25 @@ public class Gem : MonoBehaviour {
 
         if(m_player && m_collectable)
         {
-            m_currentRange = Vector3.Distance(m_transform.position, m_player.cameraAnchor.transform.position);
+            m_currentRange = Vector3.Distance(m_transform.position, m_player.transform.position);
 
             if(m_currentRange <= m_movementRange)
             {
-                newPos = Vector3.MoveTowards(m_transform.position, m_player.cameraAnchor.transform.position, 10 * Time.deltaTime);
-                m_isBeingCollected = true;
-                if (m_currentRange <= m_collectionRange) CollectGem();
+                if(!m_isBeingCollected)
+                {
+                    gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
+                    m_transform.parent = m_endPos.parent;
+                }
+
+                m_isBeingCollected = true;                
             }
-            else
+
+            if(m_isBeingCollected)
             {
-                m_isBeingCollected = false;
+                m_currentRange = Vector3.Distance(m_transform.localPosition, m_endPos.localPosition);
+                newPos = Vector3.MoveTowards(m_transform.position, m_endPos.position, 20 * Time.deltaTime);
+                m_transform.localScale = Vector3.MoveTowards(m_transform.localScale, m_endScale, 20 * Time.deltaTime);
+                if (m_currentRange <= m_collectionRange) CollectGem();
             }
         }
 

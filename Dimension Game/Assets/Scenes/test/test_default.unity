@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 145080706}
   - component: {fileID: 145080705}
   m_Layer: 0
-  m_Name: Skybox_Normal
+  m_Name: Skybox_Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -326,7 +326,7 @@ Light:
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2147459071
+    m_Bits: 2147360767
   m_Lightmapping: 1
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -368,23 +368,31 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.69096047
+      value: -0.3950366
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.15024523
+      value: 0.5864692
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.15024523
+      value: 0.5864692
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.w
-      value: -0.69096047
+      value: 0.3950366
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_RootOrder
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708529186799412, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fac59e4e52a27764489814175a025566, type: 2}
@@ -830,19 +838,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.67641103
+      value: -0.34590816
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.20607793
+      value: 0.61672324
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.20607793
+      value: 0.61672324
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.w
-      value: -0.67641103
+      value: 0.34590816
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
@@ -910,19 +918,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.6978768
+      value: -0.4251884
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.11387697
+      value: 0.564991
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.11387697
+      value: 0.564991
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.w
-      value: -0.6978768
+      value: 0.4251884
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_RootOrder
@@ -931,6 +939,14 @@ Prefab:
     - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_Name
       value: Diamond (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708529186799412, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fac59e4e52a27764489814175a025566, type: 2}
@@ -956,19 +972,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.7006186
+      value: -0.4398331
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.09556955
+      value: 0.5536667
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.09556955
+      value: 0.5536667
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.w
-      value: -0.7006186
+      value: 0.4398331
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_RootOrder
@@ -977,6 +993,14 @@ Prefab:
     - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_Name
       value: Diamond (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708529186799412, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fac59e4e52a27764489814175a025566, type: 2}
@@ -1002,19 +1026,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.6946568
+      value: -0.4102531
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.13210602
+      value: 0.57592744
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.13210602
+      value: 0.57592744
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_LocalRotation.w
-      value: -0.6946568
+      value: 0.4102531
       objectReference: {fileID: 0}
     - target: {fileID: 4388502114429636, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_RootOrder
@@ -1023,6 +1047,14 @@ Prefab:
     - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
       propertyPath: m_Name
       value: Diamond (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1708529186799412, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836643005879722, guid: fac59e4e52a27764489814175a025566, type: 2}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fac59e4e52a27764489814175a025566, type: 2}

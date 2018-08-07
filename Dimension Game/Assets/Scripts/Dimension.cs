@@ -5,7 +5,7 @@ using UnityEngine;
     //  An enum class for each dimension
 public enum Dimension
 {
-    Normal = 0,
+    Default = 0,
     Dark = 1,
     Light = 2
 }

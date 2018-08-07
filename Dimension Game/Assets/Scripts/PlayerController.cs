@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour {
         //  Create the render textures used for dimension previews
         CreateRenderTextures();
         //  Switch to the normal dimension
-        SwitchDimensionImmediate(Dimension.Normal, Dimension.Dark);
+        SwitchDimensionImmediate(Dimension.Default, Dimension.Dark);
 
         //  Declare that the player is all set up
         isInitialized = true;
@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour {
 
             //  Add and remove the appropriate layers from the camera's culling mask
             LayerMask newMask = newCam.cullingMask;
-            if(((Dimension)i) == Dimension.Normal)
+            if(((Dimension)i) == Dimension.Default)
             {
                 for (int j = 0; j < m_numberOfDimensions; j++)
                 {
@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour {
                 LayerMaskTools.RemoveFromMask(ref newMask, "PlayerSelf");
                 for (int j = 0; j < m_numberOfDimensions; j++)
                 {
-                    if (((Dimension)j) != Dimension.Normal && i != j)
+                    if (((Dimension)j) != Dimension.Default && i != j)
                     {
                         LayerMaskTools.RemoveFromMask(ref newMask, ("Default_" + ((Dimension)j).ToString()));
                         LayerMaskTools.RemoveFromMask(ref newMask, ("PlayerSelf_" + ((Dimension)j).ToString()));
@@ -288,14 +288,14 @@ public class PlayerController : MonoBehaviour {
     {
         switch (dim)
         {
-            case Dimension.Normal:
+            case Dimension.Default:
                 return Dimension.Dark;
             case Dimension.Dark:
                 return Dimension.Light;
             case Dimension.Light:
-                return Dimension.Normal;
+                return Dimension.Default;
             default:
-                return Dimension.Normal;
+                return Dimension.Default;
         }
     }
     //  Return the previous dimension
@@ -303,14 +303,14 @@ public class PlayerController : MonoBehaviour {
     {
         switch (dim)
         {
-            case Dimension.Normal:
+            case Dimension.Default:
                 return Dimension.Light;
             case Dimension.Dark:
-                return Dimension.Normal;
+                return Dimension.Default;
             case Dimension.Light:
                 return Dimension.Dark;
             default:
-                return Dimension.Normal;
+                return Dimension.Default;
         }
     }
 
@@ -535,7 +535,7 @@ public class PlayerController : MonoBehaviour {
 
                 //  Switch the collider's layers
                 m_groundMask = 0;
-                if (newDimension == Dimension.Normal)
+                if (newDimension == Dimension.Default)
                 {
                     m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
                     m_knife.gameObject.layer = m_col.gameObject.layer;
@@ -621,7 +621,7 @@ public class PlayerController : MonoBehaviour {
 
         //  Switch the collider's layers
         m_groundMask = 0;
-        if (m_switchingToDimension == Dimension.Normal)
+        if (m_switchingToDimension == Dimension.Default)
         {
             m_col.gameObject.layer = LayerMask.NameToLayer("PlayerSelf");
             m_knife.gameObject.layer = m_col.gameObject.layer;

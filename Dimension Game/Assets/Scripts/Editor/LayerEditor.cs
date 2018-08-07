@@ -75,7 +75,7 @@ public class LayerEditor : EditorWindow {
         if (GUILayout.Button("Reset Layers"))
         {
             GetExcludeTags();
-            newDimension = Dimension.Normal;
+            newDimension = Dimension.Default;
             ConvertLayers();
         }
     }
@@ -162,7 +162,7 @@ public class LayerEditor : EditorWindow {
             string currentLayer = LayerMask.LayerToName(obj.layer);
             currentLayer = currentLayer.Split('_')[0];
 
-            if (newDimension != Dimension.Normal)
+            if (newDimension != Dimension.Default)
             {
                 currentLayer += "_" + newDimension.ToString();
             }
@@ -224,7 +224,7 @@ public class LayerEditor : EditorWindow {
 
     private void ConvertCullingMask(ref LayerMask mask)
     {
-        if (newDimension != Dimension.Normal)
+        if (newDimension != Dimension.Default)
         {
             if (LayerMaskTools.IncludesLayer(mask, "Default"))
             {

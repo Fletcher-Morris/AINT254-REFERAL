@@ -55,7 +55,7 @@ public class DimensionPortal : MonoBehaviour {
         if (!initialised) InitPortal(knifeFloat);
         m_destination = destination;
         m_origin = origin;
-        if(m_origin == Dimension.Normal)
+        if(m_origin == Dimension.Default)
         {
             gameObject.layer = LayerMask.NameToLayer("Default");
         }
