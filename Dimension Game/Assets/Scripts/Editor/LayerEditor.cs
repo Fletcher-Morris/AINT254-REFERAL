@@ -14,8 +14,6 @@ public class LayerEditor : EditorWindow {
     //  Settings
     Dimension newDimension;
     Dimension currentDimension;
-    string excludeTagsString;
-    string[] excludeTagsArray;
     string includeLayers = "Default,PlayerSelf";
     bool setCameraCullingMasks = true;
     bool setLightCullingMask = true;
@@ -35,22 +33,6 @@ public class LayerEditor : EditorWindow {
     private void OnGUI()
     {
         newDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", newDimension);
-        excludeTagsString = EditorGUILayout.TextField("Exclude Tags", excludeTagsString);
-        EditorGUILayout.HelpBox("Separate tags with commas.", MessageType.None);
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Save Tags"))
-        {
-            GetExcludeTags();
-            PlayerPrefs.SetString("ExcludeTags", excludeTagsString);
-            Debug.Log("Saving exclude tags.");
-        }
-        if (GUILayout.Button("Load Tags"))
-        {
-            excludeTagsString = PlayerPrefs.GetString("ExcludeTags");
-            GetExcludeTags();
-            Debug.Log("Loaded exclude tags.");
-        }
-        EditorGUILayout.EndHorizontal();
         setCameraCullingMasks = EditorGUILayout.Toggle("Set Camera Culling", setCameraCullingMasks);
         setLightCullingMask = EditorGUILayout.Toggle("Set Light Culling", setLightCullingMask);
         setReflectionCullingMask = EditorGUILayout.Toggle("Set Reflection Culling", setReflectionCullingMask);
@@ -63,33 +45,11 @@ public class LayerEditor : EditorWindow {
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Gather Objects"))
         {
-            GetExcludeTags();
             GatherObjects();
         }
         if (GUILayout.Button("Convert Layers"))
         {
-            GetExcludeTags();
             ConvertLayers();
-        }
-        EditorGUILayout.EndHorizontal();
-        if (GUILayout.Button("Reset Layers"))
-        {
-            GetExcludeTags();
-            newDimension = Dimension.Default;
-            ConvertLayers();
-        }
-    }
-
-    private void GetExcludeTags()
-    {
-        if(excludeTagsString != "")
-        {
-            string[] tempTags;
-            tempTags = excludeTagsString.Split(',');
-            if (tempTags[0] != "")
-            {
-                excludeTagsArray = tempTags;
-            }
         }
     }
 
@@ -103,48 +63,29 @@ public class LayerEditor : EditorWindow {
 
         foreach(GameObject go in UnityEngine.Object.FindObjectsOfType<GameObject>())
         {
-            bool exclude = false;
-            if(excludeTagsArray.Length >= 1)
+            if (go.GetComponent<Camera>())
             {
-                foreach (string tag in excludeTagsArray)
-                {
-                    if(tag != "")
-                    {
-                        if (go.tag == tag)
-                        {
-                            exclude = true;
-                            break;
-                        }
-                    }
-                }
+                cameraObjects.Add(go.GetComponent<Camera>());
             }
 
-            if(!exclude)
+            if (go.GetComponent<Light>())
             {
-                if (go.GetComponent<Camera>())
-                {
-                    cameraObjects.Add(go.GetComponent<Camera>());
-                }
-
-                if (go.GetComponent<Light>())
-                {
-                    lightObjects.Add(go.GetComponent<Light>());
-                }
-
-                if (go.GetComponent<ReflectionProbe>())
-                {
-                    reflectionProbeObjects.Add(go.GetComponent<ReflectionProbe>());
-                }
-
-                if(go.GetComponent<Gem>())
-                {
-                    gemObjects.Add(go.GetComponent<Gem>());
-                }
-
-                normalObjects.Add(go);
+                lightObjects.Add(go.GetComponent<Light>());
             }
 
-            if(setSkyboxHolder && go.name.ToLower().Contains("skybox"))
+            if (go.GetComponent<ReflectionProbe>())
+            {
+                reflectionProbeObjects.Add(go.GetComponent<ReflectionProbe>());
+            }
+
+            if (go.GetComponent<Gem>())
+            {
+                gemObjects.Add(go.GetComponent<Gem>());
+            }
+
+            normalObjects.Add(go);
+
+            if (setSkyboxHolder && go.name.ToLower().Contains("skybox"))
             {
                 skyboxHolder = go;
             }

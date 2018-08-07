@@ -13,13 +13,14 @@ public class ScoreSingleton : MonoBehaviour {
     private void Awake()
     {
         CheckSingleton();
-        m_gemCountText = GameObject.Find("GemText").GetComponent<Text>();
-        m_iconGem = GameObject.Find("IconDiamond");
     }
 
     private void Start()
     {
         CheckSingleton();
+        m_gemCountText = GameObject.Find("GemText").GetComponent<Text>();
+        m_iconGem = GameObject.Find("IconDiamond");
+        m_gemCountText.text = collectedGems.ToString() + " / " + maxGems.ToString();
     }
 
     public void CheckSingleton()
@@ -41,6 +42,6 @@ public class ScoreSingleton : MonoBehaviour {
     {
         collectedGems++;
         m_iconGem.GetComponent<Renderer>().material.color = col;
-        m_gemCountText.text = collectedGems.ToString();
+        m_gemCountText.text = collectedGems.ToString() + " / " + maxGems.ToString();
     }
 }
