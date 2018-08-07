@@ -36,6 +36,8 @@ public class Gem : MonoBehaviour {
     private Transform m_endPos;
     private Vector3 m_endScale;
 
+    private Color m_color;
+
     private void Start()
     {
         m_transform = GetComponent<Transform>();
@@ -50,8 +52,8 @@ public class Gem : MonoBehaviour {
         if(m_randomColour)
         {
             float hue = Random.Range(0f, 1f);
-            Color newColor = Color.HSVToRGB(hue, 1, 1);
-            GetComponent<Renderer>().material.color = newColor;
+            m_color = Color.HSVToRGB(hue, 1, 1);
+            GetComponent<Renderer>().material.color = m_color;
         }
     }
 
@@ -96,7 +98,7 @@ public class Gem : MonoBehaviour {
 
     public void CollectGem()
     {
-        Singletons.score.AddGem();
+        Singletons.score.AddGem(m_color);
         GameObject.Destroy(gameObject);
     }
 }
