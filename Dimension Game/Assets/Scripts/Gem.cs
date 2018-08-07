@@ -65,7 +65,7 @@ public class Gem : MonoBehaviour {
         {
             m_currentRange = Vector3.Distance(m_transform.position, m_player.transform.position);
 
-            if(m_currentRange <= m_movementRange)
+            if(m_currentRange <= m_movementRange && dimension == m_player.GetDimension())
             {
                 if(!m_isBeingCollected)
                 {
