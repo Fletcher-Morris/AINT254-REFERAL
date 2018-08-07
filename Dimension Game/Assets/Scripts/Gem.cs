@@ -20,9 +20,11 @@ public class Gem : MonoBehaviour {
     private float m_currentRange;
 
     private Vector3 m_rotationAxis;
+    [SerializeField]
     private float m_bobRange = 0.25f;
     [SerializeField]
-    private float m_bobSpeed = 1.0f;
+    private float m_bobSpeed = 0.5f;
+    private float m_bobRdm;
 
     private bool m_isBeingCollected = false;
 
@@ -32,8 +34,10 @@ public class Gem : MonoBehaviour {
     {
         m_transform = GetComponent<Transform>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
+        m_transform.position += new Vector3(0, m_bobRange, 0);
         m_originalPosition = m_transform.position;
         m_rotationAxis = m_transform.up;
+        m_bobRdm = Random.Range(0f, 1f);
     }
 
     private void Update()
@@ -56,11 +60,12 @@ public class Gem : MonoBehaviour {
             }
         }
 
+        Vector3 bobPos = m_originalPosition;
+        bobPos.y += Mathf.Sin((Time.fixedTime * Mathf.PI * m_bobSpeed) + m_bobRdm) * m_bobRange;
+
         if (!m_isBeingCollected && m_bob)
         {
-            newPos = m_originalPosition;
-            newPos.y += Mathf.Sin(Time.fixedTime * Mathf.PI * m_bobSpeed) * m_bobRange;
-            m_transform.position = newPos;
+            newPos = bobPos;
         }
 
         m_transform.position = newPos;
