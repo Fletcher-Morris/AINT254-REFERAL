@@ -26,6 +26,9 @@ public class Gem : MonoBehaviour {
     private float m_bobSpeed = 0.5f;
     private float m_bobRdm;
 
+    [SerializeField]
+    private bool m_randomColour = true;
+
     private bool m_isBeingCollected = false;
 
     public float t = 0;
@@ -38,6 +41,13 @@ public class Gem : MonoBehaviour {
         m_originalPosition = m_transform.position;
         m_rotationAxis = m_transform.up;
         m_bobRdm = Random.Range(0f, 1f);
+
+        if(m_randomColour)
+        {
+            float hue = Random.Range(0f, 1f);
+            Color newColor = Color.HSVToRGB(hue, 1, 1);
+            GetComponent<Renderer>().material.color = newColor;
+        }
     }
 
     private void Update()
@@ -73,7 +83,7 @@ public class Gem : MonoBehaviour {
 
     public void CollectGem()
     {
-
+        Singletons.score.AddGem();
         GameObject.Destroy(gameObject);
     }
 }

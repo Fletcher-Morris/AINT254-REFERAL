@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4281761386957184}
   - component: {fileID: 114072819670624088}
   - component: {fileID: 114276347683094122}
+  - component: {fileID: 114973811064797076}
   m_Layer: 0
   m_Name: GM
   m_TagString: Untagged
@@ -65,3 +66,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 0
+--- !u!114 &114973811064797076
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1019474054561326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91326641f3039bf4c8ced33fddc9624f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGems: 10
+  collectedGems: 0
