@@ -17,10 +17,13 @@ public class SceneHelper : EditorWindow
     string scenePath;
     string sceneGroupName;
     string sceneName;
+    bool fixPath;
+    string targetPath;
 
     private void OnGUI()
     {
-        for(int i = 0; i < 3; i++)
+        EditorGUILayout.Separator();
+        for (int i = 0; i < 3; i++)
         {
             Dimension dim = ((Dimension)i);
             if (GUILayout.Button(dim.ToString()))
@@ -33,13 +36,13 @@ public class SceneHelper : EditorWindow
     private void OpenScene(Dimension target)
     {
         GetPaths();
-        string targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
-        if(!scenePath.StartsWith("assets"))
-        {
-            string newPath = "assets" + targetPath;
-            targetPath = newPath;
-        }
+        targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
         EditorSceneManager.OpenScene(targetPath);
+        Debug.Log("Loaded Scene '" + targetPath + "'");
+        if (!EditorSceneManager.GetSceneByName(sceneGroupName + "_" + target.ToString()).IsValid())
+        {
+            EditorSceneManager.CreateScene(sceneGroupName + "_" + target.ToString());
+        }
     }
 
     private void GetPaths()
@@ -47,6 +50,6 @@ public class SceneHelper : EditorWindow
         sceneName = EditorSceneManager.GetActiveScene().name;
         sceneGroupName = sceneName.Split('_')[0];
         fullPath = EditorSceneManager.GetActiveScene().path;
-        scenePath = fullPath.Trim((sceneName + ".unity").ToCharArray());
+        scenePath = "assets/scenes/" + sceneGroupName + "/";
     }
 }
