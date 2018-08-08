@@ -217,17 +217,8 @@ public class LayerEditor : EditorWindow {
     {
         GetPaths();
         targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
-        if (Application.CanStreamedLevelBeLoaded(sceneGroupName + "_" + target.ToString()))
-        {
-            EditorSceneManager.OpenScene(targetPath);
-            Debug.Log("Loaded Scene '" + targetPath + "'");
-        }
-        else
-        {
-            var newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            bool success = EditorSceneManager.SaveScene(newScene, targetPath);
-            if (success) Debug.LogWarning("Could Not Create New Scene '" + targetPath + "'");
-        }
+        EditorSceneManager.OpenScene(targetPath);
+        Debug.Log("Loaded Scene '" + targetPath + "'");
     }
 
     private void GetPaths()
