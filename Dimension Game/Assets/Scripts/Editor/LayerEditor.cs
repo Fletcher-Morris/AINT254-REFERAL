@@ -60,7 +60,6 @@ public class LayerEditor : EditorWindow {
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Separator();
-        EditorGUILayout.BeginVertical();
         for (int i = 0; i < 3; i++)
         {
             Dimension dim = ((Dimension)i);
@@ -69,7 +68,6 @@ public class LayerEditor : EditorWindow {
                 OpenScene(dim);
             }
         }
-        EditorGUILayout.EndVertical();
     }
 
     private void GatherObjects()
