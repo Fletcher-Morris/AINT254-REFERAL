@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 public class LayerEditor : EditorWindow {
 
-	[MenuItem("Dimensions/Dimension Layer Helper")]
+	[MenuItem("Dimensions/Dimension Tools")]
     public static void ShowWindow()
     {
-        GetWindow<LayerEditor>("Layer Helper");
+        GetWindow<LayerEditor>("Dimensions");
     }
 
     //  Settings
@@ -30,6 +31,14 @@ public class LayerEditor : EditorWindow {
     GameObject skyboxHolder;
 
 
+    string fullPath;
+    string scenePath;
+    string sceneGroupName;
+    string sceneName;
+    bool fixPath;
+    string targetPath;
+
+
     private void OnGUI()
     {
         newDimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", newDimension);
@@ -38,9 +47,6 @@ public class LayerEditor : EditorWindow {
         setReflectionCullingMask = EditorGUILayout.Toggle("Set Reflection Culling", setReflectionCullingMask);
         setSkyboxHolder = EditorGUILayout.Toggle("Set Skybox Holder", setSkyboxHolder);
         setGems = EditorGUILayout.Toggle("Set Gems", setGems);
-
-
-        EditorGUILayout.Separator();
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Gather Objects"))
@@ -51,6 +57,19 @@ public class LayerEditor : EditorWindow {
         {
             ConvertLayers();
         }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Separator();
+        EditorGUILayout.BeginVertical();
+        for (int i = 0; i < 3; i++)
+        {
+            Dimension dim = ((Dimension)i);
+            if (GUILayout.Button(dim.ToString()))
+            {
+                OpenScene(dim);
+            }
+        }
+        EditorGUILayout.EndVertical();
     }
 
     private void GatherObjects()
@@ -191,5 +210,33 @@ public class LayerEditor : EditorWindow {
                 LayerMaskTools.AddToMask(ref mask, "PlayerSelf");
             }
         }
+    }
+
+
+
+
+    private void OpenScene(Dimension target)
+    {
+        GetPaths();
+        targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
+        if (Application.CanStreamedLevelBeLoaded(sceneGroupName + "_" + target.ToString()))
+        {
+            EditorSceneManager.OpenScene(targetPath);
+            Debug.Log("Loaded Scene '" + targetPath + "'");
+        }
+        else
+        {
+            var newScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            bool success = EditorSceneManager.SaveScene(newScene, targetPath);
+            if (success) Debug.LogWarning("Could Not Create New Scene '" + targetPath + "'");
+        }
+    }
+
+    private void GetPaths()
+    {
+        sceneName = EditorSceneManager.GetActiveScene().name;
+        sceneGroupName = sceneName.Split('_')[0];
+        fullPath = EditorSceneManager.GetActiveScene().path;
+        scenePath = "assets/scenes/" + sceneGroupName + "/";
     }
 }
