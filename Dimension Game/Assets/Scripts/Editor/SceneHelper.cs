@@ -13,71 +13,40 @@ public class SceneHelper : EditorWindow
         GetWindow<SceneHelper>("Scene Helper");
     }
 
-    Dimension m_dimension;
-    string m_path;
+    string fullPath;
+    string scenePath;
+    string sceneGroupName;
+    string sceneName;
 
     private void OnGUI()
     {
-        m_dimension = (Dimension)EditorGUILayout.EnumPopup("Scene Dimension", m_dimension);
-
-        EditorGUILayout.Separator();
-
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Open Scene"))
-        {
-            OpenScene(m_dimension);
-        }
-        if (GUILayout.Button("Save Scene"))
-        {
-
-        }
-    }
-
-    private void OpenScene(Dimension dimension)
-    {
-        string currentScene = EditorSceneManager.GetActiveScene().name.Split('_')[0];
-        if(StringToDimension(currentScene) != dimension)
-        {
-            string sceneName = GetSceneName(currentScene, dimension);
-
-            if(!EditorSceneManager.GetSceneByName(sceneName).IsValid())
-            {
-                CreateScene(sceneName, dimension);
-            }
-
-            EditorSceneManager.LoadScene(sceneName);
-        }
-    }
-
-    private string GetScenePath()
-    {
-        string result = EditorSceneManager.GetActiveScene().path;
-        result = result.Split('_')[0];
-        return result;
-    }
-
-    private void CreateScene(string sceneName, Dimension dimension)
-    {
-        UnityEngine.SceneManagement.Scene newScene = EditorSceneManager.CreateScene(sceneName);
-        EditorSceneManager.SaveScene(newScene, GetScenePath() + "_" + dimension.ToString());
-    }
-
-    private string GetSceneName(string name, Dimension dimension)
-    {
-        string result = name;
-        name += "_";
-        name += dimension.ToString();
-        return result;
-    }
-
-    private Dimension StringToDimension(string name)
-    {
-        Dimension result = Dimension.Default;
         for(int i = 0; i < 3; i++)
         {
-            if (((Dimension)i).ToString() == name) return (Dimension)i;
+            Dimension dim = ((Dimension)i);
+            if (GUILayout.Button(dim.ToString()))
+            {
+                OpenScene(dim);
+            }
         }
+    }
 
-        return result;
+    private void OpenScene(Dimension target)
+    {
+        GetPaths();
+        string targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
+        if(!scenePath.StartsWith("assets"))
+        {
+            string newPath = "assets" + targetPath;
+            targetPath = newPath;
+        }
+        EditorSceneManager.OpenScene(targetPath);
+    }
+
+    private void GetPaths()
+    {
+        sceneName = EditorSceneManager.GetActiveScene().name;
+        sceneGroupName = sceneName.Split('_')[0];
+        fullPath = EditorSceneManager.GetActiveScene().path;
+        scenePath = fullPath.Trim((sceneName + ".unity").ToCharArray());
     }
 }
