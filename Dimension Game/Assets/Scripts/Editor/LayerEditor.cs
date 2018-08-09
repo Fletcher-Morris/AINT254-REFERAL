@@ -219,6 +219,7 @@ public class LayerEditor : EditorWindow {
         targetPath = (scenePath + sceneGroupName + "_" + target.ToString() + ".unity").ToLower();
         EditorSceneManager.OpenScene(targetPath);
         Debug.Log("Loaded Scene '" + targetPath + "'");
+        newDimension = target;
     }
 
     private void GetPaths()
