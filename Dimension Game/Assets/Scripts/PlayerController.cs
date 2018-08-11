@@ -93,6 +93,8 @@ public class PlayerController : MonoBehaviour {
     private Animator m_knifeAnim;
     private FloatHolder m_knifeFloat;
 
+    public AudioSource windSource;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -116,6 +118,7 @@ public class PlayerController : MonoBehaviour {
         m_knife = cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
+        windSource = GetComponent<AudioSource>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -655,7 +658,11 @@ public class PlayerController : MonoBehaviour {
     {
         if (m_switchingDimensions) return;
 
-        if (m_currentPortal) GameObject.Destroy(m_currentPortal);
+
+        if (m_currentPortal)
+        {
+            m_currentPortal.GetComponent<DimensionPortal>().Close();
+        }
 
         m_knifeAnim.SetTrigger("Slash");
 

@@ -92,6 +92,32 @@ public class DimensionPortal : MonoBehaviour {
         yield return null;
     }
 
+    public void Close()
+    {
+        StartCoroutine(ClosePortalCoroutine());
+    }
+    private IEnumerator ClosePortalCoroutine()
+    {
+        float completion = 0.0f;
+        m_state = PortalState.Closing;
+
+        while (m_state == PortalState.Closing)
+        {
+            completion += Time.deltaTime;
+            m_transform.localScale = Vector3.Lerp(m_transform.localScale, Vector3.zero, completion);
+
+            if (completion >= 1.0f)
+            {
+                m_state = PortalState.Closed;
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        GameObject.Destroy(gameObject);
+        yield return null;
+    }
+
     private void Update()
     {
         if (!initialised) return;
@@ -100,25 +126,31 @@ public class DimensionPortal : MonoBehaviour {
 
         currentRange = Vector2.Distance(new Vector2(m_transform.position.x, m_transform.position.z), new Vector2(m_player.cameraAnchor.position.x, m_player.cameraAnchor.position.z));
 
-        if (currentRange <= m_effectDistance)
+        if (m_state == PortalState.Open || m_state == PortalState.Opening)
         {
-
-            effectFactor = Mathf.Lerp(0, 1, 1 - currentRange);
-
-            float t = effectCurve.Evaluate(effectFactor);
-
-            m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
-
-            if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension())
+            if (currentRange <= m_effectDistance)
             {
-                m_player.SwitchDimensionImmediate(m_destination);
-                GameObject.Destroy(gameObject);
+
+                effectFactor = Mathf.Lerp(0, 1, 1 - currentRange);
+
+                float t = effectCurve.Evaluate(effectFactor);
+
+                m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
+
+                if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension())
+                {
+                    m_player.SwitchDimensionImmediate(m_destination);
+                    m_player.windSource.volume = 0f;
+                    GameObject.Destroy(gameObject);
+                }
             }
+            else
+            {
+                m_transform.localScale = startScale;
+            } 
         }
-        else
-        {
-            m_transform.localScale = startScale;
-        }
+
+        m_player.windSource.volume = (0.25f / currentRange) / 5f;
     }
 
     public void RotateToPlayer()
@@ -143,5 +175,6 @@ public enum PortalState
 {
     Opening,
     Open,
-    Closing
+    Closing,
+    Closed
 }
