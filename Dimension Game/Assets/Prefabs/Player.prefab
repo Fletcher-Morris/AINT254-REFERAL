@@ -722,6 +722,8 @@ MonoBehaviour:
   dimensionPortalPrefab: {fileID: 1641018162508676, guid: 359bada6b82c661478bf7daf8c09b4cb,
     type: 2}
   m_currentPortal: {fileID: 0}
+  isCreatingPortal: 0
+  windSource: {fileID: 0}
 --- !u!124 &124104449839457726
 Behaviour:
   m_ObjectHideFlags: 1

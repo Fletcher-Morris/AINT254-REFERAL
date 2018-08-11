@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class DimensionPortal : MonoBehaviour {
 
     private bool initialised = false;
@@ -38,8 +37,11 @@ public class DimensionPortal : MonoBehaviour {
     private AudioClip[] m_dimensionAudio;
     [SerializeField]
     private AudioClip m_effectAudio;
+    [SerializeField]
+    private AudioClip m_windAudio;
     private AudioSource m_dimensionSource;
     private AudioSource m_effectSource;
+    private AudioSource m_windSource;
 
     private void InitPortal(FloatHolder knifeFloat)
     {
@@ -47,8 +49,9 @@ public class DimensionPortal : MonoBehaviour {
         m_renderer = GetComponent<Renderer>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
         m_collider = GetComponent<Collider>();
-        m_effectSource = GetComponent<AudioSource>();
+        m_effectSource = gameObject.AddComponent<AudioSource>();
         m_dimensionSource = gameObject.AddComponent<AudioSource>();
+        m_windSource = gameObject.AddComponent<AudioSource>();
         m_knifeFloat = knifeFloat;
         startScale = m_transform.localScale;
         endScale = new Vector3(30f, 30f, 1f);
@@ -77,6 +80,9 @@ public class DimensionPortal : MonoBehaviour {
     private IEnumerator OpenPortalCoroutine()
     {
         float completion = 0.0f;
+        m_player.isCreatingPortal = true;
+        m_windSource.clip = m_windAudio;
+        m_windSource.Play();
 
         while(m_state == PortalState.Opening)
         {
@@ -88,6 +94,8 @@ public class DimensionPortal : MonoBehaviour {
 
             yield return new WaitForEndOfFrame();
         }
+
+        m_player.isCreatingPortal = false;
 
         yield return null;
     }
@@ -101,10 +109,13 @@ public class DimensionPortal : MonoBehaviour {
         float completion = 0.0f;
         m_state = PortalState.Closing;
 
+        Vector3 origPos = m_transform.position;
+
         while (m_state == PortalState.Closing)
         {
             completion += Time.deltaTime;
             m_transform.localScale = Vector3.Lerp(m_transform.localScale, Vector3.zero, completion);
+            m_transform.position = Vector3.Lerp(origPos, origPos + Vector3.up, completion);
 
             if (completion >= 1.0f)
             {
@@ -140,7 +151,6 @@ public class DimensionPortal : MonoBehaviour {
                 if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension())
                 {
                     m_player.SwitchDimensionImmediate(m_destination);
-                    m_player.windSource.volume = 0f;
                     GameObject.Destroy(gameObject);
                 }
             }
@@ -150,7 +160,7 @@ public class DimensionPortal : MonoBehaviour {
             } 
         }
 
-        m_player.windSource.volume = (0.25f / currentRange) / 5f;
+        m_windSource.volume = ((0.5f / currentRange) / 2f) * effectFactor;
     }
 
     public void RotateToPlayer()

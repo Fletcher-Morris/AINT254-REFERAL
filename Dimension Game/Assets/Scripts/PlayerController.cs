@@ -88,12 +88,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private GameObject m_currentPortal;
     private DimensionPortal m_portalControler;
-
-
+    public bool isCreatingPortal;
     private Animator m_knifeAnim;
     private FloatHolder m_knifeFloat;
-
-    public AudioSource windSource;
 
     private void Start()
     {
@@ -118,7 +115,6 @@ public class PlayerController : MonoBehaviour {
         m_knife = cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
-        windSource = GetComponent<AudioSource>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -657,7 +653,7 @@ public class PlayerController : MonoBehaviour {
     private void CreateDimensionalPortal(Dimension destination)
     {
         if (m_switchingDimensions) return;
-
+        if (isCreatingPortal) return;
 
         if (m_currentPortal)
         {
