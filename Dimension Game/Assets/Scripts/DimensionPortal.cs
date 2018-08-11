@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class DimensionPortal : MonoBehaviour {
 
     private bool initialised = false;
@@ -33,15 +34,21 @@ public class DimensionPortal : MonoBehaviour {
     public float effectFactor = 0f;
     public AnimationCurve effectCurve = AnimationCurve.EaseInOut(0.0f,0.0f,1.0f,1.0f);
 
-    private Vector3 m_originalPosition;
+    [SerializeField]
+    private AudioClip[] m_dimensionAudio;
+    [SerializeField]
+    private AudioClip m_effectAudio;
+    private AudioSource m_dimensionSource;
+    private AudioSource m_effectSource;
 
     private void InitPortal(FloatHolder knifeFloat)
     {
         m_transform = GetComponent<Transform>();
-        m_originalPosition = m_transform.position;
         m_renderer = GetComponent<Renderer>();
         m_player = GameObject.Find("Player").GetComponent<PlayerController>();
         m_collider = GetComponent<Collider>();
+        m_effectSource = GetComponent<AudioSource>();
+        m_dimensionSource = gameObject.AddComponent<AudioSource>();
         m_knifeFloat = knifeFloat;
         startScale = m_transform.localScale;
         endScale = new Vector3(30f, 30f, 1f);
@@ -63,6 +70,7 @@ public class DimensionPortal : MonoBehaviour {
         {
             gameObject.layer = LayerMask.NameToLayer("Default_" + m_origin.ToString());
         }
+        m_effectSource.PlayOneShot(m_effectAudio);
         StartCoroutine(OpenPortalCoroutine());
     }
 
@@ -92,7 +100,7 @@ public class DimensionPortal : MonoBehaviour {
 
         currentRange = Vector2.Distance(new Vector2(m_transform.position.x, m_transform.position.z), new Vector2(m_player.cameraAnchor.position.x, m_player.cameraAnchor.position.z));
 
-        if(currentRange <= m_effectDistance)
+        if (currentRange <= m_effectDistance)
         {
 
             effectFactor = Mathf.Lerp(0, 1, 1 - currentRange);
