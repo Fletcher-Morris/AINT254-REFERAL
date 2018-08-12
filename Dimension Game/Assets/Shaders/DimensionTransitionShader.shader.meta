@@ -4,9 +4,8 @@ ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _MainTex: {instanceID: 0}
-  - _Gradient: {fileID: 2800000, guid: f211ffc5e9cd7e84cb5fa27c15ad74dc, type: 3}
-  - _1: {fileID: 2800000, guid: 17d1d6ff675a6c64c8717cf42ea2c2fa, type: 3}
-  - _2: {fileID: 2800000, guid: e72d73b5bfc1c364686819e682eff6a8, type: 3}
+  - _1: {fileID: 2800000, guid: 9dcc8587de9f9914cb35d4c11598e80c, type: 3}
+  - _2: {fileID: 2800000, guid: 143ac18a926a8b7408621aae002b76e3, type: 3}
   - _3: {fileID: 2800000, guid: a76c0bb37b5389c45ad71f8485b7eead, type: 3}
   - _4: {fileID: 2800000, guid: d077ed42cc779e64b9477722df4077de, type: 3}
   - _5: {fileID: 2800000, guid: ad775395aded60e4693cbae1e9785e23, type: 3}
