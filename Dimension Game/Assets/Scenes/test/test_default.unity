@@ -609,7 +609,7 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 687972982}
-  m_LocalRotation: {x: -0.66199225, y: -0.24852818, z: -0.24852818, w: 0.66199225}
+  m_LocalRotation: {x: -0.10844523, y: 0.6987415, z: 0.6987415, w: 0.10844523}
   m_LocalPosition: {x: 0.96, y: 5.28, z: -6.06}
   m_LocalScale: {x: 1.0000007, y: 1.0000004, z: 1.0000005}
   m_Children:
@@ -970,7 +970,7 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1238924704}
-  m_LocalRotation: {x: -0.6740919, y: -0.21354194, z: -0.21354194, w: 0.6740919}
+  m_LocalRotation: {x: -0.071727745, y: 0.70345944, z: 0.70345944, w: 0.071727745}
   m_LocalPosition: {x: 3.7, y: 3.75, z: 0.2}
   m_LocalScale: {x: 1.0000001, y: 1.0000005, z: 1.0000005}
   m_Children:
@@ -1367,19 +1367,19 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0.22494365
+      value: -0.6104844
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.6703733
+      value: 0.35680366
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0.6703733
+      value: 0.35680366
       objectReference: {fileID: 0}
     - target: {fileID: 4236930579053490, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0.22494365
+      value: 0.6104844
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 46159c8a0af041e488fb01d37bcb059c, type: 2}
@@ -1468,7 +1468,7 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1711424215}
-  m_LocalRotation: {x: -0.69619775, y: -0.12372841, z: -0.12372841, w: 0.69619775}
+  m_LocalRotation: {x: 0.02070561, y: 0.7068036, z: 0.7068036, w: -0.02070561}
   m_LocalPosition: {x: -0.75, y: 0.399, z: 0.54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1656,6 +1656,7 @@ GameObject:
   - component: {fileID: 1769368756}
   - component: {fileID: 1769368758}
   - component: {fileID: 1769368757}
+  - component: {fileID: 1769368759}
   m_Layer: 5
   m_Name: CurrentDimensionText
   m_TagString: Untagged
@@ -1720,6 +1721,20 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1769368755}
+--- !u!114 &1769368759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1769368755}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1776762086
 GameObject:
   m_ObjectHideFlags: 0
@@ -2207,7 +2222,7 @@ Transform:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1963944785}
-  m_LocalRotation: {x: -0.6843443, y: -0.17796901, z: -0.17796901, w: 0.6843443}
+  m_LocalRotation: {x: -0.034812216, y: 0.70624936, z: 0.70624936, w: 0.034812216}
   m_LocalPosition: {x: 0.46, y: 2.11, z: 3.67}
   m_LocalScale: {x: 1.0000005, y: 1.0000002, z: 1}
   m_Children:
@@ -2395,6 +2410,7 @@ GameObject:
   - component: {fileID: 2099794914}
   - component: {fileID: 2099794916}
   - component: {fileID: 2099794915}
+  - component: {fileID: 2099794917}
   m_Layer: 5
   m_Name: GemText
   m_TagString: Untagged
@@ -2459,3 +2475,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2099794913}
+--- !u!114 &2099794917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2099794913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1

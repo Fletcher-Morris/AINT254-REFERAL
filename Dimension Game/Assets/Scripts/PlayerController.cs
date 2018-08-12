@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour {
         m_body.freezeRotation = true;
         //  Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         //  Create the render textures used for dimension previews
         CreateRenderTextures();
         //  Switch to the normal dimension
@@ -273,11 +274,16 @@ public class PlayerController : MonoBehaviour {
             m_lookThroughGlass = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.Return)) m_transform.position = Vector3.zero;
+        if (Input.GetKeyDown(KeyCode.Return)) ResetPosition();
 
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
+    }
+
+    public void ResetPosition()
+    {
+        m_transform.position = Vector3.zero;
     }
 
     //  Return the current dimension
@@ -412,6 +418,8 @@ public class PlayerController : MonoBehaviour {
             {
                 //  AIR CONTROL
             }
+
+            if (m_transform.position.y <= -20f) ResetPosition();
         }
 
         //  Move the Looking-Glass to the required position

@@ -141,6 +141,8 @@ public class DimensionPortal : MonoBehaviour {
 
         currentRange = Vector2.Distance(new Vector2(m_transform.position.x, m_transform.position.z), new Vector2(m_player.cameraAnchor.position.x, m_player.cameraAnchor.position.z));
 
+        float yDist = Mathf.Abs(m_player.transform.position.y - m_transform.position.y);
+
         if (m_state == PortalState.Open || m_state == PortalState.Opening)
         {
             if (currentRange <= m_effectDistance)
@@ -152,7 +154,7 @@ public class DimensionPortal : MonoBehaviour {
 
                 m_transform.localScale = Vector3.Lerp(startScale, endScale, t);
 
-                if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension())
+                if (currentRange <= m_switchDistance && m_state == PortalState.Open && m_origin == m_player.GetDimension() && yDist <= 2f)
                 {
                     m_player.SwitchDimensionImmediate(m_destination);
                     GameObject.Destroy(gameObject);
