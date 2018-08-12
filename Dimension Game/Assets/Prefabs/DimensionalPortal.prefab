@@ -143,8 +143,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   m_dimensionAudio:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: cf996a1c9134f9a44a8cce9e0e27e56b, type: 3}
+  - {fileID: 8300000, guid: 7c757d2ecc46e7a4bbb9a1a42bfb7317, type: 3}
+  - {fileID: 8300000, guid: 413d8a770fdc1e949b18d9727866eb3c, type: 3}
   m_effectAudio: {fileID: 8300000, guid: 4ef9234679059884293b83542ad91b1e, type: 3}
   m_windAudio: {fileID: 8300000, guid: 07154c055dba1a841a51e7696a51c7a2, type: 3}

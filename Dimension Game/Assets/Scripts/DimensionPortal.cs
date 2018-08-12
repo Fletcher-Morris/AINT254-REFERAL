@@ -74,17 +74,21 @@ public class DimensionPortal : MonoBehaviour {
             gameObject.layer = LayerMask.NameToLayer("Default_" + m_origin.ToString());
         }
         m_effectSource.PlayOneShot(m_effectAudio);
+        m_player.isCreatingPortal = true;
+        m_windSource.clip = m_windAudio;
+        m_windSource.loop = true;
+        m_windSource.Play();
+        m_dimensionSource.clip = m_dimensionAudio[(int)destination];
+        m_dimensionSource.loop = true;
+        m_dimensionSource.Play();
         StartCoroutine(OpenPortalCoroutine());
     }
 
     private IEnumerator OpenPortalCoroutine()
     {
         float completion = 0.0f;
-        m_player.isCreatingPortal = true;
-        m_windSource.clip = m_windAudio;
-        m_windSource.Play();
 
-        while(m_state == PortalState.Opening)
+        while (m_state == PortalState.Opening)
         {
             completion = Mathf.Clamp01(m_knifeFloat.value);
 
@@ -160,7 +164,9 @@ public class DimensionPortal : MonoBehaviour {
             } 
         }
 
-        m_windSource.volume = ((0.5f / currentRange) / 2f) * effectFactor;
+        float vol = (1-(currentRange/5f)) * effectFactor;
+        m_windSource.volume = vol;
+        m_dimensionSource.volume = vol;
     }
 
     public void RotateToPlayer()

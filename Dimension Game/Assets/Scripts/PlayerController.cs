@@ -92,6 +92,10 @@ public class PlayerController : MonoBehaviour {
     private Animator m_knifeAnim;
     private FloatHolder m_knifeFloat;
 
+    [SerializeField]
+    private AudioClip[] m_dimensionAudio;
+    private AudioSource[] m_audioSources;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -115,6 +119,16 @@ public class PlayerController : MonoBehaviour {
         m_knife = cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
+
+        m_audioSources = new AudioSource[m_numberOfDimensions];
+        for(int i = 0; i<m_numberOfDimensions; i++)
+        {
+            m_audioSources[i] = gameObject.AddComponent<AudioSource>();
+            m_audioSources[i].loop = true;
+            m_audioSources[i].clip = m_dimensionAudio[i];
+            m_audioSources[i].volume = 0;
+            m_audioSources[i].Play();
+        }
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -506,6 +520,19 @@ public class PlayerController : MonoBehaviour {
             for (int i = 0; i < numberOfDimensions; i++)
             {
                 m_cameras[i].fieldOfView = newFov;
+
+                if(i == (int)m_switchingToDimension)
+                {
+                    m_audioSources[i].volume = e;
+                }
+                else if (i == (int)fromDimension)
+                {
+                    m_audioSources[i].volume = 1 - e;
+                }
+                else
+                {
+                    m_audioSources[i].volume = 0;
+                }
             }
 
             if (((completion >= m_transitionSwitchPoint && !m_autoSwitchPoint) || (prevE > e && m_autoSwitchPoint)) && !halfWay)
@@ -612,6 +639,15 @@ public class PlayerController : MonoBehaviour {
             {
                 m_cameras[i].targetTexture = m_renderTextures[i];
                 cam.depth = -1;
+            }
+
+            if (i == (int)m_switchingToDimension)
+            {
+                m_audioSources[i].volume = 1;
+            }
+            else
+            {
+                m_audioSources[i].volume = 0;
             }
         }
 

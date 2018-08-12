@@ -723,7 +723,10 @@ MonoBehaviour:
     type: 2}
   m_currentPortal: {fileID: 0}
   isCreatingPortal: 0
-  windSource: {fileID: 0}
+  m_dimensionAudio:
+  - {fileID: 8300000, guid: cf996a1c9134f9a44a8cce9e0e27e56b, type: 3}
+  - {fileID: 8300000, guid: 7c757d2ecc46e7a4bbb9a1a42bfb7317, type: 3}
+  - {fileID: 8300000, guid: 413d8a770fdc1e949b18d9727866eb3c, type: 3}
 --- !u!124 &124104449839457726
 Behaviour:
   m_ObjectHideFlags: 1
