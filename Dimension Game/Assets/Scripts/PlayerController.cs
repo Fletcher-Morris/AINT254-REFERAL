@@ -96,6 +96,8 @@ public class PlayerController : MonoBehaviour {
     private AudioClip[] m_dimensionAudio;
     private AudioSource[] m_audioSources;
 
+    private Text m_controlsText;
+
     private void Start()
     {
         PlayerInit();   //  Initialise the player
@@ -129,6 +131,8 @@ public class PlayerController : MonoBehaviour {
             m_audioSources[i].volume = 0;
             m_audioSources[i].Play();
         }
+
+        m_controlsText = GameObject.Find("ControlsText").GetComponent<Text>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -277,6 +281,9 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Return)) ResetPosition();
 
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
+
+        if (!Input.GetKey(KeyCode.Tab)) m_controlsText.text = "Controls: Tab";
+        else { m_controlsText.text = "Movement: WASD\nJump: Space\nSwitch Dimension: Q/E\nOpen Portal: R"; }
 
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
     }
