@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour {
     [Space]
     [Space]
 
-    //  Movement settings
+    //  Movement variables
     [SerializeField]
     private float m_runSpeed = 5f;                  //  The player's maximum movement speed
     [SerializeField]
@@ -39,19 +39,12 @@ public class PlayerController : MonoBehaviour {
     private float m_lookSensitivity = 50f;          //  The mouse ensitivity used for looking around
     [SerializeField]
     private bool m_flyMode = false;                 //  Is the player superman?
-
-    [Space]
-    [Space]
-
-    //  Input variables
     private Vector2 inputRaw, inputNorm;            //  Raw and normalised movement input
     [SerializeField]
     private bool m_isGrounded;                      //  Is the player currently grounded?
     private bool m_prevGrounded;                    //  Was the player grounded during the previous frame?
     private bool m_jumping;                         //  Is the player currently jumping?
     private bool m_canJump;                         //  Should the player be able to jump?
-    [SerializeField]
-    private bool m_trySwapDimension;                //  Is the player trying to switch dimension?
 
     [Space]
     [Space]
@@ -61,42 +54,41 @@ public class PlayerController : MonoBehaviour {
     private Dimension m_switchingToDimension;       //  The dimension the player is currently switching to
     private bool m_switchingDimensions;             //  Is the player currently switching dimensions?
     [SerializeField]
-    private float m_transitionTime = 1.0f;
+    private float m_transitionTime = 1.0f;          //  How long should the transition last>
     [SerializeField]
     [Range(0.0f, 1.0f)]
-    private float m_transitionSwitchPoint = 0.8f;
+    private float m_transitionSwitchPoint = 0.8f;   //  At what point in the transition should the dimensions be switched?
     [SerializeField]
-    private bool m_autoSwitchPoint = false;
+    private bool m_autoSwitchPoint = false;         //  Should the transiotn point be automatically detected?
     [SerializeField]
-    private AnimationCurve m_curve;
+    private AnimationCurve m_curve;                 //  The animation curve for the transion
     [SerializeField]
-    private float m_startFov = 60f;
+    private float m_startFov = 60f;                 //  The normal field of view
     [SerializeField]
-    private float m_endFov = 80f;
-
+    private float m_endFov = 80f;                   //  The fov at the transition point
     public RenderTexture[] m_renderTextures;        //  An array of the render textures used for previews
-
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
-
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
-
-    public Material speedEffectMaterial;
-
-    public bool stopCamMovement = false;
-
-    public GameObject dimensionPortalPrefab;
+    public Material speedEffectMaterial;            //  A reference to the material used for the effect
+    public bool stopCamMovement = false;            //  Should camera movement be halted?
+    public GameObject dimensionPortalPrefab;        //  The prefab for the portals
     [SerializeField]
-    private GameObject m_currentPortal;
-    private DimensionPortal m_portalControler;
-    public bool isCreatingPortal;
-    private Animator m_knifeAnim;
-    private FloatHolder m_knifeFloat;
+    private GameObject m_currentPortal;             //  The currently active portal
+    private DimensionPortal m_portalControler;      //  The controller on the currently active portal
+    public bool isCreatingPortal;                   //  Is the player currently creating a portal?
+    private Animator m_knifeAnim;                   //  The animator for the knife
+    private FloatHolder m_knifeFloat;               //  The 'position' of the knife during the slicing animation
 
+    [Space]
+    [Space]
+
+    //  Audio stuff
     [SerializeField]
-    private AudioClip[] m_dimensionAudio;
-    private AudioSource[] m_audioSources;
+    private AudioClip[] m_dimensionAudio;           //  An array holding the background audio for each dimension
+    private AudioSource[] m_audioSources;           //  An array holding the audiosources for each dimension background audio
 
-    private Text m_controlsText;
+
+    private Text m_controlsText;                    //  The text component of the controls ui
 
     private void Start()
     {
@@ -113,6 +105,8 @@ public class PlayerController : MonoBehaviour {
         m_numberOfDimensions = Dimension.GetNames(typeof(Dimension)).Length;
         //  Create the cameras needed for each dimension
         CreatePlayerCameras();
+
+        //  Get references to various objects
         m_body = GetComponent<Rigidbody>();
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
@@ -122,6 +116,7 @@ public class PlayerController : MonoBehaviour {
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
 
+        //  For each dimension, add a background soundtrack
         m_audioSources = new AudioSource[m_numberOfDimensions];
         for(int i = 0; i<m_numberOfDimensions; i++)
         {
@@ -132,19 +127,23 @@ public class PlayerController : MonoBehaviour {
             m_audioSources[i].Play();
         }
 
+        //  Get the controlls ui
         m_controlsText = GameObject.Find("ControlsText").GetComponent<Text>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
-        //  Lock the cursor to the center of the screen
+
+        //  Lock the cursor to the center of the screen and hide it
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         //  Create the render textures used for dimension previews
         CreateRenderTextures();
+
         //  Switch to the normal dimension
         SwitchDimensionImmediate(Dimension.Default, Dimension.Dark);
 
-        //  Declare that the player is all set up
+        //  Declare that the player is all set up and ready to go!
         isInitialized = true;
     }
 
@@ -249,26 +248,24 @@ public class PlayerController : MonoBehaviour {
         inputRaw = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         //  Normalise the Vector2
         inputNorm = inputRaw.normalized;
-
-        m_trySwapDimension = Input.GetKey(KeyCode.E);
-
+        
+        //  Should the player tryy to swap dimensions?
         if(Input.GetKeyDown(KeyCode.E))
         {
             SwitchDimension(GetNextDimension());
         }
-
         if (Input.GetKeyDown(KeyCode.Q))
         {
             SwitchDimension(GetPrevDimension());
         }
 
+        //  Should the player try to create a portal?
         if (Input.GetKeyDown(KeyCode.R))
         {
             CreateDimensionalPortal(GetNextDimension());
         }
 
-        if (Input.GetKeyDown(KeyCode.C)) stopCamMovement = !stopCamMovement;
-
+        //  Should the player try to look through the knife?
         if (Input.GetMouseButtonDown(0))
         {
             m_lookThroughGlass = true;
@@ -278,13 +275,15 @@ public class PlayerController : MonoBehaviour {
             m_lookThroughGlass = false;
         }
 
+        //  Resets the player's position to 0,0,0
         if (Input.GetKeyDown(KeyCode.Return)) ResetPosition();
-
-        if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
-
+        //  Toggles debug mode
+        if (Input.GetKeyDown(KeyCode.F3)) ToggleDebug();
+        //  Shows the controls
         if (!Input.GetKey(KeyCode.Tab)) m_controlsText.text = "Controls: Tab";
         else { m_controlsText.text = "Movement: WASD\nJump: Space\nSwitch Dimension: Q/E\nOpen Portal: R\nDebug: F3"; }
 
+        //  Should the render textures be re-made?
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
     }
 
@@ -366,7 +365,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     //  Allow the player to fly (for debuging)
-    private void ToggleFlyMode()
+    private void ToggleDebug()
     {
         m_flyMode = !m_flyMode;
 
@@ -703,16 +702,20 @@ public class PlayerController : MonoBehaviour {
     //  Create a dimensional portal in front of the player
     private void CreateDimensionalPortal(Dimension destination)
     {
+        //  Check that the player should be able to create a new portal
         if (m_switchingDimensions) return;
         if (isCreatingPortal) return;
 
         if (m_currentPortal)
         {
+            //  Close the current portal
             m_currentPortal.GetComponent<DimensionPortal>().Close();
         }
 
+        //  Start the animation
         m_knifeAnim.SetTrigger("Slash");
 
+        //  Create the new portal
         m_currentPortal = GameObject.Instantiate(dimensionPortalPrefab, m_transform.position + new Vector3(0, 1.2f, 0) + (m_transform.forward * 1.5f), Quaternion.identity);
         m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
         Shader.SetGlobalTexture("_PortalPrevewTex", m_renderTextures[(int)destination]);
