@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour {
     private float m_startFov = 60f;                 //  The normal field of view
     [SerializeField]
     private float m_endFov = 80f;                   //  The fov at the transition point
+    [HideInInspector]
     public RenderTexture[] m_renderTextures;        //  An array of the render textures used for previews
     private Vector2 m_prevWindowSize;               //  The window size during the previous frame
     private bool m_lookThroughGlass;                //  Is the player currently using the Looking-Glass?
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private GameObject m_currentPortal;             //  The currently active portal
     private DimensionPortal m_portalControler;      //  The controller on the currently active portal
+    [HideInInspector]
     public bool isCreatingPortal;                   //  Is the player currently creating a portal?
     private Animator m_knifeAnim;                   //  The animator for the knife
     private FloatHolder m_knifeFloat;               //  The 'position' of the knife during the slicing animation
