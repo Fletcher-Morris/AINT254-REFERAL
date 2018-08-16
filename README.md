@@ -1,9 +1,9 @@
-AINT254-REFERAL
+# AINT254-REFERAL
 
-Created Using
-Unity (with ‘AmplifyShader’ plugin)
-Visual Studio
-Github & Client
-Trello
-Adobe Photoshop
-Autodesk 3ds Max
+### Library Credits:
+- Unity (with ‘AmplifyShader’ plugin),
+- Visual Studio,
+- Github & Client,
+- Trello,
+- Adobe Photoshop,
+- Autodesk 3ds Max,
