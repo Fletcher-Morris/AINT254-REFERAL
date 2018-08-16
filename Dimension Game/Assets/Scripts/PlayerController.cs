@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour {
     private CapsuleCollider m_col;                  //  A reference to the player's capsule collider
     private Transform m_groundCheck;                //  A reference to the ground-check object's Transform
     private DimensionSceneLoader m_sceneLoader;     //  A reference to the scene-loader instance
-    private Text m_dimensionText;                   //  A reference to the 'CurrentDimension' UI text
     private Transform m_knife;                       //  A reference to the Looking-Glass' Transform
     private int m_numberOfDimensions = 0;
 
@@ -38,7 +37,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private float m_lookSensitivity = 50f;          //  The mouse ensitivity used for looking around
     [SerializeField]
-    private bool m_flyMode = false;                 //  Is the player superman?
+    private bool m_debug = false;                   //  Is the player superman?
     private Vector2 inputRaw, inputNorm;            //  Raw and normalised movement input
     [SerializeField]
     private bool m_isGrounded;                      //  Is the player currently grounded?
@@ -91,6 +90,8 @@ public class PlayerController : MonoBehaviour {
 
 
     private Text m_controlsText;                    //  The text component of the controls ui
+    private Text m_debugText;
+    private int m_fps;
 
     private void Start()
     {
@@ -113,7 +114,6 @@ public class PlayerController : MonoBehaviour {
         m_col = m_transform.Find("Collider").GetComponent<CapsuleCollider>();
         m_groundCheck = m_transform.Find("GroundCheck");
         m_sceneLoader = GameObject.Find("GM").GetComponent<DimensionSceneLoader>();
-        m_dimensionText = GameObject.Find("CurrentDimensionText").GetComponent<Text>();
         m_knife = cameraAnchor.Find("Knife");
         m_knifeAnim = m_knife.GetComponent<Animator>();
         m_knifeFloat = m_knife.GetComponent<FloatHolder>();
@@ -129,8 +129,9 @@ public class PlayerController : MonoBehaviour {
             m_audioSources[i].Play();
         }
 
-        //  Get the controlls ui
+        //  Get the controls and debug ui
         m_controlsText = GameObject.Find("ControlsText").GetComponent<Text>();
+        m_debugText = GameObject.Find("DebugText").GetComponent<Text>();
 
         //  Prevent the player's rigidbody from rotating
         m_body.freezeRotation = true;
@@ -144,6 +145,9 @@ public class PlayerController : MonoBehaviour {
 
         //  Switch to the normal dimension
         SwitchDimensionImmediate(Dimension.Default, Dimension.Dark);
+
+        //  Start the FPS counter
+        StartCoroutine(FpsCoroutine());
 
         //  Declare that the player is all set up and ready to go!
         isInitialized = true;
@@ -369,9 +373,9 @@ public class PlayerController : MonoBehaviour {
     //  Allow the player to fly (for debuging)
     private void ToggleDebug()
     {
-        m_flyMode = !m_flyMode;
+        m_debug = !m_debug;
 
-        if(m_flyMode)
+        if(m_debug)
         {
             m_body.useGravity = false;
             m_body.drag = 10.0f;
@@ -386,7 +390,7 @@ public class PlayerController : MonoBehaviour {
     //  Control the player's movement
     private void Movement()
     {
-        if(m_flyMode)
+        if(m_debug)
         {
             //  The movement to use if flying
 
@@ -478,6 +482,35 @@ public class PlayerController : MonoBehaviour {
 
         //  Draw two lines to show where the player is looking (for debugging)
         Debug.DrawLine(cameraAnchor.position, cameraAnchor.forward * 5f, Color.blue);
+
+        if (m_debug) DebugStuff();
+        else { m_debugText.text = ""; }
+    }
+
+    //  Set the debug text
+    private void DebugStuff()
+    {
+        string debugString = "DEBUG\n\n";
+
+        debugString += "Dimension : ";
+        debugString += m_currentDimension;
+
+        debugString += "\nSwitching Dimension : ";
+        debugString += m_switchingDimensions;
+
+        debugString += "\nPortal Open : ";
+        debugString += m_currentPortal != null;
+
+        debugString += "\nOpening Portal : ";
+        debugString += isCreatingPortal;
+
+        debugString += "\nPosition : ";
+        debugString += m_transform.position;
+
+        debugString += "\nFPS : ";
+        debugString += m_fps;
+
+        m_debugText.text = debugString;
     }
 
     private void FixedUpdate()
@@ -609,7 +642,6 @@ public class PlayerController : MonoBehaviour {
 
         m_switchingDimensions = false;
         m_currentDimension = newDimension;
-        m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
 
         yield return null;
     }
@@ -696,8 +728,6 @@ public class PlayerController : MonoBehaviour {
         m_switchingDimensions = false;
         m_currentDimension = m_switchingToDimension;
 
-        m_dimensionText.text = "Dimension: " + m_currentDimension.ToString();
-
         yield return null;
     }
 
@@ -722,5 +752,28 @@ public class PlayerController : MonoBehaviour {
         m_portalControler = m_currentPortal.GetComponent<DimensionPortal>();
         Shader.SetGlobalTexture("_PortalPrevewTex", m_renderTextures[(int)destination]);
         m_portalControler.OpenPortal(destination, m_currentDimension, m_knifeFloat);
+    }
+
+    private IEnumerator FpsCoroutine()
+    {
+        bool dewit = true;
+        float t = 0f;
+        int count = 0;
+
+        while(dewit)
+        {
+            t += Time.deltaTime;
+            count++;
+            if(t >= 0.5f)
+            {
+                m_fps = Mathf.RoundToInt((float)count/t);
+                t = 0f;
+                count = 0;
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return null;
     }
 }

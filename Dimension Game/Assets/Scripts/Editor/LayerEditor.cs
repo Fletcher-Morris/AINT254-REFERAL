@@ -53,7 +53,7 @@ public class LayerEditor : EditorWindow {
         {
             GatherObjects();
         }
-        if (GUILayout.Button("Convert Layers"))
+        if (GUILayout.Button("Convert Objects"))
         {
             ConvertLayers();
         }
