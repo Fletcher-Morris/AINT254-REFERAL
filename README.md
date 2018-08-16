@@ -1,6 +1,6 @@
 # AINT254-REFERAL
 
-### Library Credits:
+### Created Using:
 - Unity (with ‘AmplifyShader’ plugin),
 - Visual Studio,
 - Github & Client,
