@@ -676,7 +676,6 @@ MonoBehaviour:
   m_lookSensitivity: 50
   m_flyMode: 0
   m_isGrounded: 0
-  m_trySwapDimension: 0
   m_currentDimension: 0
   m_transitionTime: 0.8
   m_transitionSwitchPoint: 0.8
