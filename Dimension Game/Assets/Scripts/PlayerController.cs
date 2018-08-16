@@ -776,4 +776,12 @@ public class PlayerController : MonoBehaviour {
 
         yield return null;
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Water"))
+        {
+            ResetPosition();
+        }
+    }
 }
