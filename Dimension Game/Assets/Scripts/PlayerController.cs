@@ -283,7 +283,7 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.V)) ToggleFlyMode();
 
         if (!Input.GetKey(KeyCode.Tab)) m_controlsText.text = "Controls: Tab";
-        else { m_controlsText.text = "Movement: WASD\nJump: Space\nSwitch Dimension: Q/E\nOpen Portal: R"; }
+        else { m_controlsText.text = "Movement: WASD\nJump: Space\nSwitch Dimension: Q/E\nOpen Portal: R\nDebug: F3"; }
 
         if (new Vector2(Screen.width, Screen.height) != m_prevWindowSize) CreateRenderTextures();
     }
