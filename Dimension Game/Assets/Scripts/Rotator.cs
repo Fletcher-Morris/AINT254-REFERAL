@@ -5,9 +5,9 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Rotator : MonoBehaviour {
 
-    public Vector3 axis;
-    public bool rotate = true;
-    public RotateMode mode;
+    public Vector3 axis;            //  The axis on which to spin
+    public bool rotate = true;      //  Should the object be rotating?
+    public RotateMode mode;         //  Which update method to spin on
 
     private Transform m_transform;
 
